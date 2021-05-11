@@ -3,10 +3,11 @@ package clusterconfigmap
 import (
 	"strings"
 
-	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"k8s.io/client-go/kubernetes"
+
+	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
 
 const (
