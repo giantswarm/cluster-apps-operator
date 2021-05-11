@@ -1,10 +1,10 @@
 package project
 
 var (
-	description = "The template-operator does something."
+	description = "The cluster-apps-operator does something."
 	gitSHA      = "n/a"
-	name        = "template-operator"
-	source      = "https://github.com/giantswarm/template-operator"
+	name        = "cluster-apps-operator"
+	source      = "https://github.com/giantswarm/cluster-apps-operator"
 	version     = "0.1.0-dev"
 )
 
