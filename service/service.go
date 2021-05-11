@@ -4,8 +4,11 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"net"
 	"sync"
 
+	releasev1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/release/v1alpha1"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -13,11 +16,20 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 
 	"github.com/giantswarm/cluster-apps-operator/flag"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/service/controller"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
+)
+
+const (
+	apiServerIPLastOctet = 1
 )
 
 // Config represents the configuration used to create a new service.
@@ -32,7 +44,7 @@ type Service struct {
 	Version *version.Service
 
 	bootOnce          sync.Once
-	todoController    *controller.TODO
+	clusterController *controller.Cluster
 	operatorCollector *collector.Set
 }
 
@@ -59,6 +71,20 @@ func New(config Config) (*Service, error) {
 
 	var err error
 
+	baseDomain := config.Viper.GetString(config.Flag.Workload.Cluster.BaseDomain)
+	calicoSubnet := config.Viper.GetString(config.Flag.Workload.Cluster.Calico.Subnet)
+	calicoCIDR := config.Viper.GetString(config.Flag.Workload.Cluster.Calico.CIDR)
+	clusterIPRange := config.Viper.GetString(config.Flag.Workload.Cluster.Kubernetes.API.ClusterIPRange)
+	registryDomain := config.Viper.GetString(config.Flag.Service.Image.Registry.Domain)
+
+	var dnsIP string
+	{
+		dnsIP, err = key.DNSIP(clusterIPRange)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var restConfig *rest.Config
 	{
 		c := k8srestconfig.Config{
@@ -84,10 +110,12 @@ func New(config Config) (*Service, error) {
 	{
 		c := k8sclient.ClientsConfig{
 			Logger: config.Logger,
-			// TODO: If you are watching a new CRD, include here the AddToScheme function from apiextensions.
-			// SchemeBuilder: k8sclient.SchemeBuilder{
-			//     corev1alpha1.AddToScheme,
-			// },
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				apiv1alpha3.AddToScheme,
+				bootstrapkubeadmv1alpha3.AddToScheme,
+				releasev1alpha1.AddToScheme,
+			},
+
 			RestConfig: restConfig,
 		}
 
@@ -97,15 +125,49 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var todoController *controller.TODO
+	var rv releaseversion.Interface
 	{
-
-		c := controller.TODOConfig{
+		c := releaseversion.Config{
 			K8sClient: k8sClient,
-			Logger:    config.Logger,
 		}
 
-		todoController, err = controller.NewTODO(c)
+		rv, err = releaseversion.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var pc podcidr.Interface
+	{
+		c := podcidr.Config{
+			K8sClient: k8sClient,
+
+			InstallationCIDR: fmt.Sprintf("%s/%s", calicoSubnet, calicoCIDR),
+		}
+
+		pc, err = podcidr.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var clusterController *controller.Cluster
+	{
+
+		c := controller.ClusterConfig{
+			K8sClient:      k8sClient,
+			Logger:         config.Logger,
+			PodCIDR:        pc,
+			ReleaseVersion: rv,
+
+			BaseDomain:           baseDomain,
+			DNSIP:                dnsIP,
+			RawAppDefaultConfig:  config.Viper.GetString(config.Flag.Service.Release.App.Config.Default),
+			RawAppOverrideConfig: config.Viper.GetString(config.Flag.Service.Release.App.Config.Override),
+			RegistryDomain:       registryDomain,
+		}
+
+		clusterController, err = controller.NewCluster(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -144,7 +206,7 @@ func New(config Config) (*Service, error) {
 		Version: versionService,
 
 		bootOnce:          sync.Once{},
-		todoController:    todoController,
+		clusterController: clusterController,
 		operatorCollector: operatorCollector,
 	}
 
@@ -155,6 +217,31 @@ func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		go s.operatorCollector.Boot(ctx) // nolint:errcheck
 
-		go s.todoController.Boot(ctx)
+		go s.clusterController.Boot(ctx)
 	})
+}
+
+func parseClusterIPRange(ipRange string) (net.IP, net.IP, error) {
+	_, cidr, err := net.ParseCIDR(ipRange)
+	if cidr == nil {
+		return nil, nil, microerror.Maskf(invalidConfigError, "invalid Kubernetes ClusterIPRange '%s': cidr == nil", ipRange)
+	} else if err != nil {
+		return nil, nil, microerror.Maskf(invalidConfigError, "invalid Kubernetes ClusterIPRange '%s': %q", ipRange, err)
+	}
+
+	ones, bits := cidr.Mask.Size()
+	if bits != 32 {
+		return nil, nil, microerror.Maskf(invalidConfigError, "Kubernetes ClusterIPRange CIDR must be an IPv4 range")
+	}
+
+	// Node gets /24 from Kubernetes and each POD receives one IP from this
+	// block. Therefore CIDR block must be at least /24.
+	if ones > 24 {
+		return nil, nil, microerror.Maskf(invalidConfigError, "Kubernetes ClusterIPRange CIDR network block must be at least /24")
+	}
+
+	networkIP := cidr.IP.To4()
+	apiServerIP := net.IPv4(networkIP[0], networkIP[1], networkIP[2], apiServerIPLastOctet)
+
+	return networkIP, apiServerIP, nil
 }
