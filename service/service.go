@@ -27,10 +27,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
-const (
-	apiServerIPLastOctet = 1
-)
-
 // Config represents the configuration used to create a new service.
 type Config struct {
 	Logger micrologger.Logger
