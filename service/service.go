@@ -5,7 +5,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"net"
 	"sync"
 
 	releasev1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/release/v1alpha1"
@@ -219,29 +218,4 @@ func (s *Service) Boot(ctx context.Context) {
 
 		go s.clusterController.Boot(ctx)
 	})
-}
-
-func parseClusterIPRange(ipRange string) (net.IP, net.IP, error) {
-	_, cidr, err := net.ParseCIDR(ipRange)
-	if cidr == nil {
-		return nil, nil, microerror.Maskf(invalidConfigError, "invalid Kubernetes ClusterIPRange '%s': cidr == nil", ipRange)
-	} else if err != nil {
-		return nil, nil, microerror.Maskf(invalidConfigError, "invalid Kubernetes ClusterIPRange '%s': %q", ipRange, err)
-	}
-
-	ones, bits := cidr.Mask.Size()
-	if bits != 32 {
-		return nil, nil, microerror.Maskf(invalidConfigError, "Kubernetes ClusterIPRange CIDR must be an IPv4 range")
-	}
-
-	// Node gets /24 from Kubernetes and each POD receives one IP from this
-	// block. Therefore CIDR block must be at least /24.
-	if ones > 24 {
-		return nil, nil, microerror.Maskf(invalidConfigError, "Kubernetes ClusterIPRange CIDR network block must be at least /24")
-	}
-
-	networkIP := cidr.IP.To4()
-	apiServerIP := net.IPv4(networkIP[0], networkIP[1], networkIP[2], apiServerIPLastOctet)
-
-	return networkIP, apiServerIP, nil
 }
