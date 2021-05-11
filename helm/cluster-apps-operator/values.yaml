@@ -1,15 +1,53 @@
+cni:
+  mask: 16
+  subnet: 10.1.0.0/16
+
 image:
   name: "giantswarm/cluster-apps-operator"
   tag: "[[ .Version ]]"
-Installation:
-  V1:
-    Registry:
-      Domain: quay.io
+
+kubernetes:
+  api:
+    clusterAPIRange: 172.31.0.0/16
+  clusterDomain: cluster.local
+
 pod:
   user:
     id: 1000
   group:
     id: 1000
+
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
+
+registry:
+  domain: docker.io
+  mirrors:
+  - giantswarm.azurecr.io
+  pullSecret:
+    dockerConfigJSON: ""
+
+release:
+  app:
+    config:
+      default: |
+        catalog: default
+        namespace: kube-system
+        useUpgradeForce: true
+      override: |
+        cert-exporter:
+          chart: "cert-exporter"
+        # chart-operator must be installed first so the chart CRD is
+        # created in the tenant cluster.
+        chart-operator:
+          chart:     "chart-operator"
+          namespace: "giantswarm"
+        # Upgrade force is disabled to avoid affecting customer workloads.
+        coredns:
+          useUpgradeForce: false
+        net-exporter:
+          chart: "net-exporter"
+        # Upgrade force is disabled to avoid affecting customer workloads.
+        nginx-ingress-controller:
+          useUpgradeForce: false
