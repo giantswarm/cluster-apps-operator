@@ -28,9 +28,11 @@ func New(c Config) (*ReleaseVersion, error) {
 }
 
 func (rv *ReleaseVersion) Apps(ctx context.Context, obj interface{}) (map[string]ReleaseApp, error) {
+	// TODO Add logic.
 	return nil, nil
 }
 
 func (rv *ReleaseVersion) ComponentVersion(ctx context.Context, obj interface{}) (map[string]ReleaseComponent, error) {
+	// TODO Add logic.
 	return nil, nil
 }

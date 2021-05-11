@@ -38,5 +38,6 @@ func New(c Config) (*PodCIDR, error) {
 }
 
 func (p *PodCIDR) PodCIDR(ctx context.Context, obj interface{}) (string, error) {
+	// TODO Add logic.
 	return "", nil
 }
