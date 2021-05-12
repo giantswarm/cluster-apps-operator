@@ -35,12 +35,6 @@ spec:
           items:
           - key: config.yaml
             path: config.yaml
-      - name: {{ include "name" . }}-secret
-        secret:
-          secretName: {{ include "resource.default.name"  . }}
-          items:
-          - key: secret.yaml
-            path: secret.yaml
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}
@@ -50,13 +44,11 @@ spec:
         image: "{{ .Values.registry.domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         args:
         - daemon
-        - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
-        - --config.files=config,secret
+        - --config.dirs=/var/run/{{ include "name" . }}/configmap/
+        - --config.files=config
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
-        - name: {{ include "name" . }}-secret
-          mountPath: /var/run/{{ include "name" . }}/secret/
         livenessProbe:
           httpGet:
             path: /healthz
@@ -70,5 +62,3 @@ spec:
           limits:
             cpu: 100m
             memory: 220Mi
-      imagePullSecrets:
-      - name: {{ include "resource.pullSecret.name" . }}
