@@ -41,64 +41,67 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		r.logger.Debugf(ctx, "found %d optional apps for workload cluster %#q", len(apps), key.ClusterID(&cr))
+
+		if len(apps) == 0 {
+			// Return early as there is nothing to do.
+			return nil
+		}
 	}
 
 	{
 		var updatedAppCount int
 
-		if len(apps) > 0 {
-			componentVersions, err := r.releaseVersion.ComponentVersion(ctx, &cr)
-			if err != nil {
-				return microerror.Mask(err)
-			}
+		componentVersions, err := r.releaseVersion.ComponentVersion(ctx, &cr)
+		if err != nil {
+			return microerror.Mask(err)
+		}
 
-			appOperatorComponent := componentVersions[releaseversion.AppOperator]
-			appOperatorVersion := appOperatorComponent.Version
-			if appOperatorVersion == "" {
-				return microerror.Maskf(notFoundError, "app-operator component version not found")
-			}
+		appOperatorComponent := componentVersions[releaseversion.AppOperator]
+		appOperatorVersion := appOperatorComponent.Version
+		if appOperatorVersion == "" {
+			return microerror.Maskf(notFoundError, "app-operator component version not found")
+		}
 
-			r.logger.Debugf(ctx, "updating version label for optional apps in workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "updating version label for optional apps in workload cluster %#q", key.ClusterID(&cr))
 
-			for _, app := range apps {
-				currentVersion := app.Labels[label.AppOperatorVersion]
+		for _, app := range apps {
+			currentVersion := app.Labels[label.AppOperatorVersion]
 
-				if currentVersion != appOperatorVersion {
-					patches := []patch{}
+			if currentVersion != appOperatorVersion {
+				patches := []patch{}
 
-					if len(app.Labels) == 0 {
-						patches = append(patches, patch{
-							Op:    "add",
-							Path:  "/metadata/labels",
-							Value: map[string]string{},
-						})
-					}
-
+				if len(app.Labels) == 0 {
 					patches = append(patches, patch{
 						Op:    "add",
-						Path:  fmt.Sprintf("/metadata/labels/%s", replaceToEscape(label.AppOperatorVersion)),
-						Value: appOperatorVersion,
+						Path:  "/metadata/labels",
+						Value: map[string]string{},
 					})
-
-					bytes, err := json.Marshal(patches)
-					if err != nil {
-						return microerror.Mask(err)
-					}
-
-					_, err = r.g8sClient.ApplicationV1alpha1().Apps(app.Namespace).Patch(ctx, app.Name, types.JSONPatchType, bytes, metav1.PatchOptions{})
-					if err != nil {
-						return microerror.Mask(err)
-					}
-
-					updatedAppCount++
 				}
-			}
 
-			if updatedAppCount > 0 {
-				r.logger.Debugf(ctx, "updating version label for %d optional apps in workload cluster %#q", updatedAppCount, key.ClusterID(&cr))
-			} else {
-				r.logger.Debugf(ctx, "no version labels to update for workload cluster %#q", key.ClusterID(&cr))
+				patches = append(patches, patch{
+					Op:    "add",
+					Path:  fmt.Sprintf("/metadata/labels/%s", replaceToEscape(label.AppOperatorVersion)),
+					Value: appOperatorVersion,
+				})
+
+				bytes, err := json.Marshal(patches)
+				if err != nil {
+					return microerror.Mask(err)
+				}
+
+				_, err = r.g8sClient.ApplicationV1alpha1().Apps(app.Namespace).Patch(ctx, app.Name, types.JSONPatchType, bytes, metav1.PatchOptions{})
+				if err != nil {
+					return microerror.Mask(err)
+				}
+
+				updatedAppCount++
 			}
+		}
+
+		if updatedAppCount > 0 {
+			r.logger.Debugf(ctx, "updating version label for %d optional apps in workload cluster %#q", updatedAppCount, key.ClusterID(&cr))
+		} else {
+			r.logger.Debugf(ctx, "no version labels to update for workload cluster %#q", key.ClusterID(&cr))
 		}
 	}
 

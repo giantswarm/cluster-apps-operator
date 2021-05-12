@@ -21,7 +21,5 @@ func ToCluster(v interface{}) (apiv1alpha3.Cluster, error) {
 		return apiv1alpha3.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &apiv1alpha3.Cluster{}, v)
 	}
 
-	c := p.DeepCopy()
-
-	return *c, nil
+	return *p, nil
 }
