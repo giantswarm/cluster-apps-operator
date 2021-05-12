@@ -18,7 +18,3 @@ room for such suffix.
 {{- define "resource.psp.name" -}}
 {{- include "resource.default.name" . -}}-psp
 {{- end -}}
-
-{{- define "resource.pullSecret.name" -}}
-{{- include "resource.default.name" . -}}-pull-secret
-{{- end -}}
