@@ -29,7 +29,6 @@ func ClusterID(getter LabelsGetter) string {
 
 // DNSIP returns the IP of the DNS service given a cluster IP range.
 func DNSIP(clusterIPRange string) (string, error) {
-	return "", nil
 	ip, _, err := net.ParseCIDR(clusterIPRange)
 	if err != nil {
 		return "", microerror.Maskf(invalidConfigError, err.Error())
