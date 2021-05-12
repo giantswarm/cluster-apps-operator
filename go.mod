@@ -14,6 +14,7 @@ require (
 	github.com/giantswarm/operatorkit/v4 v4.3.1
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.10.0
 	github.com/spf13/viper v1.7.1
 	k8s.io/apimachinery v0.18.18
