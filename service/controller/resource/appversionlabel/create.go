@@ -97,7 +97,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			if updatedAppCount > 0 {
 				r.logger.Debugf(ctx, "updating version label for %d optional apps in workload cluster %#q", updatedAppCount, key.ClusterID(&cr))
 			} else {
-				r.logger.Debugf(ctx, "no version labels to update for workload cluster %#q", updatedAppCount, key.ClusterID(&cr))
+				r.logger.Debugf(ctx, "no version labels to update for workload cluster %#q", key.ClusterID(&cr))
 			}
 		}
 	}
