@@ -6,11 +6,24 @@ metadata:
     {{- include "labels.common" . | nindent 4 }}
 rules:
   - apiGroups:
-      - ""
+      - "application.giantswarm.io"
     resources:
-      - pods
+      - apps
     verbs:
       - "*"
+  - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - clusters
+      - clusters/status
+    verbs:
+      - "*"
+  - apiGroups:
+      - release.giantswarm.io
+    resources:
+      - releases
+    verbs:
+      - get
   - apiGroups:
       - ""
     resources:
