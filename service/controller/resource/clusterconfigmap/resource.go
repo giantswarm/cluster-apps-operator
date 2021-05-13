@@ -18,22 +18,22 @@ const (
 // Config represents the configuration used to create a new clusterConfigMap
 // resource.
 type Config struct {
-	BaseDomain string
-	K8sClient  kubernetes.Interface
-	Logger     micrologger.Logger
-	PodCIDR    podcidr.Interface
+	K8sClient kubernetes.Interface
+	Logger    micrologger.Logger
+	PodCIDR   podcidr.Interface
 
+	BaseDomain     string
 	ClusterIPRange string
 	DNSIP          string
 }
 
 // Resource implements the clusterConfigMap resource.
 type Resource struct {
-	baseDomain string
-	k8sClient  kubernetes.Interface
-	logger     micrologger.Logger
-	podCIDR    podcidr.Interface
+	k8sClient kubernetes.Interface
+	logger    micrologger.Logger
+	podCIDR   podcidr.Interface
 
+	baseDomain     string
 	clusterIPRange string
 	dnsIP          string
 }
@@ -44,18 +44,18 @@ type Resource struct {
 //     https://pkg.go.dev/github.com/giantswarm/operatorkit/v4/pkg/resource/k8s/secretresource#StateGetter
 //
 func New(config Config) (*Resource, error) {
-	if config.BaseDomain == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
-	}
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-
 	if config.PodCIDR == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.PodCIDR must not be empty", config)
+	}
+
+	if config.BaseDomain == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
 	}
 	if config.ClusterIPRange == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ClusterIPRange must not be empty", config)
@@ -65,11 +65,11 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		baseDomain: strings.TrimPrefix(config.BaseDomain, "k8s."),
-		k8sClient:  config.K8sClient,
-		logger:     config.Logger,
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
+		podCIDR:   config.PodCIDR,
 
-		podCIDR:        config.PodCIDR,
+		baseDomain:     strings.TrimPrefix(config.BaseDomain, "k8s."),
 		clusterIPRange: config.ClusterIPRange,
 		dnsIP:          config.DNSIP,
 	}

@@ -156,6 +156,7 @@ func New(config Config) (*Service, error) {
 			ReleaseVersion: rv,
 
 			BaseDomain:           baseDomain,
+			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
 			RawAppDefaultConfig:  config.Viper.GetString(config.Flag.Service.Release.App.Config.Default),
 			RawAppOverrideConfig: config.Viper.GetString(config.Flag.Service.Release.App.Config.Override),
