@@ -101,12 +101,6 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand := newCommand.DaemonCommand().CobraCommand()
 
-	daemonCommand.PersistentFlags().String(f.Workload.Cluster.BaseDomain, "", "Parent cluster base domain.")
-	daemonCommand.PersistentFlags().String(f.Workload.Cluster.Calico.CIDR, "", "Prefix length for the CIDR block used by Calico.")
-	daemonCommand.PersistentFlags().String(f.Workload.Cluster.Calico.Subnet, "", "Network address for the CIDR block used by Calico.")
-	daemonCommand.PersistentFlags().String(f.Workload.Cluster.Kubernetes.API.ClusterIPRange, "", "CIDR Range for Pods in cluster.")
-	daemonCommand.PersistentFlags().String(f.Workload.Cluster.Kubernetes.ClusterDomain, "cluster.local", "Internal Kubernetes domain.")
-
 	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "quay.io", "Image registry.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.Address, "http://127.0.0.1:6443", "Address used to connect to Kubernetes. When empty in-cluster config is created.")
@@ -118,6 +112,12 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().String(f.Service.Release.App.Config.Default, "", "Default properties for app.")
 	daemonCommand.PersistentFlags().String(f.Service.Release.App.Config.Override, "", "Overriding properties for app.")
+
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.BaseDomain, "", "Parent cluster base domain.")
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.CIDR, "", "Prefix length for the CIDR block used by Calico.")
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.Subnet, "", "Network address for the CIDR block used by Calico.")
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange, "", "CIDR Range for Pods in cluster.")
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.ClusterDomain, "cluster.local", "Internal Kubernetes domain.")
 
 	err = newCommand.CobraCommand().Execute()
 	if err != nil {
