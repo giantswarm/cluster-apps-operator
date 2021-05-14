@@ -125,6 +125,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := chartname.Config{
 			G8sClient: k8sClient.G8sClient(),
+			Logger:    config.Logger,
 		}
 
 		cn, err = chartname.New(c)
