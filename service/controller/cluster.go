@@ -19,6 +19,7 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
@@ -132,6 +133,20 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var appFinalizerResource resource.Interface
+	{
+		c := appfinalizer.Config{
+			G8sClient: config.K8sClient.G8sClient(),
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+		}
+
+		appFinalizerResource, err = appfinalizer.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var appVersionLabelResource resource.Interface
 	{
 		c := appversionlabel.Config{
@@ -189,6 +204,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
+		appFinalizerResource,
 		appResource,
 		appVersionLabelResource,
 		clusterConfigMapResource,
