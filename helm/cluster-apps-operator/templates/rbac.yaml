@@ -10,13 +10,32 @@ rules:
     resources:
       - apps
     verbs:
-      - "*"
+      - create
+      - update
+      - delete
+      - get
+      - list
+  - apiGroups:
+      - "application.giantswarm.io"
+    resources:
+      - appcatalogs
+    verbs:
+      - get
+      - list
   - apiGroups:
       - cluster.x-k8s.io
     resources:
       - clusters
     verbs:
-      - "*"
+      - get
+      - list
+  - apiGroups:
+      - bootstrap.cluster.x-k8s.io
+    resources:
+      - kubeadmconfigs
+    verbs:
+      - get
+      - list
   - apiGroups:
       - release.giantswarm.io
     resources:
@@ -27,11 +46,17 @@ rules:
       - ""
     resources:
       - configmaps
-      - namespaces
     verbs:
       - create
       - update
       - delete
+      - get
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
       - get
       - list
   - apiGroups:
