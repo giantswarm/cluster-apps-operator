@@ -55,7 +55,7 @@ func (p *PodCIDR) PodCIDR(ctx context.Context, obj interface{}) (string, error) 
 	}
 
 	var podCIDR string
-	if cl.Spec.ClusterConfiguration.Networking.PodSubnet == "" {
+	if cl.Spec.ClusterConfiguration != nil && cl.Spec.ClusterConfiguration.Networking.PodSubnet == "" {
 		podCIDR = p.installationCIDR
 	} else {
 		podCIDR = cl.Spec.ClusterConfiguration.Networking.PodSubnet
