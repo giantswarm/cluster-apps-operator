@@ -66,10 +66,10 @@ func New(config Config) (*Service, error) {
 
 	var err error
 
-	baseDomain := config.Viper.GetString(config.Flag.Workload.Cluster.BaseDomain)
-	calicoSubnet := config.Viper.GetString(config.Flag.Workload.Cluster.Calico.Subnet)
-	calicoCIDR := config.Viper.GetString(config.Flag.Workload.Cluster.Calico.CIDR)
-	clusterIPRange := config.Viper.GetString(config.Flag.Workload.Cluster.Kubernetes.API.ClusterIPRange)
+	baseDomain := config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain)
+	calicoSubnet := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.Subnet)
+	calicoCIDR := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.CIDR)
+	clusterIPRange := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange)
 	registryDomain := config.Viper.GetString(config.Flag.Service.Image.Registry.Domain)
 
 	var dnsIP string
