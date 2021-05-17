@@ -16,7 +16,10 @@ rules:
     resources:
       - clusters
     verbs:
-      - "*"
+      - get
+      - list
+      - patch
+      - watch
   - apiGroups:
       - release.giantswarm.io
     resources:
