@@ -21,7 +21,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 
 	var configMaps []*corev1.ConfigMap
 	{
-		r.logger.Debugf(ctx, "finding cluster config maps in namespace %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "finding cluster configmaps in namespace %#q", key.ClusterID(&cr))
 
 		lo := metav1.ListOptions{
 			LabelSelector: fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()),
@@ -36,7 +36,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 			configMaps = append(configMaps, item.DeepCopy())
 		}
 
-		r.logger.Debugf(ctx, "found %d config maps in namespace %#q", len(configMaps), key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "found %d configmaps in namespace %#q", len(configMaps), key.ClusterID(&cr))
 	}
 
 	return configMaps, nil
