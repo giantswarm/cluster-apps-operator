@@ -164,6 +164,7 @@ func New(config Config) (*Service, error) {
 	{
 
 		c := controller.ClusterConfig{
+			ChartName:      cn,
 			K8sClient:      k8sClient,
 			Logger:         config.Logger,
 			ChartName:      cn,

@@ -59,6 +59,8 @@ func New(c Config) (*ChartName, error) {
 	return cn, nil
 }
 
+// ChartName returns the name of the chart as it appears in the index.yaml
+// for the catalog.
 func (cn *ChartName) ChartName(ctx context.Context, catalogName, appName, appVersion string) (string, error) {
 	var index catalogIndex
 
