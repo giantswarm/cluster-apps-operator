@@ -24,7 +24,7 @@ const (
 	uniqueOperatorVersion = "0.0.0"
 )
 
-// Config represents the configuration used to create a new chartconfig service.
+// Config represents the configuration used to create a new app resource.
 type Config struct {
 	ChartName      chartname.Interface
 	G8sClient      versioned.Interface
@@ -36,7 +36,7 @@ type Config struct {
 	RawAppOverrideConfig string
 }
 
-// Resource provides shared functionality for managing chartconfigs.
+// Resource implements the app resource.
 type Resource struct {
 	chartName      chartname.Interface
 	g8sClient      versioned.Interface
@@ -62,7 +62,11 @@ type overrideProperties struct {
 
 type overrideConfig map[string]overrideProperties
 
-// New creates a new chartconfig service.
+// New creates a new configured app state getter resource managing
+// app CRs.
+//
+//     https://pkg.go.dev/github.com/giantswarm/resource/v2/appresource#StateGetter
+//
 func New(config Config) (*Resource, error) {
 	if config.ChartName == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ChartName must not be empty", config)
