@@ -21,6 +21,11 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
+      release:
+        app:
+          config:
+            default: {{ toYaml .Values.release.app.config.default | indent 12 }}
+            override: {{ toYaml .Values.release.app.config.override | indent 12 }}
       workload:
         cluster:
           baseDomain: '{{ .Values.baseDomain }}'

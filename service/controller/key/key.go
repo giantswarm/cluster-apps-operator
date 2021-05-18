@@ -15,6 +15,14 @@ const (
 	defaultDNSLastOctet = 10
 )
 
+func AppUserConfigMapName(appSpec AppSpec) string {
+	return fmt.Sprintf("%s-user-values", appSpec.App)
+}
+
+func AppUserSecretName(appSpec AppSpec) string {
+	return fmt.Sprintf("%s-user-secrets", appSpec.App)
+}
+
 func BaseDomain(getter LabelsGetter, base string) string {
 	return fmt.Sprintf("%s.k8s.%s", ClusterID(getter), base)
 }
@@ -54,8 +62,8 @@ func IsDeleted(getter DeletionTimestampGetter) bool {
 	return getter.GetDeletionTimestamp() != nil
 }
 
-func OrganizationID(getter LabelsGetter) string {
-	return getter.GetLabels()[label.Organization]
+func KubeConfigSecretName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-kubeconfig", ClusterID(getter))
 }
 
 func ReleaseName(releaseVersion string) string {
