@@ -31,7 +31,6 @@ type ClusterConfig struct {
 	ChartName      chartname.Interface
 	K8sClient      k8sclient.Interface
 	Logger         micrologger.Logger
-	ChartName      chartname.Interface
 	ReleaseVersion releaseversion.Interface
 	PodCIDR        podcidr.Interface
 

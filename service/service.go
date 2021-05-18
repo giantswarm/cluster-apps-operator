@@ -167,7 +167,6 @@ func New(config Config) (*Service, error) {
 			ChartName:      cn,
 			K8sClient:      k8sClient,
 			Logger:         config.Logger,
-			ChartName:      cn,
 			PodCIDR:        pc,
 			ReleaseVersion: rv,
 
