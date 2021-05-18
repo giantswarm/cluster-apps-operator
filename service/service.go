@@ -23,6 +23,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/service/controller"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
@@ -120,13 +121,14 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var rv releaseversion.Interface
+	var cn chartname.Interface
 	{
-		c := releaseversion.Config{
-			K8sClient: k8sClient,
+		c := chartname.Config{
+			G8sClient: k8sClient.G8sClient(),
+			Logger:    config.Logger,
 		}
 
-		rv, err = releaseversion.New(c)
+		cn, err = chartname.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -146,10 +148,23 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var rv releaseversion.Interface
+	{
+		c := releaseversion.Config{
+			K8sClient: k8sClient,
+		}
+
+		rv, err = releaseversion.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var clusterController *controller.Cluster
 	{
 
 		c := controller.ClusterConfig{
+			ChartName:      cn,
 			K8sClient:      k8sClient,
 			Logger:         config.Logger,
 			PodCIDR:        pc,
