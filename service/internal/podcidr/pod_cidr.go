@@ -3,7 +3,6 @@ package podcidr
 import (
 	"context"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/label"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -74,7 +73,6 @@ func (p *PodCIDR) lookupCluster(ctx context.Context, cr metav1.Object) (bootstra
 		client.InNamespace(cr.GetNamespace()),
 		client.MatchingLabels{
 			"cluster.x-k8s.io/cluster-name": key.ClusterID(cr),
-			label.ControlPlane:              "",
 		},
 	)
 	if err != nil {
