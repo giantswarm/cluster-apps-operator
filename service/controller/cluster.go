@@ -18,11 +18,13 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
+	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
 type ClusterConfig struct {
+	ChartName      chartname.Interface
 	K8sClient      k8sclient.Interface
 	Logger         micrologger.Logger
 	ReleaseVersion releaseversion.Interface
