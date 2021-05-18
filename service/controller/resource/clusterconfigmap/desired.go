@@ -25,7 +25,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	var configMaps []*corev1.ConfigMap
 
 	if key.IsDeleted(&cr) {
-		r.logger.Debugf(ctx, "deleting cluster config maps for workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "deleting cluster configmaps for workload cluster %#q", key.ClusterID(&cr))
 		return configMaps, nil
 	}
 
