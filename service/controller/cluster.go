@@ -139,8 +139,8 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
-		appVersionLabelResource,
 		clusterConfigMapResource,
+		appVersionLabelResource,
 	}
 
 	{
