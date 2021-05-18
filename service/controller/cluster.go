@@ -7,6 +7,8 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/v4/pkg/controller"
 	"github.com/giantswarm/operatorkit/v4/pkg/resource"
+	"github.com/giantswarm/operatorkit/v4/pkg/resource/crud"
+	"github.com/giantswarm/operatorkit/v4/pkg/resource/k8s/configmapresource"
 	"github.com/giantswarm/operatorkit/v4/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v4/pkg/resource/wrapper/retryresource"
 	"k8s.io/apimachinery/pkg/labels"
@@ -15,6 +17,7 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
@@ -93,7 +96,50 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var clusterConfigMapGetter configmapresource.StateGetter
+	{
+		c := clusterconfigmap.Config{
+			BaseDomain: config.BaseDomain,
+			K8sClient:  config.K8sClient.K8sClient(),
+			Logger:     config.Logger,
+			PodCIDR:    config.PodCIDR,
+
+			ClusterIPRange: config.ClusterIPRange,
+			DNSIP:          config.DNSIP,
+		}
+
+		clusterConfigMapGetter, err = clusterconfigmap.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var clusterConfigMapResource resource.Interface
+	{
+		c := configmapresource.Config{
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+
+			AllowedLabels: []string{
+				label.AppOperatorWatching,
+			},
+			Name:        clusterconfigmap.Name,
+			StateGetter: clusterConfigMapGetter,
+		}
+
+		ops, err := configmapresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		clusterConfigMapResource, err = toCRUDResource(config.Logger, ops)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
+		clusterConfigMapResource,
 		appVersionLabelResource,
 	}
 
@@ -118,4 +164,18 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	return resources, nil
+}
+
+func toCRUDResource(logger micrologger.Logger, v crud.Interface) (*crud.Resource, error) {
+	c := crud.ResourceConfig{
+		CRUD:   v,
+		Logger: logger,
+	}
+
+	r, err := crud.NewResource(c)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return r, nil
 }

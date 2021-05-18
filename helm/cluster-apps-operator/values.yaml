@@ -1,3 +1,5 @@
+baseDomain: ghost.westeurope.azure.gigantic.io
+
 cni:
   mask: 16
   subnet: 10.1.0.0/16
@@ -8,7 +10,7 @@ image:
 
 kubernetes:
   api:
-    clusterAPIRange: 172.31.0.0/16
+    clusterIPRange: 172.31.0.0/16
   clusterDomain: cluster.local
 
 pod:

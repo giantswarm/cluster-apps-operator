@@ -6,17 +6,27 @@ metadata:
     {{- include "labels.common" . | nindent 4 }}
 rules:
   - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - clusters
+    verbs:
+      - get
+      - list
+      - patch
+      - watch
+  - apiGroups:
       - "application.giantswarm.io"
     resources:
       - apps
     verbs:
       - "*"
   - apiGroups:
-      - cluster.x-k8s.io
+      - bootstrap.cluster.x-k8s.io
     resources:
-      - clusters
+      - kubeadmconfigs
     verbs:
-      - "*"
+      - get
+      - list
   - apiGroups:
       - release.giantswarm.io
     resources:

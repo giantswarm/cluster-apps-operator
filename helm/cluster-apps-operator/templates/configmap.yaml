@@ -21,13 +21,13 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
-    workload:
-      cluster:
-        baseDomain: '{{ .Values.baseDomain }}'
-        calico:
-          subnet: '{{ .Values.cni.subnet }}'
-          cidr: '{{ .Values.cni.mask }}'
-        kubernetes:
-          api:
-            clusterIPRange: '{{ .Values.kubernetes.api.clusterIPRange }}'
-          domain: '{{ .Values.kubernetes.clusterDomain }}'
+      workload:
+        cluster:
+          baseDomain: '{{ .Values.baseDomain }}'
+          calico:
+            subnet: '{{ .Values.cni.subnet }}'
+            cidr: '{{ .Values.cni.mask }}'
+          kubernetes:
+            api:
+              clusterIPRange: '{{ .Values.kubernetes.api.clusterIPRange }}'
+            domain: '{{ .Values.kubernetes.clusterDomain }}'
