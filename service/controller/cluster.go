@@ -204,9 +204,17 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
+		// appFinalizerResource is executed first and removes finalizers after
+		// the per cluster app-operator instance has been deleted.
 		appFinalizerResource,
+		// clusterConfigMapResource is executed before the app resource so the
+		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
+		// appResource manages the per cluster app-operator instance and the
+		// workload cluster apps.
 		appResource,
+		// appVersionLabel resource ensures the version label is correct for
+		// optional app CRs.
 		appVersionLabelResource,
 	}
 
