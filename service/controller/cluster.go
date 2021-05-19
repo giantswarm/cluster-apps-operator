@@ -18,7 +18,11 @@ import (
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+<<<<<<< HEAD
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
+=======
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
+>>>>>>> master
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
@@ -86,6 +90,20 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
+	
+	var appFinalizerResource resource.Interface
+	{
+		c := appfinalizer.Config{
+			G8sClient: config.K8sClient.G8sClient(),
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+		}
+
+		appFinalizerResource, err = appfinalizer.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 
 	var appGetter appresource.StateGetter
 	{
@@ -127,12 +145,9 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 
 		appResource, err = toCRUDResource(config.Logger, ops)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
 	}
 
-	var appVersionLabelResource resource.Interface
+		var appVersionLabelResource resource.Interface
 	{
 		c := appversionlabel.Config{
 			G8sClient:      config.K8sClient.G8sClient(),
@@ -189,8 +204,17 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
+		// appFinalizerResource is executed first and removes finalizers after
+		// the per cluster app-operator instance has been deleted.
+		appFinalizerResource,
+		// clusterConfigMapResource is executed before the app resource so the
+		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
+		// appResource manages the per cluster app-operator instance and the
+		// workload cluster apps.
 		appResource,
+		// appVersionLabel resource ensures the version label is correct for
+		// optional app CRs.
 		appVersionLabelResource,
 	}
 
