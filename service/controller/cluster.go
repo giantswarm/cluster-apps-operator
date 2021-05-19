@@ -18,11 +18,8 @@ import (
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
-<<<<<<< HEAD
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
-=======
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
->>>>>>> master
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
@@ -90,7 +87,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
-	
+
 	var appFinalizerResource resource.Interface
 	{
 		c := appfinalizer.Config{
@@ -147,7 +144,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		appResource, err = toCRUDResource(config.Logger, ops)
 	}
 
-		var appVersionLabelResource resource.Interface
+	var appVersionLabelResource resource.Interface
 	{
 		c := appversionlabel.Config{
 			G8sClient:      config.K8sClient.G8sClient(),
