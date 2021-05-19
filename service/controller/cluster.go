@@ -88,20 +88,6 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
 
-	var appFinalizerResource resource.Interface
-	{
-		c := appfinalizer.Config{
-			G8sClient: config.K8sClient.G8sClient(),
-			K8sClient: config.K8sClient.K8sClient(),
-			Logger:    config.Logger,
-		}
-
-		appFinalizerResource, err = appfinalizer.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var appGetter appresource.StateGetter
 	{
 		c := app.Config{
@@ -142,6 +128,23 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 
 		appResource, err = toCRUDResource(config.Logger, ops)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var appFinalizerResource resource.Interface
+	{
+		c := appfinalizer.Config{
+			G8sClient: config.K8sClient.G8sClient(),
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+		}
+
+		appFinalizerResource, err = appfinalizer.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	var appVersionLabelResource resource.Interface
