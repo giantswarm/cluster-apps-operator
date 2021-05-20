@@ -21,6 +21,13 @@ rules:
     verbs:
       - "*"
   - apiGroups:
+      - "application.giantswarm.io"
+    resources:
+      - appcatalogs
+    verbs:
+      - get
+      - list
+  - apiGroups:
       - bootstrap.cluster.x-k8s.io
     resources:
       - kubeadmconfigs
@@ -42,6 +49,13 @@ rules:
       - create
       - update
       - delete
+      - get
+      - list
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
       - get
       - list
   - apiGroups:
