@@ -72,7 +72,8 @@ func (p *PodCIDR) lookupCluster(ctx context.Context, cr metav1.Object) (bootstra
 		&list,
 		client.InNamespace(cr.GetNamespace()),
 		client.MatchingLabels{
-			"cluster.x-k8s.io/cluster-name": key.ClusterID(cr),
+			"cluster.x-k8s.io/cluster-name":  key.ClusterID(cr),
+			"cluster.x-k8s.io/control-plane": "",
 		},
 	)
 	if err != nil {
