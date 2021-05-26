@@ -63,6 +63,14 @@ rules:
       - serviceaccounts
     verbs:
       - create
+- apiGroups:
+    - ""
+  resources:
+    - events
+  verbs:
+    - create
+    - patch
+    - update
   - apiGroups:
       - "networking.k8s.io"
     resources:
