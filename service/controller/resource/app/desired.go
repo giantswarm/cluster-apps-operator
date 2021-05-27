@@ -111,7 +111,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 			},
 			Secret: applicationv1alpha1.AppSpecKubeConfigSecret{
 				Name:      key.KubeConfigSecretName(&cr),
-				Namespace: key.ClusterID(&cr),
+				Namespace: cr.GetNamespace(),
 			},
 		}
 	}
