@@ -26,7 +26,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	var apps []*v1alpha1.App
 	{
-		r.logger.Debugf(ctx, "finding optional apps for workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "finding optional apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
 		o := metav1.ListOptions{
 			LabelSelector: fmt.Sprintf("%s!=%s", label.ManagedBy, project.Name()),
@@ -40,7 +40,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			apps = append(apps, item.DeepCopy())
 		}
 
-		r.logger.Debugf(ctx, "found %d optional apps for workload cluster %#q", len(apps), key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "found %d optional apps for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
 
 		if len(apps) == 0 {
 			// Return early as there is nothing to do.
@@ -62,7 +62,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Maskf(notFoundError, "app-operator component version not found")
 		}
 
-		r.logger.Debugf(ctx, "updating version label for optional apps in workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "updating version label for optional apps in cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
 		for _, app := range apps {
 			currentVersion := app.Labels[label.AppOperatorVersion]
@@ -99,9 +99,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if updatedAppCount > 0 {
-			r.logger.Debugf(ctx, "updating version label for %d optional apps in workload cluster %#q", updatedAppCount, key.ClusterID(&cr))
+			r.logger.Debugf(ctx, "updating version label for %d optional apps in cluster '%s/%s'", updatedAppCount, cr.GetNamespace(), key.ClusterID(&cr))
 		} else {
-			r.logger.Debugf(ctx, "no version labels to update for workload cluster %#q", key.ClusterID(&cr))
+			r.logger.Debugf(ctx, "no version labels to update for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 		}
 	}
 
