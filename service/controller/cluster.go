@@ -22,6 +22,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusternamespace"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
@@ -203,10 +204,26 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var clusterNamespaceResource resource.Interface
+	{
+		c := clusternamespace.Config{
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+		}
+
+		clusterNamespaceResource, err = clusternamespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		// appFinalizerResource is executed first and removes finalizers after
 		// the per cluster app-operator instance has been deleted.
 		appFinalizerResource,
+		// clusterNamespace manages the namespace for storing app related
+		// resources for this cluster.
+		clusterNamespaceResource,
 		// clusterConfigMapResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
