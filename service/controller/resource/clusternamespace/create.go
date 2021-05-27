@@ -33,7 +33,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	r.logger.Debugf(ctx, "creating namespace %#q for cluster '%s/%s'", ns.Name, cr.GetNamespace(), key.ClusterID(&cr))
 
-	r.k8sClient.CoreV1().Namespaces().Create(ctx, ns, metav1.CreateOptions{})
+	_, err = r.k8sClient.CoreV1().Namespaces().Create(ctx, ns, metav1.CreateOptions{})
 	if apierrors.IsAlreadyExists(err) {
 		r.logger.Debugf(ctx, "namespace %#q already exists for cluster '%s/%s'", ns.Name, cr.GetNamespace(), key.ClusterID(&cr))
 		return nil
