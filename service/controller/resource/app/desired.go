@@ -27,7 +27,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 	var apps []*applicationv1alpha1.App
 
 	if key.IsDeleted(&cr) {
-		r.logger.Debugf(ctx, "deleting apps for workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "deleting apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 		return apps, nil
 	}
 
@@ -110,8 +110,10 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 				Name: key.KubeConfigSecretName(&cr),
 			},
 			Secret: applicationv1alpha1.AppSpecKubeConfigSecret{
-				Name:      key.KubeConfigSecretName(&cr),
-				Namespace: key.ClusterID(&cr),
+				Name: key.KubeConfigSecretName(&cr),
+				// The kubeconfig secret is created in the same namespace as
+				// the cluster CR.
+				Namespace: cr.GetNamespace(),
 			},
 		}
 	}
