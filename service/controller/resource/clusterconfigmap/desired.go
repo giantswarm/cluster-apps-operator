@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v4/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {
@@ -25,14 +27,19 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	var configMaps []*corev1.ConfigMap
 
 	if key.IsDeleted(&cr) {
-		r.logger.Debugf(ctx, "deleting cluster configmaps for workload cluster %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "deleting cluster configmaps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 		return configMaps, nil
 	}
 
 	var podCIDR string
 	{
 		podCIDR, err = r.podCIDR.PodCIDR(ctx, &cr)
-		if err != nil {
+		if podcidr.IsNotFound(err) {
+			r.logger.Debugf(ctx, "pod cidr not available yet for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
+			r.logger.Debugf(ctx, "canceling resource")
+			resourcecanceledcontext.SetCanceled(ctx)
+			return nil, nil
+		} else if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
