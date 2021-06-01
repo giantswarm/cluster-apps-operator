@@ -51,7 +51,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			Values: map[string]interface{}{
 				"baseDomain": key.BaseDomain(&cr, r.baseDomain),
 				"chartOperator": map[string]interface{}{
-					"CNI": map[string]interface{}{
+					"cni": map[string]interface{}{
 						"install": true,
 					},
 				},
