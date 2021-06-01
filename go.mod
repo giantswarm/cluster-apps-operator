@@ -3,7 +3,7 @@ module github.com/giantswarm/cluster-apps-operator
 go 1.16
 
 require (
-	github.com/giantswarm/apiextensions/v3 v3.22.0
+	github.com/giantswarm/apiextensions/v3 v3.26.0
 	github.com/giantswarm/app/v4 v4.0.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
@@ -20,9 +20,9 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.10.0
 	github.com/spf13/viper v1.7.1
-	k8s.io/api v0.18.18
-	k8s.io/apimachinery v0.18.18
-	k8s.io/client-go v0.18.18
+	k8s.io/api v0.18.19
+	k8s.io/apimachinery v0.18.19
+	k8s.io/client-go v0.18.19
 	sigs.k8s.io/cluster-api v0.3.16
 	sigs.k8s.io/controller-runtime v0.6.4
 	sigs.k8s.io/yaml v1.2.0
