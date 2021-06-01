@@ -28,7 +28,7 @@ data:
             override: {{ toYaml .Values.release.app.config.override | indent 12 }}
       workload:
         cluster:
-          baseDomain: '{{ .Values.baseDomain }}'
+          baseDomain: '{{ .Values.base }}'
           calico:
             subnet: '{{ .Values.cni.subnet }}'
             cidr: '{{ .Values.cni.mask }}'
