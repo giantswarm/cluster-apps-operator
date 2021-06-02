@@ -50,6 +50,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			Namespace: key.ClusterID(&cr),
 			Values: map[string]interface{}{
 				"baseDomain": key.BaseDomain(&cr, r.baseDomain),
+				"chartOperator": map[string]interface{}{
+					"cni": map[string]interface{}{
+						"install": true,
+					},
+				},
 				"cluster": map[string]interface{}{
 					"calico": map[string]interface{}{
 						"CIDR": podCIDR,

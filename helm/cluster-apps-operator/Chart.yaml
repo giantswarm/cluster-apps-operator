@@ -4,3 +4,5 @@ description: "Chart holding cluster-apps-operator."
 home: "https://github.com/giantswarm/cluster-apps-operator"
 name: "cluster-apps-operator"
 version: "[[ .Version ]]"
+annotations:
+  application.giantswarm.io/team: "batman"
