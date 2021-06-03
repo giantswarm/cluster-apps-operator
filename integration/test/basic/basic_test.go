@@ -28,14 +28,14 @@ func TestBasic(t *testing.T) {
 	ctx := context.Background()
 
 	{
-		config.Logger.Debugf(ctx, "waiting for %#q pod", project.Name())
+		config.Logger.Debugf(ctx, "waiting for ready %#q deployment", project.Name())
 
 		err = waitForReadyDeployment(ctx)
 		if err != nil {
-			t.Fatalf("could not get %#q pod %#v", project.Name(), err)
+			t.Fatalf("could not get ready %#q deployment %#v", project.Name(), err)
 		}
 
-		config.Logger.Debugf(ctx, "waited for %#q pod", project.Name())
+		config.Logger.Debugf(ctx, "waited for ready %#q deployment", project.Name())
 	}
 }
 
