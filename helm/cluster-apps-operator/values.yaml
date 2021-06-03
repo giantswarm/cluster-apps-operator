@@ -1,4 +1,4 @@
-baseDomain: ghost.westeurope.azure.gigantic.io
+base: ginger.eu-west-1.aws.gigantic.io
 
 cni:
   mask: 16
