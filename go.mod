@@ -1,10 +1,11 @@
 module github.com/giantswarm/cluster-apps-operator
 
-go 1.16
+go 1.15
 
 require (
 	github.com/giantswarm/apiextensions/v3 v3.26.0
 	github.com/giantswarm/app/v4 v4.0.0
+	github.com/giantswarm/apptest v0.10.3
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
 	github.com/giantswarm/k8sclient/v5 v5.11.0

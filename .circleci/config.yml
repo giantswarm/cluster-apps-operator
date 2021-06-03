@@ -66,3 +66,15 @@ workflows:
           filters:
             tags:
               only: /^v.*/
+
+      - architect/integration-test:
+          name: "basic-integration-test"
+          install-app-platform: true
+          test-dir: "integration/test/basic"
+          filters:
+            # Do not trigger the job on merge to master.
+            branches:
+              ignore:
+                - master
+          requires:
+            - push-cluster-apps-operator-to-control-plane-app-catalog
