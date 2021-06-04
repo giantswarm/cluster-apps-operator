@@ -7,4 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Initial version based on app related logic extracted from cluster-operator.
+
 [Unreleased]: https://github.com/giantswarm/cluster-apps-operator/tree/master
