@@ -69,7 +69,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 			// like operatorkit.giantswarm.io/cluster-apps-operator-cluster-controller.
 			Name: project.Name() + "-cluster-controller",
 			Selector: labels.SelectorFromSet(map[string]string{
-				label.ClusterAppsOperatorVersion: "capi",
+				label.ClusterAppsOperatorVersion: project.Version(),
 			}),
 		}
 
