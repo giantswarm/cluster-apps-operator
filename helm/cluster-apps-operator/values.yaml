@@ -4,6 +4,14 @@ cni:
   mask: 16
   subnet: 10.1.0.0/16
 
+deployment:
+  requests:
+    cpu: 100m
+    memory: 220Mi
+  limits:
+    cpu: 100m
+    memory: 220Mi
+
 image:
   name: "giantswarm/cluster-apps-operator"
   tag: "[[ .Version ]]"
@@ -51,3 +59,6 @@ release:
         # Upgrade force is disabled to avoid affecting customer workloads.
         nginx-ingress-controller:
           useUpgradeForce: false
+
+verticalPodAutoscaler:
+  enabled: true
