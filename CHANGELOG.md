@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2021-08-09
+
 ### Added
 
 - Use VPA to manage deployment resources.
@@ -17,5 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/giantswarm/cluster-apps-operator/releases/tag/v0.1.0
