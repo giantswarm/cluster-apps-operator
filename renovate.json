@@ -27,5 +27,5 @@
   "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
   "reviewers": [ "giantswarm/team-batman-engineers" ],
   "ignoreDeps": ["zricethezav/gitleaks-action"],
-  "schedule": [ "after 2pm on wednesday" ]
+  "schedule": [ "after 1pm on wednesday" ]
 }
