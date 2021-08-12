@@ -33,5 +33,7 @@ replace (
 	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
 	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
 	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
+	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
+	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
 	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.13-gs
 )
