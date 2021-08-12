@@ -17,7 +17,7 @@
     },
     {
       "matchPackagePatterns": ["^k8s.io"],
-      "allowedVersions": "< 1.21.0"
+      "allowedVersions": "< 0.21.0"
     },
     {
       "matchPackageNames": ["sigs.k8s.io/controller-runtime"],
