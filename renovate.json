@@ -27,7 +27,6 @@
   ],
   "postUpdateOptions": ["gomodTidy", "gomodUpdateImportPaths"],
   "dependencyDashboard": true,
-  "separateMultipleMajor": true,
   "ignorePaths": [
     ".github/workflows/zz_generated.*",
     ".github/workflows/codeql-analysis.yml"
