@@ -13,6 +13,8 @@ const (
 	// defaultDNSLastOctet is the last octect for the DNS service IP, the first
 	// 3 octets come from the cluster IP range.
 	defaultDNSLastOctet = 10
+	// capiNameLabel is the upstream Cluster API cluster name label.
+	capiNameLabel = "cluster.x-k8s.io/cluster-name"
 )
 
 func AppUserConfigMapName(appSpec AppSpec) string {
@@ -32,7 +34,13 @@ func ClusterConfigMapName(getter LabelsGetter) string {
 }
 
 func ClusterID(getter LabelsGetter) string {
-	return getter.GetLabels()[label.Cluster]
+	clusterID := getter.GetLabels()[label.Cluster]
+	// If the Giant Swarm cluster name is empty, attempt to retrieve it from the
+	// upstream label.
+	if clusterID == "" {
+		clusterID = getter.GetLabels()[capiNameLabel]
+	}
+	return clusterID
 }
 
 // DNSIP returns the IP of the DNS service given a cluster IP range.
