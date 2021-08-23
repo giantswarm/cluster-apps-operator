@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Check upstream CAPI cluster name label as well as Giant Swarm label.
 
+### Fixed
+
+- Don't remove App CR finalizer if it has not been deleted.
+
 ## [0.2.0] - 2021-08-09
 
 ### Added

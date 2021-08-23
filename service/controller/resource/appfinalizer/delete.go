@@ -65,6 +65,11 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "found %d apps to remove finalizers for", len(list.Items))
 
 	for _, app := range list.Items {
+		if app.DeletionTimestamp == nil {
+			r.logger.Debugf(ctx, "skipping removal of finalizer for app %#q as it is not deleted", app.Name)
+			continue
+		}
+
 		r.logger.Debugf(ctx, "removing finalizer for app %#q", app.Name)
 
 		index := getFinalizerIndex(app.Finalizers)
