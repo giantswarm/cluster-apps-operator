@@ -211,13 +211,16 @@ func newAppOperatorAppSpec(cr apiv1alpha3.Cluster, component releaseversion.Rele
 	return key.AppSpec{
 		App: releaseversion.AppOperator,
 		// Override app name to include the cluster ID.
-		AppName:         fmt.Sprintf("%s-%s", releaseversion.AppOperator, key.ClusterID(&cr)),
-		Catalog:         component.Catalog,
-		Chart:           releaseversion.AppOperator,
-		InCluster:       true,
-		Namespace:       key.ClusterID(&cr),
-		UseUpgradeForce: false,
-		Version:         operatorAppVersion,
+		AppName: fmt.Sprintf("%s-%s", releaseversion.AppOperator, key.ClusterID(&cr)),
+		Catalog: component.Catalog,
+		Chart:   releaseversion.AppOperator,
+		// Use config map with management cluster config.
+		ConfigMapName:      "app-operator-konfigure",
+		ConfigMapNamespace: "giantswarm",
+		InCluster:          true,
+		Namespace:          key.ClusterID(&cr),
+		UseUpgradeForce:    false,
+		Version:            operatorAppVersion,
 	}
 }
 
