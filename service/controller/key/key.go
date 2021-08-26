@@ -64,12 +64,34 @@ func DNSIP(clusterIPRange string) (string, error) {
 	return ip.String(), nil
 }
 
+func InfrastructureRefKind(cr apiv1alpha3.Cluster) string {
+	if cr.Spec.InfrastructureRef == nil {
+		return ""
+	}
+
+	return cr.Spec.InfrastructureRef.Kind
+}
+
 func IsDeleted(getter DeletionTimestampGetter) bool {
 	return getter.GetDeletionTimestamp() != nil
 }
 
 func KubeConfigSecretName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-kubeconfig", ClusterID(getter))
+}
+
+func PodCIDR(cr apiv1alpha3.Cluster) string {
+	if cr.Spec.ClusterNetwork == nil {
+		return ""
+	}
+	if cr.Spec.ClusterNetwork.Pods == nil {
+		return ""
+	}
+	if len(cr.Spec.ClusterNetwork.Pods.CIDRBlocks) == 0 {
+		return ""
+	}
+
+	return cr.Spec.ClusterNetwork.Pods.CIDRBlocks[0]
 }
 
 func ReleaseName(releaseVersion string) string {

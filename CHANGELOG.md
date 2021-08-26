@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Don't create CoreDNS app for EKS clusters.
+
+### Fixed
+
+- Fix app-admission-controller webhook name in validation error matchers.
+
 ## [0.3.1] - 2021-08-26
 
 ### Fixed

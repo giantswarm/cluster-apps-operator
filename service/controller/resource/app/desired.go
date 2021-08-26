@@ -62,6 +62,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 	apps = append(apps, r.newApp(uniqueOperatorVersion, cr, appOperatorAppSpec, applicationv1alpha1.AppSpecUserConfig{}))
 
 	for _, appSpec := range appSpecs {
+		if key.InfrastructureRefKind(cr) == "AWSManagedControlPlane" && appSpec.App == "coredns" {
+			r.logger.Debugf(ctx, "not creating app %#q for infra ref kind %#q", appSpec.App, key.InfrastructureRefKind(cr))
+			continue
+		}
+
 		userConfig := newUserConfig(cr, appSpec, configMaps, secrets)
 		apps = append(apps, r.newApp(appOperatorVersion, cr, appSpec, userConfig))
 	}

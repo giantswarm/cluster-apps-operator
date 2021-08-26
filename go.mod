@@ -14,7 +14,7 @@ require (
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v5 v5.0.0
-	github.com/giantswarm/resource/v3 v3.0.1
+	github.com/giantswarm/resource/v3 v3.0.2-0.20210826135643-5d5b08a57a7c
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.8.1
