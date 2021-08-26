@@ -137,8 +137,6 @@ func New(config Config) (*Service, error) {
 	var pc podcidr.Interface
 	{
 		c := podcidr.Config{
-			K8sClient: k8sClient,
-
 			InstallationCIDR: fmt.Sprintf("%s/%s", calicoSubnet, calicoCIDR),
 		}
 

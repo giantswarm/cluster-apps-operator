@@ -14,7 +14,7 @@ require (
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v5 v5.0.0
-	github.com/giantswarm/resource/v3 v3.0.1
+	github.com/giantswarm/resource/v3 v3.0.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.8.1
@@ -22,7 +22,6 @@ require (
 	k8s.io/apimachinery v0.20.10
 	k8s.io/client-go v0.20.10
 	sigs.k8s.io/cluster-api v0.4.1
-	sigs.k8s.io/controller-runtime v0.6.5
 	sigs.k8s.io/yaml v1.2.0
 )
 

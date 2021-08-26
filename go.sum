@@ -208,8 +208,9 @@ github.com/giantswarm/apiextensions/v3 v3.22.0/go.mod h1:6KBexBTOZJ+amkorxw722t2
 github.com/giantswarm/apiextensions/v3 v3.30.0/go.mod h1:PcU7LAi0E8lOXoPp2wD7AY/AOtp6sN03cnQuBZGAksg=
 github.com/giantswarm/apiextensions/v3 v3.32.0 h1:lutZ2Fa+m0pUXl9F6CdrhpRmnBvk5FSbx+Amakdflbc=
 github.com/giantswarm/apiextensions/v3 v3.32.0/go.mod h1:PcU7LAi0E8lOXoPp2wD7AY/AOtp6sN03cnQuBZGAksg=
-github.com/giantswarm/app/v5 v5.2.2 h1:e978Ds1JouotkihnwUyu3H4ZWDik0wyu6+UY3Uxr+U0=
 github.com/giantswarm/app/v5 v5.2.2/go.mod h1:2JiVuuz/uQ+L33nxmyAv+PJanq8oeEGuVA6mA0396Fk=
+github.com/giantswarm/app/v5 v5.2.3 h1:6Zqgy8i3p5n2C696xRyzmSSPhx5F3FNZPFffF+P9Ha4=
+github.com/giantswarm/app/v5 v5.2.3/go.mod h1:2JiVuuz/uQ+L33nxmyAv+PJanq8oeEGuVA6mA0396Fk=
 github.com/giantswarm/appcatalog v0.6.0 h1:lJMmiPK2pyWQtOaLlBwq0Ut1XrMhcnGeA+3j4OMHyfU=
 github.com/giantswarm/appcatalog v0.6.0/go.mod h1:MaglaykZAeFukjpD/jVHrm/zZFwa9uusuN6BgT4NXpY=
 github.com/giantswarm/apptest v0.12.0 h1:iKqUuhUamy9SaONo18/9J+dcuxg3qr3Y/UfXeVv3uMk=
@@ -237,8 +238,8 @@ github.com/giantswarm/micrologger v0.5.0 h1:/f2knkyf4bZw3L5F48R7VENiEKPb3Sjnzrg4
 github.com/giantswarm/micrologger v0.5.0/go.mod h1:J/jbt7A8eixqE40yq4JY8Hdbs/qeboe2FjHlq05UWjA=
 github.com/giantswarm/operatorkit/v5 v5.0.0 h1:Perhu+PbZ62GGw3m5U5lDlZuHUOerSkcADQmzgFjI6w=
 github.com/giantswarm/operatorkit/v5 v5.0.0/go.mod h1:0mGvJR6LnflVo1RHGSC+dXnCXENPVUsQ8eib405eiYU=
-github.com/giantswarm/resource/v3 v3.0.1 h1:sb4J5VdJqgFrRXE+KV314R7StugxygBAfJCkDQQqbpE=
-github.com/giantswarm/resource/v3 v3.0.1/go.mod h1:4W4HqkQg6yAxdecPS5ZjZcCVPpHhFVkl+t1HtCBLEi0=
+github.com/giantswarm/resource/v3 v3.0.2 h1:I1zznYcuDpkLCcqjUoQLVcccDblN8bI9WhnC+Fy0xAI=
+github.com/giantswarm/resource/v3 v3.0.2/go.mod h1:uag9m+Fb6SbecIYdBHMuQW9j4s0RbPDjGyJ7/zzGYSY=
 github.com/giantswarm/to v0.3.0 h1:cEzMYkWLGI3cI8x3a0L3nPCQYJTb/cAaqcIPvxnDmpQ=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/versionbundle v0.2.0 h1:6EP3+9uO/9z1xu7g4pHNUyENxE+Ix1bc5aFpUMPz5Yg=
