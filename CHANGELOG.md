@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Don't create CoreDNS app for EKS clusters.
+- Don't create AWS CNI and CoreDNS apps for EKS clusters.
 
 ### Fixed
 
