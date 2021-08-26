@@ -93,7 +93,12 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 	var config applicationv1alpha1.AppSpecConfig
 
 	if appSpec.InCluster {
-		config = applicationv1alpha1.AppSpecConfig{}
+		config = applicationv1alpha1.AppSpecConfig{
+			ConfigMap: applicationv1alpha1.AppSpecConfigConfigMap{
+				Name:      appSpec.ConfigMapName,
+				Namespace: appSpec.ConfigMapNamespace,
+			},
+		}
 	} else {
 		config = applicationv1alpha1.AppSpecConfig{
 			ConfigMap: applicationv1alpha1.AppSpecConfigConfigMap{
