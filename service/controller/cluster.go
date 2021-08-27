@@ -166,7 +166,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	{
 		c := clusterconfigmap.Config{
 			BaseDomain: config.BaseDomain,
-			K8sClient:  config.K8sClient.K8sClient(),
+			K8sClient:  config.K8sClient,
 			Logger:     config.Logger,
 			PodCIDR:    config.PodCIDR,
 
