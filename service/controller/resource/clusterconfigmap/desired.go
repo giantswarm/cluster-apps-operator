@@ -10,7 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/v5/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	capz "sigs.k8s.io/cluster-api-provider-azure/api/v1alpha3"
+	capzv1alpha3 "sigs.k8s.io/cluster-api-provider-azure/api/v1alpha3"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
@@ -52,7 +52,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
 			case "AzureCluster":
-				var azureCluster capz.AzureCluster
+				var azureCluster capzv1alpha3.AzureCluster
 				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
 				if err != nil {
 					return nil, microerror.Mask(err)
