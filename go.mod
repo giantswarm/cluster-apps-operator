@@ -6,7 +6,6 @@ require (
 	github.com/giantswarm/apiextensions/v3 v3.32.0
 	github.com/giantswarm/apptest v0.12.0
 	github.com/giantswarm/backoff v0.2.0
-
 	github.com/giantswarm/exporterkit v0.2.1
 	github.com/giantswarm/k8sclient/v5 v5.12.0
 	github.com/giantswarm/k8smetadata v0.3.0
@@ -24,6 +23,7 @@ require (
 	k8s.io/client-go v0.20.10
 	sigs.k8s.io/cluster-api v0.4.1
 	sigs.k8s.io/cluster-api-provider-azure v0.4.15
+	sigs.k8s.io/controller-runtime v0.6.5
 	sigs.k8s.io/yaml v1.2.0
 )
 
