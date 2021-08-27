@@ -90,6 +90,12 @@ rules:
       - customresourcedefinitions
     verbs:
       - "*"
+  - apiGroups:
+      - infrastructure.cluster.x-k8s.io
+    resources:
+      - azureclusters
+    verbs:
+      - "get"
   - nonResourceURLs:
       - "/"
       - "/healthz"
