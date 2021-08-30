@@ -15,6 +15,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
+	capzv1alpha3 "sigs.k8s.io/cluster-api-provider-azure/api/v1alpha3"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 
@@ -110,6 +111,7 @@ func New(config Config) (*Service, error) {
 				apiv1alpha3.AddToScheme,
 				bootstrapkubeadmv1alpha3.AddToScheme,
 				releasev1alpha1.AddToScheme,
+				capzv1alpha3.AddToScheme,
 			},
 
 			RestConfig: restConfig,

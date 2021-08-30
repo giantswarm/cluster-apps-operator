@@ -10,7 +10,9 @@ import (
 	"github.com/giantswarm/operatorkit/v5/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	capzv1alpha3 "sigs.k8s.io/cluster-api-provider-azure/api/v1alpha3"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
@@ -44,6 +46,28 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		}
 	}
 
+	var clusterCIDR string
+	{
+		infrastructureRef := cr.Spec.InfrastructureRef
+		if infrastructureRef != nil {
+			switch infrastructureRef.Kind {
+			case "AzureCluster":
+				var azureCluster capzv1alpha3.AzureCluster
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
+				if len(blocks) > 0 {
+					clusterCIDR = blocks[0]
+				}
+			default:
+				r.logger.Debugf(ctx, "unable to extract clusterCIDR for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
+			}
+		}
+	}
+
 	configMapSpecs := []configMapSpec{
 		{
 			Name:      key.ClusterConfigMapName(&cr),
@@ -70,6 +94,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				},
 				"clusterDNSIP": r.dnsIP,
 				"clusterID":    key.ClusterID(&cr),
+				"clusterCIDR":  clusterCIDR,
 			},
 		},
 	}

@@ -22,6 +22,8 @@ require (
 	k8s.io/apimachinery v0.20.10
 	k8s.io/client-go v0.20.10
 	sigs.k8s.io/cluster-api v0.4.1
+	sigs.k8s.io/cluster-api-provider-azure v0.4.15
+	sigs.k8s.io/controller-runtime v0.6.5
 	sigs.k8s.io/yaml v1.2.0
 )
 
@@ -34,4 +36,5 @@ replace (
 	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
 	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
 	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.13-gs
+	sigs.k8s.io/cluster-api-provider-azure => github.com/giantswarm/cluster-api-provider-azure v0.4.12-gsalpha3
 )

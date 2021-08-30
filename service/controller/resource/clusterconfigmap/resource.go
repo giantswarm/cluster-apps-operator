@@ -3,9 +3,9 @@ package clusterconfigmap
 import (
 	"strings"
 
+	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"k8s.io/client-go/kubernetes"
 
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
@@ -18,7 +18,7 @@ const (
 // Config represents the configuration used to create a new clusterConfigMap
 // resource.
 type Config struct {
-	K8sClient kubernetes.Interface
+	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
 
@@ -29,7 +29,7 @@ type Config struct {
 
 // Resource implements the clusterConfigMap resource.
 type Resource struct {
-	k8sClient kubernetes.Interface
+	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 	podCIDR   podcidr.Interface
 
