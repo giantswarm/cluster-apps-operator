@@ -63,7 +63,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					clusterCIDR = blocks[0]
 				}
 			default:
-				r.logger.LogCtx(ctx, "level", "debug", "msg", fmt.Sprintf("unable to extract clusterCIDR for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind))
+				r.logger.Debugf(ctx, "unable to extract clusterCIDR for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
 		}
 	}
