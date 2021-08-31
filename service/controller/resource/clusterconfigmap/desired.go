@@ -75,11 +75,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		switch infrastructureRef.Kind {
 		case "AWSCluster":
 			provider = "aws"
-			break
 
 		case "AzureCluster":
 			provider = "azure"
-			break
 
 		default:
 			provider = "unknown"
