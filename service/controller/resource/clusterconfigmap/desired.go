@@ -68,6 +68,22 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		}
 	}
 
+	var provider string
+	{
+		infrastructureRef := cr.Spec.InfrastructureRef
+
+		switch infrastructureRef.Kind {
+		case "AWSCluster":
+			provider = "aws"
+
+		case "AzureCluster":
+			provider = "azure"
+
+		default:
+			provider = "unknown"
+		}
+	}
+
 	configMapSpecs := []configMapSpec{
 		{
 			Name:      key.ClusterConfigMapName(&cr),
@@ -95,6 +111,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				"clusterDNSIP": r.dnsIP,
 				"clusterID":    key.ClusterID(&cr),
 				"clusterCIDR":  clusterCIDR,
+				"provider":     provider,
 			},
 		},
 	}
