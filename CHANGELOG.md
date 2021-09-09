@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Keep cluster CR finalizer until app CRs have been deleted.
+
 ## [0.6.0] - 2021-08-31
 
 - Add provider to the cluster values configmap.

@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v5/pkg/controller/context/finalizerskeptcontext"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -64,9 +65,13 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	r.logger.Debugf(ctx, "found %d apps to remove finalizers for", len(list.Items))
 
+	var skipAppCount int
+
 	for _, app := range list.Items {
 		if app.DeletionTimestamp == nil {
 			r.logger.Debugf(ctx, "skipping removal of finalizer for app %#q as it is not deleted", app.Name)
+			skipAppCount++
+
 			continue
 		}
 
@@ -94,6 +99,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		} else {
 			r.logger.Debugf(ctx, "finalizer already removed for app %#q", app.Name)
 		}
+	}
+
+	// If we skipped any app CRs we need to keep the cluster CR finalizer.
+	// So we retry in the next loop.
+	if skipAppCount > 0 {
+		r.logger.Debugf(ctx, "%d app CRs have not been deleted yet", skipAppCount)
+		r.logger.Debugf(ctx, "keeping finalizers")
+		finalizerskeptcontext.SetKept(ctx)
 	}
 
 	return nil
