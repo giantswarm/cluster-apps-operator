@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/giantswarm/backoff"
@@ -44,20 +43,13 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	b := backoff.NewExponential(3*time.Minute, 10*time.Second)
 	err = backoff.Retry(o, b)
 
-	selectors := []string{}
-	// We keep the finalizer for the app-operator app CR so the resources in
-	// the management cluster are deleted.
-	selectors = append(selectors, fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"))
-
-	// Remove resources matching cluster label
-	selectors = append(selectors, fmt.Sprintf("%s=%s", label.Cluster, key.ClusterID(&cr)))
-
-	lo := metav1.ListOptions{
-		LabelSelector: strings.Join(selectors, ","),
-	}
-
 	r.logger.Debugf(ctx, "finding apps to remove finalizers for")
 
+	// We keep the finalizer for the app-operator app CR so the resources in
+	// the management cluster are deleted.
+	lo := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"),
+	}
 	list, err := r.g8sClient.ApplicationV1alpha1().Apps(key.ClusterID(&cr)).List(ctx, lo)
 	if err != nil {
 		return microerror.Mask(err)
