@@ -4,12 +4,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v5/pkg/controller/context/finalizerskeptcontext"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -43,20 +43,13 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	b := backoff.NewExponential(3*time.Minute, 10*time.Second)
 	err = backoff.Retry(o, b)
 
-	selectors := []string{}
-	// We keep the finalizer for the app-operator app CR so the resources in
-	// the management cluster are deleted.
-	selectors = append(selectors, fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"))
-
-	// Remove resources matching cluster label
-	selectors = append(selectors, fmt.Sprintf("%s=%s", label.Cluster, key.ClusterID(&cr)))
-
-	lo := metav1.ListOptions{
-		LabelSelector: strings.Join(selectors, ","),
-	}
-
 	r.logger.Debugf(ctx, "finding apps to remove finalizers for")
 
+	// We keep the finalizer for the app-operator app CR so the resources in
+	// the management cluster are deleted.
+	lo := metav1.ListOptions{
+		LabelSelector: fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"),
+	}
 	list, err := r.g8sClient.ApplicationV1alpha1().Apps(key.ClusterID(&cr)).List(ctx, lo)
 	if err != nil {
 		return microerror.Mask(err)
@@ -64,9 +57,13 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	r.logger.Debugf(ctx, "found %d apps to remove finalizers for", len(list.Items))
 
+	var skipAppCount int
+
 	for _, app := range list.Items {
 		if app.DeletionTimestamp == nil {
 			r.logger.Debugf(ctx, "skipping removal of finalizer for app %#q as it is not deleted", app.Name)
+			skipAppCount++
+
 			continue
 		}
 
@@ -94,6 +91,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		} else {
 			r.logger.Debugf(ctx, "finalizer already removed for app %#q", app.Name)
 		}
+	}
+
+	// If we skipped any app CRs we need to keep the cluster CR finalizer.
+	// So we retry in the next loop.
+	if skipAppCount > 0 {
+		r.logger.Debugf(ctx, "%d app CRs have not been deleted yet", skipAppCount)
+		r.logger.Debugf(ctx, "keeping finalizers")
+		finalizerskeptcontext.SetKept(ctx)
 	}
 
 	return nil

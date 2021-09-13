@@ -218,9 +218,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
-		// appFinalizerResource is executed first and removes finalizers after
-		// the per cluster app-operator instance has been deleted.
-		appFinalizerResource,
 		// clusterNamespace manages the namespace for storing app related
 		// resources for this cluster.
 		clusterNamespaceResource,
@@ -230,6 +227,9 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// appResource manages the per cluster app-operator instance and the
 		// workload cluster apps.
 		appResource,
+		// appFinalizerResource removes finalizers after the per cluster
+		// app-operator instance has been deleted.
+		appFinalizerResource,
 		// appVersionLabel resource ensures the version label is correct for
 		// optional app CRs.
 		appVersionLabelResource,
