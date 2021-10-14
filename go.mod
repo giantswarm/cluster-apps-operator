@@ -18,13 +18,13 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.8.1
-	k8s.io/api v0.20.10
-	k8s.io/apimachinery v0.20.10
-	k8s.io/client-go v0.20.10
-	sigs.k8s.io/cluster-api v0.4.1
-	sigs.k8s.io/cluster-api-provider-azure v0.4.15
+	k8s.io/api v0.20.11
+	k8s.io/apimachinery v0.20.11
+	k8s.io/client-go v0.20.11
+	sigs.k8s.io/cluster-api v0.4.4
+	sigs.k8s.io/cluster-api-provider-azure v0.5.3
 	sigs.k8s.io/controller-runtime v0.6.5
-	sigs.k8s.io/yaml v1.2.0
+	sigs.k8s.io/yaml v1.3.0
 )
 
 replace (
