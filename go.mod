@@ -3,7 +3,7 @@ module github.com/giantswarm/cluster-apps-operator
 go 1.16
 
 require (
-	github.com/giantswarm/apiextensions/v3 v3.34.0
+	github.com/giantswarm/apiextensions/v3 v3.35.0
 	github.com/giantswarm/apptest v0.12.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
