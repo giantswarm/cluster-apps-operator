@@ -72,4 +72,4 @@ workflows:
           app-test-suite_version: v0.2.0
           app-test-suite_container_tag: 0.2.0
           requires:
-            - push-app-exporter-to-control-plane-catalog
+            - push-cluster-apps-operator-to-control-plane-app-catalog
