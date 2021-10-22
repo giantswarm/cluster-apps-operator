@@ -67,14 +67,9 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/integration-test:
-          name: "basic-integration-test"
-          install-app-platform: true
-          test-dir: "integration/test/basic"
-          filters:
-            # Do not trigger the job on merge to master.
-            branches:
-              ignore:
-                - master
+      - architect/run-tests-with-ats:
+          name: run-tests-with-ats
+          app-test-suite_version: v0.2.0
+          app-test-suite_container_tag: 0.2.0
           requires:
-            - push-cluster-apps-operator-to-control-plane-app-catalog
+            - push-app-exporter-to-control-plane-catalog

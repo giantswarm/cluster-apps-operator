@@ -1,0 +1,4 @@
+functional-tests-cluster-type: kind
+smoke-tests-cluster-type: kind
+skip-steps: upgrade
+test-executor: gotest

@@ -1,7 +1,7 @@
-//go:build k8srequired
-// +build k8srequired
+//go:build functional || smoke
+// +build functional smoke
 
-package basic
+package ats
 
 import (
 	"context"
@@ -14,8 +14,11 @@ import (
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/cluster-apps-operator/integration/key"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+)
+
+const (
+	namespace = metav1.NamespaceDefault
 )
 
 // TestBasic is a smoke test to check the helm chart is installed and the
@@ -28,26 +31,50 @@ func TestBasic(t *testing.T) {
 
 	ctx := context.Background()
 
+	var logger micrologger.Logger
 	{
-		config.Logger.Debugf(ctx, "waiting for ready %#q deployment", project.Name())
+		c := micrologger.Config{}
 
-		err = waitForReadyDeployment(ctx)
+		logger, err = micrologger.New(c)
+		if err != nil {
+			t.Fatalf("could not create logger %v", err)
+		}
+	}
+
+	var k8sClients *k8sclient.Clients
+	{
+		c := k8sclient.ClientsConfig{
+			Logger: logger,
+
+			KubeConfigPath: KubeConfigPath(),
+		}
+
+		k8sClients, err = k8sclient.NewClients(c)
+		if err != nil {
+			t.Fatalf("could not create k8sclients %v", err)
+		}
+	}
+
+	{
+		logger.Debugf(ctx, "waiting for ready %#q deployment", project.Name())
+
+		err = waitForReadyDeployment(ctx, k8sClients)
 		if err != nil {
 			t.Fatalf("could not get ready %#q deployment %#v", project.Name(), err)
 		}
 
-		config.Logger.Debugf(ctx, "waited for ready %#q deployment", project.Name())
+		logger.Debugf(ctx, "waited for ready %#q deployment", project.Name())
 	}
 }
 
-func waitForReadyDeployment(ctx context.Context) error {
+func waitForReadyDeployment(ctx context.Context, k8sClients *k8sclient.Clients) error {
 	var err error
 
 	o := func() error {
 		lo := metav1.ListOptions{
 			LabelSelector: fmt.Sprintf("app=%s", project.Name()),
 		}
-		deploys, err := config.K8sClients.K8sClient().AppsV1().Deployments(key.Namespace()).List(ctx, lo)
+		deploys, err := k8sClients.K8sClient().AppsV1().Deployments(namespace).List(ctx, lo)
 		if err != nil {
 			return microerror.Mask(err)
 		}
