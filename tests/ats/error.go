@@ -1,7 +1,7 @@
-//go:build k8srequired
-// +build k8srequired
+//go:build functional || smoke
+// +build functional smoke
 
-package basic
+package ats
 
 import "github.com/giantswarm/microerror"
 
