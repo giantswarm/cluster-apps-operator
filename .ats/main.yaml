@@ -1,5 +1,3 @@
-functional-tests-cluster-type: kind
 smoke-tests-cluster-type: kind
-upgrade-tests-app-catalog-url: https://giantswarm.github.io/control-plane-catalog/
-upgrade-tests-cluster-type: kind
+skip-steps: [functional, upgrade]
 test-executor: gotest
