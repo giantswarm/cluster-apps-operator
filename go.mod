@@ -22,7 +22,7 @@ require (
 	k8s.io/apimachinery v0.20.12
 	k8s.io/client-go v0.20.12
 	sigs.k8s.io/cluster-api v0.4.4
-	sigs.k8s.io/cluster-api-provider-azure v0.5.3
+	sigs.k8s.io/cluster-api-provider-azure v0.5.4
 	sigs.k8s.io/controller-runtime v0.6.5
 	sigs.k8s.io/yaml v1.3.0
 )
