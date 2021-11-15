@@ -6,3 +6,4 @@ name: "cluster-apps-operator"
 version: "[[ .Version ]]"
 annotations:
   application.giantswarm.io/team: "honeybadger"
+  config.giantswarm.io/version: 1.x.x
