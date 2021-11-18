@@ -14,8 +14,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capo/v1alpha4"
-	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capz/v1alpha3"
+	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
+	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"

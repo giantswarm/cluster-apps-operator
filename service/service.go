@@ -18,9 +18,9 @@ import (
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 
+	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
+	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/flag"
-	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capo/v1alpha4"
-	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/service/controller"
