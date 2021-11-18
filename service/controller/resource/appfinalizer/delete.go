@@ -105,7 +105,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			err = r.g8sClient.Patch(ctx, &app, appPatch{
+			err = r.g8sClient.Patch(ctx, app.DeepCopy(), appPatch{
 				data: bytes,
 			})
 			if err != nil {
