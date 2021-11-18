@@ -1,10 +1,10 @@
 package appfinalizer
 
 import (
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"k8s.io/client-go/kubernetes"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
@@ -12,13 +12,13 @@ const (
 )
 
 type Config struct {
-	G8sClient versioned.Interface
+	G8sClient client.Client
 	K8sClient kubernetes.Interface
 	Logger    micrologger.Logger
 }
 
 type Resource struct {
-	g8sClient versioned.Interface
+	g8sClient client.Client
 	k8sClient kubernetes.Interface
 	logger    micrologger.Logger
 }

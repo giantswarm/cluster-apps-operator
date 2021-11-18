@@ -7,19 +7,20 @@ import (
 	"fmt"
 	"sync"
 
-	releasev1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/release/v1alpha1"
-	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
-	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
+	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v6/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	releasev1alpha1 "github.com/giantswarm/release-operator/v2/api/v1alpha1"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
-	capzv1alpha3 "sigs.k8s.io/cluster-api-provider-azure/api/v1alpha3"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 
 	"github.com/giantswarm/cluster-apps-operator/flag"
+	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capo/v1alpha4"
+	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/pkg/apis/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/service/controller"
@@ -112,6 +113,7 @@ func New(config Config) (*Service, error) {
 				bootstrapkubeadmv1alpha3.AddToScheme,
 				releasev1alpha1.AddToScheme,
 				capzv1alpha3.AddToScheme,
+				capov1alpha4.AddToScheme,
 			},
 
 			RestConfig: restConfig,
@@ -126,7 +128,7 @@ func New(config Config) (*Service, error) {
 	var cn chartname.Interface
 	{
 		c := chartname.Config{
-			G8sClient: k8sClient.G8sClient(),
+			G8sClient: k8sClient.CtrlClient(),
 			Logger:    config.Logger,
 		}
 

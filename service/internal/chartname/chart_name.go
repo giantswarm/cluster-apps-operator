@@ -9,12 +9,11 @@ import (
 	"strings"
 	"time"
 
-	applicationv1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
+	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname/internal/cache"
@@ -25,12 +24,12 @@ const (
 )
 
 type Config struct {
-	G8sClient versioned.Interface
+	G8sClient client.Client
 	Logger    micrologger.Logger
 }
 
 type ChartName struct {
-	g8sClient  versioned.Interface
+	g8sClient  client.Client
 	httpClient *http.Client
 	indexCache *cache.Index
 	logger     micrologger.Logger
@@ -97,9 +96,11 @@ func (cn *ChartName) cachedCatalogIndex(ctx context.Context, catalogName string)
 	var index catalogIndex
 	var err error
 
-	var catalog *applicationv1alpha1.AppCatalog
+	var catalog applicationv1alpha1.AppCatalog
 	{
-		catalog, err = cn.g8sClient.ApplicationV1alpha1().AppCatalogs().Get(ctx, catalogName, metav1.GetOptions{})
+		err = cn.g8sClient.Get(ctx, client.ObjectKey{
+			Name: catalogName,
+		}, &catalog)
 		if err != nil {
 			return index, microerror.Mask(err)
 		}
