@@ -47,7 +47,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		o := client.ListOptions{
-			Namespace: key.ClusterID(&cr),
+			Namespace:     key.ClusterID(&cr),
 			LabelSelector: labelSelector,
 		}
 		var appList v1alpha1.AppList

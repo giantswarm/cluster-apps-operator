@@ -68,7 +68,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	}
 
 	listOptions := client.ListOptions{
-		Namespace: key.ClusterID(&cr),
+		Namespace:     key.ClusterID(&cr),
 		LabelSelector: selector,
 	}
 

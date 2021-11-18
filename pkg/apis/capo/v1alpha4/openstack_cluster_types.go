@@ -21,7 +21,7 @@ type OpenStackClusterStatus struct {
 }
 
 type Network struct {
-	ID string `json:"id"`
+	ID     string  `json:"id"`
 	Subnet *Subnet `json:"subnet"`
 }
 
