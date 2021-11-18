@@ -11,11 +11,13 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/configmapresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
+	"github.com/giantswarm/resource/v3/appresource"
 	"k8s.io/apimachinery/pkg/labels"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
@@ -85,6 +87,51 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
+
+	var appGetter appresource.StateGetter
+	{
+		c := app.Config{
+			ChartName:      config.ChartName,
+			G8sClient:      config.K8sClient.CtrlClient(),
+			K8sClient:      config.K8sClient.K8sClient(),
+			Logger:         config.Logger,
+			ReleaseVersion: config.ReleaseVersion,
+
+			RawAppDefaultConfig:  config.RawAppDefaultConfig,
+			RawAppOverrideConfig: config.RawAppOverrideConfig,
+		}
+
+		appGetter, err = app.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var appResource resource.Interface
+	{
+		c := appresource.Config{
+			G8sClient: config.K8sClient.CtrlClient(),
+			Logger:    config.Logger,
+
+			Name:        app.Name,
+			StateGetter: appGetter,
+		}
+
+		c.AllowedAnnotations = []string{
+			"app-operator.giantswarm.io/giantswarm.io/latest-configmap-version",
+			"app-operator.giantswarm.io/latest-secret-version",
+		}
+
+		ops, err := appresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		appResource, err = toCRUDResource(config.Logger, ops)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 
 	var appFinalizerResource resource.Interface
 	{
@@ -178,7 +225,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		clusterConfigMapResource,
 		// appResource manages the per cluster app-operator instance and the
 		// workload cluster apps.
-		// appResource,
+		appResource,
 		// appFinalizerResource removes finalizers after the per cluster
 		// app-operator instance has been deleted.
 		appFinalizerResource,

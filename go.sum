@@ -237,6 +237,8 @@ github.com/giantswarm/apiextensions/v3 v3.32.0/go.mod h1:PcU7LAi0E8lOXoPp2wD7AY/
 github.com/giantswarm/apiextensions/v3 v3.38.0 h1:KdELD0Pd5aSGW5dVAOD579Hj46zcBNBvtrCGBf8ceOQ=
 github.com/giantswarm/apiextensions/v3 v3.38.0/go.mod h1:JgJfW2MjWKTAXfJ77rMcmKjVl3blvGSBWy43SVrpHY0=
 github.com/giantswarm/app/v5 v5.2.2/go.mod h1:2JiVuuz/uQ+L33nxmyAv+PJanq8oeEGuVA6mA0396Fk=
+github.com/giantswarm/app/v5 v5.4.1-0.20211118195027-c2a77e858e63 h1:Qgsl69pNdg80KWH3oqnvQwxuD4rMRpJP20/XAemKf3k=
+github.com/giantswarm/app/v5 v5.4.1-0.20211118195027-c2a77e858e63/go.mod h1:f4ciedJJOyWURKgRcDpYK5wjg7R1EWbhIoK+OOKRzXI=
 github.com/giantswarm/appcatalog v0.6.0 h1:lJMmiPK2pyWQtOaLlBwq0Ut1XrMhcnGeA+3j4OMHyfU=
 github.com/giantswarm/appcatalog v0.6.0/go.mod h1:MaglaykZAeFukjpD/jVHrm/zZFwa9uusuN6BgT4NXpY=
 github.com/giantswarm/apptest v0.12.0 h1:iKqUuhUamy9SaONo18/9J+dcuxg3qr3Y/UfXeVv3uMk=
@@ -267,8 +269,11 @@ github.com/giantswarm/operatorkit/v6 v6.0.0 h1:/qKP6fjR6R1DpbGS2JVwVl2RAw5O7o2yQ
 github.com/giantswarm/operatorkit/v6 v6.0.0/go.mod h1:6VuuSTYD0CIAPKf2D4ici179FhB8s4Zq+F+exb6iVYI=
 github.com/giantswarm/release-operator/v2 v2.4.1-0.20211118184854-5d88782851a2 h1:4rebV0CfroXuQCGZtK84xMeMyILLGbbGND5wR+l0G40=
 github.com/giantswarm/release-operator/v2 v2.4.1-0.20211118184854-5d88782851a2/go.mod h1:txsccZYI0co77PpWRscnP7thtT46B+XEY/Zpe2yJNFs=
-github.com/giantswarm/to v0.3.0 h1:cEzMYkWLGI3cI8x3a0L3nPCQYJTb/cAaqcIPvxnDmpQ=
+github.com/giantswarm/resource/v3 v3.0.3-0.20211118195324-1b55d07ea79f h1:qr/cmqTWC0v+8rY36lJMy6pKuMhaX0+zQHZJNPOjHmk=
+github.com/giantswarm/resource/v3 v3.0.3-0.20211118195324-1b55d07ea79f/go.mod h1:QIxPaLWXK8it/2cDBnzpATOrT5mzFzoQ0BV840XXvfc=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
+github.com/giantswarm/to v0.4.0 h1:x0GjbI94/nxcHztJiRtJzihCjgmUlEOto8RD98VA7WI=
+github.com/giantswarm/to v0.4.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/versionbundle v0.2.0 h1:6EP3+9uO/9z1xu7g4pHNUyENxE+Ix1bc5aFpUMPz5Yg=
 github.com/giantswarm/versionbundle v0.2.0/go.mod h1:n7GOlSXpX9TpP3EsYhErCjskN++c7uYHEEfV81NCH7s=
 github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3/go.mod h1:VJ0WA2NBN22VlZ2dKZQPAPnyWw5XTlK1KymzLKsr59s=
