@@ -14,7 +14,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
 	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
@@ -65,15 +64,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if len(blocks) > 0 {
 					clusterCIDR = blocks[0]
 				}
-			case "OpenStackCluster":
-				var infraCluster capov1alpha4.OpenStackCluster
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &infraCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				subnetID = infraCluster.Status.Network.Subnet.ID
-				networkID = infraCluster.Status.Network.ID
 			default:
 				r.logger.Debugf(ctx, "unable to extract clusterCIDR for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
@@ -90,9 +80,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 		case "AzureCluster":
 			provider = "azure"
-
-		case "OpenStackCluster":
-			provider = "openstack"
 
 		default:
 			provider = "unknown"

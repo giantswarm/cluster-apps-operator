@@ -18,7 +18,6 @@ import (
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
 
-	capov1alpha4 "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
 	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/flag"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
@@ -113,7 +112,6 @@ func New(config Config) (*Service, error) {
 				bootstrapkubeadmv1alpha3.AddToScheme,
 				releasev1alpha1.AddToScheme,
 				capzv1alpha3.AddToScheme,
-				capov1alpha4.AddToScheme,
 			},
 
 			RestConfig: restConfig,
