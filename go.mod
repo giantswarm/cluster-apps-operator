@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/giantswarm/apiextensions-application v0.0.0-20211118184941-0e4a8fce3437
-	github.com/giantswarm/apptest v0.12.0
+	github.com/giantswarm/apptest v0.12.1-0.20211119165242-9255e2e76c06
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
 	github.com/giantswarm/k8sclient/v6 v6.0.0
@@ -14,8 +14,8 @@ require (
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v6 v6.0.0
-	github.com/giantswarm/release-operator/v2 v2.4.1-0.20211118184854-5d88782851a2
-	github.com/giantswarm/resource/v3 v3.0.3-0.20211118195324-1b55d07ea79f
+	github.com/giantswarm/release-operator/v2 v2.4.1-0.20211119182623-079d1f7a4e8c
+	github.com/giantswarm/resource/v3 v3.0.3-0.20211119182905-30ba680fdb1b
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.9.0
@@ -29,7 +29,6 @@ require (
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -37,7 +36,6 @@ require (
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/getsentry/sentry-go v0.11.0 // indirect
-	github.com/giantswarm/apiextensions/v3 v3.38.0 // indirect
 	github.com/giantswarm/app/v5 v5.4.1-0.20211118195027-c2a77e858e63 // indirect
 	github.com/giantswarm/appcatalog v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
@@ -46,7 +44,6 @@ require (
 	github.com/go-logfmt/logfmt v0.5.0 // indirect
 	github.com/go-logr/logr v0.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
-	github.com/gobuffalo/flect v0.2.3 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
@@ -65,7 +62,6 @@ require (
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
-	github.com/onsi/gomega v1.15.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
@@ -96,18 +92,7 @@ require (
 	k8s.io/cluster-bootstrap v0.21.4 // indirect
 	k8s.io/component-base v0.21.4 // indirect
 	k8s.io/klog/v2 v2.9.0 // indirect
-	k8s.io/kube-openapi v0.0.0-20211109043538-20434351676c // indirect
+	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
 	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
-)
-
-replace (
-	github.com/coreos/etcd => github.com/coreos/etcd v3.3.25+incompatible
-	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
-	// Use go-logr/logr v0.1.0 due to breaking changes in v0.2.0 that can't be applied.
-	github.com/go-logr/logr v0.2.0 => github.com/go-logr/logr v0.1.0
-	github.com/gogo/protobuf => github.com/gogo/protobuf v1.3.2
-	// Same as go-logr/logr, klog/v2 is using logr v0.2.0
-	k8s.io/klog/v2 v2.4.0 => k8s.io/klog/v2 v2.0.0
-	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v0.4.4
 )
