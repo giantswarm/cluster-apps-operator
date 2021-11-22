@@ -7,8 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
 - Add `config.giantswarm.io/version` annotation to Chart.yaml for config
 management.
+
+### Changed
+
+- Drop `apiextensions` dependency.
 
 ## [0.6.1] - 2021-09-13
 
