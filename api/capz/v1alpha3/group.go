@@ -2,15 +2,28 @@
 package v1alpha3
 
 import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	"sigs.k8s.io/controller-runtime/pkg/scheme"
 )
 
 const Group = "infrastructure.cluster.x-k8s.io"
 const Version = "v1alpha3"
 
 var (
-	GroupVersion  = schema.GroupVersion{Group: Group, Version: Version}
-	SchemeBuilder = &scheme.Builder{GroupVersion: GroupVersion}
-	AddToScheme   = SchemeBuilder.AddToScheme
+	SchemeGroupVersion = schema.GroupVersion{Group: Group, Version: Version}
+	// SchemeBuilder is the scheme builder with scheme init functions to run for this API package
+	SchemeBuilder = runtime.NewSchemeBuilder(addKnownTypes)
+	// AddToScheme is a common registration function for mapping packaged scoped group & version keys to a scheme
+	AddToScheme = SchemeBuilder.AddToScheme
 )
+
+// Adds the list of known types to the given scheme.
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(SchemeGroupVersion,
+		&AzureCluster{},
+		&AzureClusterList{},
+	)
+	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
+	return nil
+}

@@ -23,3 +23,10 @@ type NetworkSpec struct {
 type VnetSpec struct {
 	CIDRBlocks []string `json:"cidrBlocks"`
 }
+
+// +kubebuilder:object:root=true
+type AzureClusterList struct {
+	metav1.TypeMeta `json:",inline"`
+	metav1.ListMeta `json:"metadata,omitempty"`
+	Items           []AzureCluster `json:"items"`
+}
