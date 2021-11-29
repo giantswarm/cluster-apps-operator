@@ -11,7 +11,7 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/configmapresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
-	"github.com/giantswarm/resource/v3/appresource"
+	"github.com/giantswarm/resource/v4/appresource"
 	"k8s.io/apimachinery/pkg/labels"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"

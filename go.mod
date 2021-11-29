@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/giantswarm/apiextensions-application v0.1.0
-	github.com/giantswarm/apptest v0.12.1-0.20211119165242-9255e2e76c06
+	github.com/giantswarm/apptest v1.0.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
 	github.com/giantswarm/k8sclient/v6 v6.0.0
@@ -15,7 +15,7 @@ require (
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v6 v6.0.0
 	github.com/giantswarm/release-operator/v2 v2.4.1-0.20211119182623-079d1f7a4e8c
-	github.com/giantswarm/resource/v3 v3.0.3-0.20211119182905-30ba680fdb1b
+	github.com/giantswarm/resource/v4 v4.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.9.0
@@ -36,7 +36,7 @@ require (
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/getsentry/sentry-go v0.11.0 // indirect
-	github.com/giantswarm/app/v5 v5.4.1-0.20211118195027-c2a77e858e63 // indirect
+	github.com/giantswarm/app/v6 v6.0.0 // indirect
 	github.com/giantswarm/appcatalog v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
 	github.com/giantswarm/versionbundle v0.2.0 // indirect
