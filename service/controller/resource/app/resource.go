@@ -8,7 +8,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
@@ -55,9 +55,10 @@ type defaultConfig struct {
 }
 
 type overrideProperties struct {
-	Chart           string `json:"chart"`
-	Namespace       string `json:"namespace"`
-	UseUpgradeForce *bool  `json:"useUpgradeForce,omitempty"`
+	Chart                  string `json:"chart"`
+	HasClusterValuesSecret *bool  `json:"hasClusterValuesSecret,omitempty"`
+	Namespace              string `json:"namespace"`
+	UseUpgradeForce        *bool  `json:"useUpgradeForce,omitempty"`
 }
 
 type overrideConfig map[string]overrideProperties

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"sync"
 
+	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -15,8 +16,8 @@ import (
 	releasev1alpha1 "github.com/giantswarm/release-operator/v2/api/v1alpha1"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 
 	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
 	"github.com/giantswarm/cluster-apps-operator/flag"
@@ -55,7 +56,7 @@ func New(config Config) (*Service, error) {
 	if config.Viper == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Viper must not be empty")
 	}
-	if config.Flag.Service.Kubernetes.KubeConfig == "" {
+	if config.Viper.GetString(config.Flag.Service.Kubernetes.Address) != "" {
 		serviceAddress = config.Viper.GetString(config.Flag.Service.Kubernetes.Address)
 	} else {
 		serviceAddress = ""
@@ -112,6 +113,7 @@ func New(config Config) (*Service, error) {
 				bootstrapkubeadmv1alpha3.AddToScheme,
 				releasev1alpha1.AddToScheme,
 				capzv1alpha3.AddToScheme,
+				applicationv1alpha1.AddToScheme,
 			},
 
 			RestConfig: restConfig,

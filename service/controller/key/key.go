@@ -6,7 +6,7 @@ import (
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 )
 
 const (
@@ -27,7 +27,7 @@ func BaseDomain(getter LabelsGetter, base string) string {
 	return fmt.Sprintf("%s.k8s.%s", ClusterID(getter), base)
 }
 
-func ClusterConfigMapName(getter LabelsGetter) string {
+func ClusterValuesResourceName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-cluster-values", ClusterID(getter))
 }
 

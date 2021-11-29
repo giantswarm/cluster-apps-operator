@@ -6,7 +6,7 @@ import (
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 )
 
 // A mock object that implements LabelsGetter interface

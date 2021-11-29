@@ -12,10 +12,17 @@ type AppSpec struct {
 	// ConfigMapNamespace overrides the namespace, otherwise the cluster
 	// namespace is used.
 	ConfigMapNamespace string
+	// SecretName overrides the name, otherwise the cluster values secret
+	// is used.
+	SecretName string
+	// SecretNamespace overrides the namespace, otherwise the cluster
+	// namespace is used.
+	SecretNamespace string
 	// InCluster determines if the app CR should use in cluster. Otherwise the
 	// cluster kubeconfig is specified.
-	InCluster       bool
-	Namespace       string
-	UseUpgradeForce bool
-	Version         string
+	InCluster              bool
+	HasClusterValuesSecret bool
+	Namespace              string
+	UseUpgradeForce        bool
+	Version                string
 }

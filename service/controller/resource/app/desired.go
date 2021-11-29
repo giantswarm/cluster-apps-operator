@@ -11,7 +11,7 @@ import (
 	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
@@ -79,11 +79,17 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 }
 
 func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, appSpec key.AppSpec, userConfig applicationv1alpha1.AppSpecUserConfig) *applicationv1alpha1.App {
-	configMapName := key.ClusterConfigMapName(&cr)
+	configMapName := key.ClusterValuesResourceName(&cr)
+	secretName := key.ClusterValuesResourceName(&cr)
 
 	// Override config map name when specified.
 	if appSpec.ConfigMapName != "" {
 		configMapName = appSpec.ConfigMapName
+	}
+
+	// Override secret name when specified.
+	if appSpec.SecretName != "" {
+		secretName = appSpec.SecretName
 	}
 
 	var appName string
@@ -103,12 +109,24 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 				Namespace: appSpec.ConfigMapNamespace,
 			},
 		}
+		if appSpec.HasClusterValuesSecret {
+			config.Secret = applicationv1alpha1.AppSpecConfigSecret{
+				Name:      appSpec.SecretName,
+				Namespace: appSpec.SecretNamespace,
+			}
+		}
 	} else {
 		config = applicationv1alpha1.AppSpecConfig{
 			ConfigMap: applicationv1alpha1.AppSpecConfigConfigMap{
 				Name:      configMapName,
 				Namespace: key.ClusterID(&cr),
 			},
+		}
+		if appSpec.HasClusterValuesSecret {
+			config.Secret = applicationv1alpha1.AppSpecConfigSecret{
+				Name:      secretName,
+				Namespace: key.ClusterID(&cr),
+			}
 		}
 	}
 
@@ -197,6 +215,9 @@ func (r *Resource) newAppSpecs(ctx context.Context, cr apiv1alpha3.Cluster) ([]k
 		if val, ok := r.overrideConfig[appName]; ok {
 			if val.Chart != "" {
 				spec.Chart = val.Chart
+			}
+			if val.HasClusterValuesSecret != nil {
+				spec.HasClusterValuesSecret = *val.HasClusterValuesSecret
 			}
 			if val.Namespace != "" {
 				spec.Namespace = val.Namespace

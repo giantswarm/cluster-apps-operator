@@ -10,7 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
@@ -88,7 +88,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 	configMapSpecs := []configMapSpec{
 		{
-			Name:      key.ClusterConfigMapName(&cr),
+			Name:      key.ClusterValuesResourceName(&cr),
 			Namespace: key.ClusterID(&cr),
 			Values: map[string]interface{}{
 				"baseDomain": key.BaseDomain(&cr, r.baseDomain),

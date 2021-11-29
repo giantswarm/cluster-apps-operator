@@ -9,11 +9,12 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/crud"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/configmapresource"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/secretresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
 	"github.com/giantswarm/resource/v3/appresource"
 	"k8s.io/apimachinery/pkg/labels"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
@@ -22,6 +23,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusternamespace"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clustersecret"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
@@ -203,6 +205,42 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var clusterSecretGetter secretresource.StateGetter
+	{
+		c := clustersecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			RawAppOverrideConfig: config.RawAppOverrideConfig,
+		}
+
+		clusterSecretGetter, err = clustersecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var clusterSecretResource resource.Interface
+	{
+		c := secretresource.Config{
+			K8sClient: config.K8sClient.K8sClient(),
+			Logger:    config.Logger,
+
+			Name:        clustersecret.Name,
+			StateGetter: clusterSecretGetter,
+		}
+
+		ops, err := secretresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		clusterSecretResource, err = toCRUDResource(config.Logger, ops)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var clusterNamespaceResource resource.Interface
 	{
 		c := clusternamespace.Config{
@@ -223,6 +261,9 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// clusterConfigMapResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
+		// clusterSecretResource is executed before the app resource so the
+		// app CRs are accepted by the validation webhook.
+		clusterSecretResource,
 		// appResource manages the per cluster app-operator instance and the
 		// workload cluster apps.
 		appResource,
