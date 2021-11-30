@@ -24,7 +24,7 @@ func AppUserSecretName(appSpec AppSpec) string {
 }
 
 func BaseDomain(getter LabelsGetter, base string) string {
-	return fmt.Sprintf("%s.k8s.%s", ClusterID(getter), base)
+	return fmt.Sprintf("%s.%s", ClusterID(getter), base)
 }
 
 func ClusterConfigMapName(getter LabelsGetter) string {
