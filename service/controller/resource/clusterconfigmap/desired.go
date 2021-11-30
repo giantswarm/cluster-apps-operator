@@ -47,8 +47,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	var clusterCIDR string
-	var subnetID string
-	var networkID string
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
@@ -114,8 +112,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				"clusterID":    key.ClusterID(&cr),
 				"clusterCIDR":  clusterCIDR,
 				"provider":     provider,
-				"subnetID":     subnetID,
-				"networkID":    networkID,
 			},
 		},
 	}
