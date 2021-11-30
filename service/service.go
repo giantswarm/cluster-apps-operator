@@ -17,7 +17,6 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
-	capbk "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 
 	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
 	capz "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha4"
@@ -112,7 +111,6 @@ func New(config Config) (*Service, error) {
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				appv1alpha1.AddToScheme,
 				capi.AddToScheme,
-				capbk.AddToScheme,
 				capo.AddToScheme,
 				capz.AddToScheme,
 				releasev1alpha1.AddToScheme,
