@@ -15,10 +15,10 @@ import (
 	releasev1alpha1 "github.com/giantswarm/release-operator/v2/api/v1alpha1"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	bootstrapkubeadmv1alpha3 "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha3"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capbk "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 
-	capzv1alpha3 "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha3"
+	capz "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/flag"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
@@ -108,10 +108,10 @@ func New(config Config) (*Service, error) {
 		c := k8sclient.ClientsConfig{
 			Logger: config.Logger,
 			SchemeBuilder: k8sclient.SchemeBuilder{
-				apiv1alpha3.AddToScheme,
-				bootstrapkubeadmv1alpha3.AddToScheme,
+				capi.AddToScheme,
+				capbk.AddToScheme,
 				releasev1alpha1.AddToScheme,
-				capzv1alpha3.AddToScheme,
+				capz.AddToScheme,
 			},
 
 			RestConfig: restConfig,

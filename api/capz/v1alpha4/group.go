@@ -1,5 +1,5 @@
 //+kubebuilder:object:generate=true
-package v1alpha3
+package v1alpha4
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -8,7 +8,7 @@ import (
 )
 
 const Group = "infrastructure.cluster.x-k8s.io"
-const Version = "v1alpha3"
+const Version = "v1alpha4"
 
 var (
 	SchemeGroupVersion = schema.GroupVersion{Group: Group, Version: Version}

@@ -1,4 +1,4 @@
-package v1alpha3
+package v1alpha4
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -13,15 +13,15 @@ type AzureCluster struct {
 }
 
 type AzureClusterSpec struct {
-	NetworkSpec NetworkSpec `json:"network"`
+	NetworkSpec NetworkSpec `json:"networkSpec,omitempty"`
 }
 
 type NetworkSpec struct {
-	Vnet VnetSpec `json:"vnet"`
+	Vnet VnetSpec `json:"vnet,omitempty"`
 }
 
 type VnetSpec struct {
-	CIDRBlocks []string `json:"cidrBlocks"`
+	CIDRBlocks []string `json:"cidrBlocks,omitempty"`
 }
 
 // +kubebuilder:object:root=true

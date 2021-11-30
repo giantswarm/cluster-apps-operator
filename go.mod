@@ -22,13 +22,14 @@ require (
 	k8s.io/api v0.21.4
 	k8s.io/apimachinery v0.21.4
 	k8s.io/client-go v0.21.4
-	sigs.k8s.io/cluster-api v0.3.13
+	sigs.k8s.io/cluster-api v0.4.4
 	sigs.k8s.io/controller-runtime v0.9.7
 	sigs.k8s.io/yaml v1.3.0
 )
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
