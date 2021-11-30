@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
@@ -23,16 +24,23 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*v1a
 	{
 		r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
-		o := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()),
-		}
-
-		list, err := r.g8sClient.ApplicationV1alpha1().Apps(key.ClusterID(&cr)).List(ctx, o)
+		selector, err := labels.Parse(fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 
-		for _, item := range list.Items {
+		o := client.ListOptions{
+			Namespace:     key.ClusterID(&cr),
+			LabelSelector: selector,
+		}
+
+		var appList v1alpha1.AppList
+		err = r.g8sClient.List(ctx, &appList, &o)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		for _, item := range appList.Items {
 			apps = append(apps, item.DeepCopy())
 		}
 

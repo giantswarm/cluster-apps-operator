@@ -5,16 +5,29 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/apis/application/v1alpha1"
-	"github.com/giantswarm/apiextensions/v3/pkg/label"
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
+
+type appPatch struct {
+	data []byte
+}
+
+func (a appPatch) Type() types.PatchType {
+	return types.JSONPatchType
+}
+
+func (a appPatch) Data(client.Object) ([]byte, error) {
+	return a.data, nil
+}
 
 // EnsureCreated checks for optional apps and ensures the app-operator version
 // label has the correct value.
@@ -28,15 +41,22 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	{
 		r.logger.Debugf(ctx, "finding optional apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
-		o := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s!=%s", label.ManagedBy, project.Name()),
-		}
-		list, err := r.g8sClient.ApplicationV1alpha1().Apps(key.ClusterID(&cr)).List(ctx, o)
+		labelSelector, err := labels.Parse(fmt.Sprintf("%s!=%s", label.ManagedBy, project.Name()))
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		for _, item := range list.Items {
+		o := client.ListOptions{
+			Namespace:     key.ClusterID(&cr),
+			LabelSelector: labelSelector,
+		}
+		var appList v1alpha1.AppList
+		err = r.g8sClient.List(ctx, &appList, &o)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		for _, item := range appList.Items {
 			apps = append(apps, item.DeepCopy())
 		}
 
@@ -89,7 +109,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 
-				_, err = r.g8sClient.ApplicationV1alpha1().Apps(app.Namespace).Patch(ctx, app.Name, types.JSONPatchType, bytes, metav1.PatchOptions{})
+				err = r.g8sClient.Patch(ctx, app, appPatch{
+					data: bytes,
+				})
 				if err != nil {
 					return microerror.Mask(err)
 				}

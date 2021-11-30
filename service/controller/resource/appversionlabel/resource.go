@@ -3,9 +3,9 @@ package appversionlabel
 import (
 	"strings"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
@@ -15,13 +15,13 @@ const (
 )
 
 type Config struct {
-	G8sClient      versioned.Interface
+	G8sClient      client.Client
 	Logger         micrologger.Logger
 	ReleaseVersion releaseversion.Interface
 }
 
 type Resource struct {
-	g8sClient      versioned.Interface
+	g8sClient      client.Client
 	logger         micrologger.Logger
 	releaseVersion releaseversion.Interface
 }

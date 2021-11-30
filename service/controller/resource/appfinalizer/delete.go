@@ -6,17 +6,32 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v5/pkg/controller/context/finalizerskeptcontext"
+	"github.com/giantswarm/operatorkit/v6/pkg/controller/context/finalizerskeptcontext"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
+
+type appPatch struct {
+	data []byte
+}
+
+func (a appPatch) Type() types.PatchType {
+	return types.JSONPatchType
+}
+
+func (a appPatch) Data(client.Object) ([]byte, error) {
+	return a.data, nil
+}
 
 // EnsureDeleted removes finalizers for workload cluster app CRs. These
 // resources are deleted with the cluster by the provider operator.
@@ -47,19 +62,27 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	// We keep the finalizer for the app-operator app CR so the resources in
 	// the management cluster are deleted.
-	lo := metav1.ListOptions{
-		LabelSelector: fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"),
-	}
-	list, err := r.g8sClient.ApplicationV1alpha1().Apps(key.ClusterID(&cr)).List(ctx, lo)
+	selector, err := labels.Parse(fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"))
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	r.logger.Debugf(ctx, "found %d apps to remove finalizers for", len(list.Items))
+	listOptions := client.ListOptions{
+		Namespace:     key.ClusterID(&cr),
+		LabelSelector: selector,
+	}
+
+	var appList v1alpha1.AppList
+	err = r.g8sClient.List(ctx, &appList, &listOptions)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	r.logger.Debugf(ctx, "found %d apps to remove finalizers for", len(appList.Items))
 
 	var skipAppCount int
 
-	for _, app := range list.Items {
+	for _, app := range appList.Items {
 		if app.DeletionTimestamp == nil {
 			r.logger.Debugf(ctx, "skipping removal of finalizer for app %#q as it is not deleted", app.Name)
 			skipAppCount++
@@ -82,7 +105,9 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			_, err = r.g8sClient.ApplicationV1alpha1().Apps(app.Namespace).Patch(ctx, app.Name, types.JSONPatchType, bytes, metav1.PatchOptions{})
+			err = r.g8sClient.Patch(ctx, app.DeepCopy(), appPatch{
+				data: bytes,
+			})
 			if err != nil {
 				return microerror.Mask(err)
 			}

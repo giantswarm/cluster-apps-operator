@@ -1,21 +1,20 @@
 package controller
 
 import (
-	"github.com/giantswarm/apiextensions/v3/pkg/annotation"
-	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/v5/pkg/controller"
-	"github.com/giantswarm/operatorkit/v5/pkg/resource"
-	"github.com/giantswarm/operatorkit/v5/pkg/resource/crud"
-	"github.com/giantswarm/operatorkit/v5/pkg/resource/k8s/configmapresource"
-	"github.com/giantswarm/operatorkit/v5/pkg/resource/wrapper/metricsresource"
-	"github.com/giantswarm/operatorkit/v5/pkg/resource/wrapper/retryresource"
-	"github.com/giantswarm/resource/v3/appresource"
+	"github.com/giantswarm/operatorkit/v6/pkg/controller"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource/crud"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/configmapresource"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
+	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
+	"github.com/giantswarm/resource/v4/appresource"
 	"k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/runtime"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
@@ -60,7 +59,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-			NewRuntimeObjectFunc: func() runtime.Object {
+			NewRuntimeObjectFunc: func() client.Object {
 				return new(apiv1alpha3.Cluster)
 			},
 			Resources: resources,
@@ -93,7 +92,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	{
 		c := app.Config{
 			ChartName:      config.ChartName,
-			G8sClient:      config.K8sClient.G8sClient(),
+			G8sClient:      config.K8sClient.CtrlClient(),
 			K8sClient:      config.K8sClient.K8sClient(),
 			Logger:         config.Logger,
 			ReleaseVersion: config.ReleaseVersion,
@@ -111,7 +110,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var appResource resource.Interface
 	{
 		c := appresource.Config{
-			G8sClient: config.K8sClient.G8sClient(),
+			G8sClient: config.K8sClient.CtrlClient(),
 			Logger:    config.Logger,
 
 			Name:        app.Name,
@@ -119,8 +118,8 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 
 		c.AllowedAnnotations = []string{
-			annotation.LatestConfigMapVersion,
-			annotation.LatestSecretVersion,
+			"app-operator.giantswarm.io/giantswarm.io/latest-configmap-version",
+			"app-operator.giantswarm.io/latest-secret-version",
 		}
 
 		ops, err := appresource.New(c)
@@ -137,7 +136,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var appFinalizerResource resource.Interface
 	{
 		c := appfinalizer.Config{
-			G8sClient: config.K8sClient.G8sClient(),
+			G8sClient: config.K8sClient.CtrlClient(),
 			K8sClient: config.K8sClient.K8sClient(),
 			Logger:    config.Logger,
 		}
@@ -151,7 +150,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var appVersionLabelResource resource.Interface
 	{
 		c := appversionlabel.Config{
-			G8sClient:      config.K8sClient.G8sClient(),
+			G8sClient:      config.K8sClient.CtrlClient(),
 			Logger:         config.Logger,
 			ReleaseVersion: config.ReleaseVersion,
 		}

@@ -3,13 +3,13 @@ package app
 import (
 	"context"
 
-	"github.com/giantswarm/apiextensions/v3/pkg/clientset/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
@@ -27,7 +27,7 @@ const (
 // Config represents the configuration used to create a new app resource.
 type Config struct {
 	ChartName      chartname.Interface
-	G8sClient      versioned.Interface
+	G8sClient      client.Client
 	K8sClient      kubernetes.Interface
 	Logger         micrologger.Logger
 	ReleaseVersion releaseversion.Interface
@@ -39,7 +39,7 @@ type Config struct {
 // Resource implements the app resource.
 type Resource struct {
 	chartName      chartname.Interface
-	g8sClient      versioned.Interface
+	g8sClient      client.Client
 	k8sClient      kubernetes.Interface
 	logger         micrologger.Logger
 	releaseVersion releaseversion.Interface
