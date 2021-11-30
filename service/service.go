@@ -56,7 +56,7 @@ func New(config Config) (*Service, error) {
 	if config.Viper == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Viper must not be empty")
 	}
-	if config.Viper.GetString(config.Flag.Service.Kubernetes.Address) != "" {
+	if config.Viper.GetString(config.Flag.Service.Kubernetes.KubeConfig) == "" {
 		serviceAddress = config.Viper.GetString(config.Flag.Service.Kubernetes.Address)
 	} else {
 		serviceAddress = ""
