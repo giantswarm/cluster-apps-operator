@@ -19,6 +19,7 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	capbk "sigs.k8s.io/cluster-api/bootstrap/kubeadm/api/v1alpha4"
 
+	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
 	capz "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/flag"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
@@ -109,11 +110,12 @@ func New(config Config) (*Service, error) {
 		c := k8sclient.ClientsConfig{
 			Logger: config.Logger,
 			SchemeBuilder: k8sclient.SchemeBuilder{
+				appv1alpha1.AddToScheme,
 				capi.AddToScheme,
 				capbk.AddToScheme,
-				releasev1alpha1.AddToScheme,
+				capo.AddToScheme,
 				capz.AddToScheme,
-				appv1alpha1.AddToScheme,
+				releasev1alpha1.AddToScheme,
 			},
 
 			RestConfig: restConfig,
