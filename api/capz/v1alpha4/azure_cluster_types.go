@@ -21,6 +21,7 @@ type NetworkSpec struct {
 }
 
 type VnetSpec struct {
+	// +optional
 	CIDRBlocks []string `json:"cidrBlocks,omitempty"`
 }
 

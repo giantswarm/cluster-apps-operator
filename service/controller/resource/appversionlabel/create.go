@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"k8s.io/apimachinery/pkg/labels"
@@ -37,7 +37,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	var apps []*v1alpha1.App
+	var apps []*appv1alpha1.App
 	{
 		r.logger.Debugf(ctx, "finding optional apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
@@ -50,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			Namespace:     key.ClusterID(&cr),
 			LabelSelector: labelSelector,
 		}
-		var appList v1alpha1.AppList
+		var appList appv1alpha1.AppList
 		err = r.g8sClient.List(ctx, &appList, &o)
 		if err != nil {
 			return microerror.Mask(err)
