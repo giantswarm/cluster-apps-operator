@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"sync"
 
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -55,7 +56,7 @@ func New(config Config) (*Service, error) {
 	if config.Viper == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Viper must not be empty")
 	}
-	if config.Flag.Service.Kubernetes.KubeConfig == "" {
+	if config.Viper.GetString(config.Flag.Service.Kubernetes.Address) != "" {
 		serviceAddress = config.Viper.GetString(config.Flag.Service.Kubernetes.Address)
 	} else {
 		serviceAddress = ""
@@ -112,6 +113,7 @@ func New(config Config) (*Service, error) {
 				capbk.AddToScheme,
 				releasev1alpha1.AddToScheme,
 				capz.AddToScheme,
+				appv1alpha1.AddToScheme,
 			},
 
 			RestConfig: restConfig,
