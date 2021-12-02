@@ -12,6 +12,7 @@ import (
 type Service struct {
 	Image      image.Image
 	Kubernetes kubernetes.Kubernetes
+	Provider   string
 	Release    release.Release
 	Workload   workload.Workload
 }

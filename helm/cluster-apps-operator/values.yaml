@@ -1,4 +1,5 @@
-base: ginger.eu-west-1.aws.gigantic.io
+base: example.gigantic.io
+provider: ""
 
 cni:
   mask: 16
