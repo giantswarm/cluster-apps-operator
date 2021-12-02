@@ -5,26 +5,26 @@ import (
 	"fmt"
 	"strconv"
 
-	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
-func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*applicationv1alpha1.App, error) {
+func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*appv1alpha1.App, error) {
 	cr, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	var apps []*applicationv1alpha1.App
+	var apps []*appv1alpha1.App
 
 	if key.IsDeleted(&cr) {
 		r.logger.Debugf(ctx, "deleting apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
@@ -59,7 +59,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 
 	// Define app CR for app-operator in the management cluster namespace.
 	appOperatorAppSpec := newAppOperatorAppSpec(cr, appOperatorComponent)
-	apps = append(apps, r.newApp(uniqueOperatorVersion, cr, appOperatorAppSpec, applicationv1alpha1.AppSpecUserConfig{}))
+	apps = append(apps, r.newApp(uniqueOperatorVersion, cr, appOperatorAppSpec, appv1alpha1.AppSpecUserConfig{}))
 
 	for _, appSpec := range appSpecs {
 		// These apps are pre-installed when the control plane is
@@ -78,7 +78,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 	return apps, nil
 }
 
-func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, appSpec key.AppSpec, userConfig applicationv1alpha1.AppSpecUserConfig) *applicationv1alpha1.App {
+func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec key.AppSpec, userConfig appv1alpha1.AppSpecUserConfig) *appv1alpha1.App {
 	configMapName := key.ClusterConfigMapName(&cr)
 
 	// Override config map name when specified.
@@ -94,36 +94,36 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 		appName = appSpec.App
 	}
 
-	var config applicationv1alpha1.AppSpecConfig
+	var config appv1alpha1.AppSpecConfig
 
 	if appSpec.InCluster {
-		config = applicationv1alpha1.AppSpecConfig{
-			ConfigMap: applicationv1alpha1.AppSpecConfigConfigMap{
+		config = appv1alpha1.AppSpecConfig{
+			ConfigMap: appv1alpha1.AppSpecConfigConfigMap{
 				Name:      appSpec.ConfigMapName,
 				Namespace: appSpec.ConfigMapNamespace,
 			},
 		}
 	} else {
-		config = applicationv1alpha1.AppSpecConfig{
-			ConfigMap: applicationv1alpha1.AppSpecConfigConfigMap{
+		config = appv1alpha1.AppSpecConfig{
+			ConfigMap: appv1alpha1.AppSpecConfigConfigMap{
 				Name:      configMapName,
 				Namespace: key.ClusterID(&cr),
 			},
 		}
 	}
 
-	var kubeConfig applicationv1alpha1.AppSpecKubeConfig
+	var kubeConfig appv1alpha1.AppSpecKubeConfig
 
 	if appSpec.InCluster {
-		kubeConfig = applicationv1alpha1.AppSpecKubeConfig{
+		kubeConfig = appv1alpha1.AppSpecKubeConfig{
 			InCluster: true,
 		}
 	} else {
-		kubeConfig = applicationv1alpha1.AppSpecKubeConfig{
-			Context: applicationv1alpha1.AppSpecKubeConfigContext{
+		kubeConfig = appv1alpha1.AppSpecKubeConfig{
+			Context: appv1alpha1.AppSpecKubeConfigContext{
 				Name: key.KubeConfigSecretName(&cr),
 			},
-			Secret: applicationv1alpha1.AppSpecKubeConfigSecret{
+			Secret: appv1alpha1.AppSpecKubeConfigSecret{
 				Name: key.KubeConfigSecretName(&cr),
 				// The kubeconfig secret is created in the same namespace as
 				// the cluster CR.
@@ -132,7 +132,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 		}
 	}
 
-	return &applicationv1alpha1.App{
+	return &appv1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
 			APIVersion: "application.giantswarm.io",
@@ -150,7 +150,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 			Name:      appName,
 			Namespace: key.ClusterID(&cr),
 		},
-		Spec: applicationv1alpha1.AppSpec{
+		Spec: appv1alpha1.AppSpec{
 			Catalog:    appSpec.Catalog,
 			Name:       appSpec.Chart,
 			Namespace:  appSpec.Namespace,
@@ -162,7 +162,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr apiv1alpha3.Cluster, app
 	}
 }
 
-func (r *Resource) newAppSpecs(ctx context.Context, cr apiv1alpha3.Cluster) ([]key.AppSpec, error) {
+func (r *Resource) newAppSpecs(ctx context.Context, cr capi.Cluster) ([]key.AppSpec, error) {
 	apps, err := r.releaseVersion.Apps(ctx, &cr)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -212,7 +212,7 @@ func (r *Resource) newAppSpecs(ctx context.Context, cr apiv1alpha3.Cluster) ([]k
 	return specs, nil
 }
 
-func newAppOperatorAppSpec(cr apiv1alpha3.Cluster, component releaseversion.ReleaseComponent) key.AppSpec {
+func newAppOperatorAppSpec(cr capi.Cluster, component releaseversion.ReleaseComponent) key.AppSpec {
 	var operatorAppVersion string
 
 	// Setting the reference allows us to deploy from a test catalog.
@@ -238,12 +238,12 @@ func newAppOperatorAppSpec(cr apiv1alpha3.Cluster, component releaseversion.Rele
 	}
 }
 
-func newUserConfig(cr apiv1alpha3.Cluster, appSpec key.AppSpec, configMaps map[string]corev1.ConfigMap, secrets map[string]corev1.Secret) applicationv1alpha1.AppSpecUserConfig {
-	userConfig := applicationv1alpha1.AppSpecUserConfig{}
+func newUserConfig(cr capi.Cluster, appSpec key.AppSpec, configMaps map[string]corev1.ConfigMap, secrets map[string]corev1.Secret) appv1alpha1.AppSpecUserConfig {
+	userConfig := appv1alpha1.AppSpecUserConfig{}
 
 	_, ok := configMaps[key.AppUserConfigMapName(appSpec)]
 	if ok {
-		configMapSpec := applicationv1alpha1.AppSpecUserConfigConfigMap{
+		configMapSpec := appv1alpha1.AppSpecUserConfigConfigMap{
 			Name:      key.AppUserConfigMapName(appSpec),
 			Namespace: key.ClusterID(&cr),
 		}
@@ -253,7 +253,7 @@ func newUserConfig(cr apiv1alpha3.Cluster, appSpec key.AppSpec, configMaps map[s
 
 	_, ok = secrets[key.AppUserSecretName(appSpec)]
 	if ok {
-		secretSpec := applicationv1alpha1.AppSpecUserConfigSecret{
+		secretSpec := appv1alpha1.AppSpecUserConfigSecret{
 			Name:      key.AppUserSecretName(appSpec),
 			Namespace: key.ClusterID(&cr),
 		}

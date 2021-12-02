@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -72,7 +72,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		LabelSelector: selector,
 	}
 
-	var appList v1alpha1.AppList
+	var appList appv1alpha1.AppList
 	err = r.g8sClient.List(ctx, &appList, &listOptions)
 	if err != nil {
 		return microerror.Mask(err)

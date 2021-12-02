@@ -3,7 +3,7 @@
 # cluster-apps-operator
 
 The cluster-apps-operator is part of the Giant Swarm [App Platform].
-It watches [Cluster API] v1alpha3 CRs and manages [app CRs] for workoad
+It watches [Cluster API] v1alpha4 CRs and manages [app CRs] for workload
 clusters as defined in the [release CR].
 
 It is implemented using [operatorkit].
