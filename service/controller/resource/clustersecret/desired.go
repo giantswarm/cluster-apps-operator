@@ -78,7 +78,7 @@ func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) (*corev1.Secret, e
 		return nil, microerror.Mask(err)
 	}
 
-	cm := &corev1.Secret{
+	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      secretSpec.Name,
 			Namespace: secretSpec.Namespace,
@@ -95,5 +95,5 @@ func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) (*corev1.Secret, e
 		},
 	}
 
-	return cm, nil
+	return secret, nil
 }

@@ -21,7 +21,8 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
-      provider: {{ .Values.provider }}
+      provider:
+        kind: {{ .Values.provider.kind }}
       release:
         app:
           config:

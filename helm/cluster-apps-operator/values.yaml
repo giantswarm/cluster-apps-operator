@@ -1,5 +1,7 @@
 base: example.gigantic.io
-provider: ""
+
+provider:
+  kind: ""
 
 cni:
   mask: 16
