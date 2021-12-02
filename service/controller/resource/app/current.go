@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"k8s.io/apimachinery/pkg/labels"
@@ -14,13 +14,13 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 )
 
-func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*v1alpha1.App, error) {
+func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*appv1alpha1.App, error) {
 	cr, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	var apps []*v1alpha1.App
+	var apps []*appv1alpha1.App
 	{
 		r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
@@ -34,7 +34,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*v1a
 			LabelSelector: selector,
 		}
 
-		var appList v1alpha1.AppList
+		var appList appv1alpha1.AppList
 		err = r.g8sClient.List(ctx, &appList, &o)
 		if err != nil {
 			return nil, microerror.Mask(err)

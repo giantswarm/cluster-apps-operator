@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -96,7 +96,7 @@ func (cn *ChartName) cachedCatalogIndex(ctx context.Context, catalogName string)
 	var index catalogIndex
 	var err error
 
-	var catalog applicationv1alpha1.AppCatalog
+	var catalog appv1alpha1.AppCatalog
 	{
 		err = cn.g8sClient.Get(ctx, client.ObjectKey{
 			Name: catalogName,

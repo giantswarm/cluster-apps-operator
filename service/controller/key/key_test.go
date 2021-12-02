@@ -6,7 +6,7 @@ import (
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 )
 
 // A mock object that implements LabelsGetter interface
@@ -49,31 +49,31 @@ func Test_ToCluster(t *testing.T) {
 	testCases := []struct {
 		description          string
 		inputObject          interface{}
-		expectedCustomObject apiv1alpha3.Cluster
+		expectedCustomObject capi.Cluster
 		expectedError        error
 	}{
 		{
 			description:          "reference to empty value Cluster returns empty Cluster",
-			inputObject:          &apiv1alpha3.Cluster{},
-			expectedCustomObject: apiv1alpha3.Cluster{},
+			inputObject:          &capi.Cluster{},
+			expectedCustomObject: capi.Cluster{},
 			expectedError:        nil,
 		},
 		{
 			description:          "non-pointer value of Cluster must return wrongTypeError",
-			inputObject:          apiv1alpha3.Cluster{},
-			expectedCustomObject: apiv1alpha3.Cluster{},
+			inputObject:          capi.Cluster{},
+			expectedCustomObject: capi.Cluster{},
 			expectedError:        wrongTypeError,
 		},
 		{
 			description:          "wrong type must return wrongTypeError",
-			inputObject:          &apiv1alpha3.Machine{},
-			expectedCustomObject: apiv1alpha3.Cluster{},
+			inputObject:          &capi.Machine{},
+			expectedCustomObject: capi.Cluster{},
 			expectedError:        wrongTypeError,
 		},
 		{
 			description:          "nil interface{} must return wrongTypeError",
 			inputObject:          nil,
-			expectedCustomObject: apiv1alpha3.Cluster{},
+			expectedCustomObject: capi.Cluster{},
 			expectedError:        wrongTypeError,
 		},
 	}

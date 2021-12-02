@@ -8,7 +8,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
@@ -122,7 +122,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) getConfigMaps(ctx context.Context, cr apiv1alpha3.Cluster) (map[string]corev1.ConfigMap, error) {
+func (r *Resource) getConfigMaps(ctx context.Context, cr capi.Cluster) (map[string]corev1.ConfigMap, error) {
 	configMaps := map[string]corev1.ConfigMap{}
 
 	r.logger.Debugf(ctx, "finding configMaps in namespace %#q", key.ClusterID(&cr))
@@ -141,7 +141,7 @@ func (r *Resource) getConfigMaps(ctx context.Context, cr apiv1alpha3.Cluster) (m
 	return configMaps, nil
 }
 
-func (r *Resource) getSecrets(ctx context.Context, cr apiv1alpha3.Cluster) (map[string]corev1.Secret, error) {
+func (r *Resource) getSecrets(ctx context.Context, cr capi.Cluster) (map[string]corev1.Secret, error) {
 	secrets := map[string]corev1.Secret{}
 
 	r.logger.Debugf(ctx, "finding secrets in namespace %#q", key.ClusterID(&cr))

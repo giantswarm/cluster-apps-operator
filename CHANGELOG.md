@@ -10,7 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `config.giantswarm.io/version` annotation to Chart.yaml for config
-management.
+  management.
+- Add support for OpenStack clusters.
+
+### Changed
+
+- Drop `apiextensions` dependency.
+- Watch Cluster `v1alpha4` instead of `v1alpha3` (breaking change).
+- Update CAPZ types to `v1alpha4`.
+- Use `<cluster>.<base domain>` instead of `<cluster>.k8s.<base domain>` for cluster configmap helm template values (breaking change).
 
 ### Changed
 

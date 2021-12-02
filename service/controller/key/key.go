@@ -6,7 +6,7 @@ import (
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 )
 
 const (
@@ -24,7 +24,7 @@ func AppUserSecretName(appSpec AppSpec) string {
 }
 
 func BaseDomain(getter LabelsGetter, base string) string {
-	return fmt.Sprintf("%s.k8s.%s", ClusterID(getter), base)
+	return fmt.Sprintf("%s.%s", ClusterID(getter), base)
 }
 
 func ClusterValuesResourceName(getter LabelsGetter) string {
@@ -36,7 +36,7 @@ func ClusterID(getter LabelsGetter) string {
 	// If the Giant Swarm cluster name is empty, attempt to retrieve it from the
 	// upstream label.
 	if clusterID == "" {
-		clusterID = getter.GetLabels()[apiv1alpha3.ClusterLabelName]
+		clusterID = getter.GetLabels()[capi.ClusterLabelName]
 	}
 	return clusterID
 }
@@ -64,7 +64,7 @@ func DNSIP(clusterIPRange string) (string, error) {
 	return ip.String(), nil
 }
 
-func InfrastructureRefKind(cr apiv1alpha3.Cluster) string {
+func InfrastructureRefKind(cr capi.Cluster) string {
 	if cr.Spec.InfrastructureRef == nil {
 		return ""
 	}
@@ -80,7 +80,7 @@ func KubeConfigSecretName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-kubeconfig", ClusterID(getter))
 }
 
-func PodCIDR(cr apiv1alpha3.Cluster) string {
+func PodCIDR(cr capi.Cluster) string {
 	if cr.Spec.ClusterNetwork == nil {
 		return ""
 	}
@@ -102,14 +102,14 @@ func ReleaseVersion(getter LabelsGetter) string {
 	return getter.GetLabels()[label.ReleaseVersion]
 }
 
-func ToCluster(v interface{}) (apiv1alpha3.Cluster, error) {
+func ToCluster(v interface{}) (capi.Cluster, error) {
 	if v == nil {
-		return apiv1alpha3.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &apiv1alpha3.Cluster{}, v)
+		return capi.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &capi.Cluster{}, v)
 	}
 
-	p, ok := v.(*apiv1alpha3.Cluster)
+	p, ok := v.(*capi.Cluster)
 	if !ok {
-		return apiv1alpha3.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &apiv1alpha3.Cluster{}, v)
+		return capi.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &capi.Cluster{}, v)
 	}
 
 	return *p, nil

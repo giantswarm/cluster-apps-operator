@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/giantswarm/apiextensions-application v0.1.0
-	github.com/giantswarm/apptest v0.12.1-0.20211119165242-9255e2e76c06
+	github.com/giantswarm/apptest v1.0.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/exporterkit v0.2.1
 	github.com/giantswarm/k8sclient/v6 v6.0.0
@@ -14,16 +14,16 @@ require (
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v6 v6.0.0
-	github.com/giantswarm/release-operator/v2 v2.4.1-0.20211119182623-079d1f7a4e8c
-	github.com/giantswarm/resource/v3 v3.0.3-0.20211119182905-30ba680fdb1b
+	github.com/giantswarm/release-operator/v2 v2.5.0
+	github.com/giantswarm/resource/v4 v4.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.9.0
-	k8s.io/api v0.22.2
-	k8s.io/apimachinery v0.22.2
-	k8s.io/client-go v0.22.2
-	sigs.k8s.io/cluster-api v1.0.1
-	sigs.k8s.io/controller-runtime v0.10.3
+	k8s.io/api v0.21.4
+	k8s.io/apimachinery v0.21.4
+	k8s.io/client-go v0.21.4
+	sigs.k8s.io/cluster-api v0.4.4
+	sigs.k8s.io/controller-runtime v0.9.7
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -37,7 +37,7 @@ require (
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/getsentry/sentry-go v0.11.0 // indirect
-	github.com/giantswarm/app/v5 v5.4.1-0.20211118195027-c2a77e858e63 // indirect
+	github.com/giantswarm/app/v6 v6.0.0 // indirect
 	github.com/giantswarm/appcatalog v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
 	github.com/giantswarm/versionbundle v0.2.0 // indirect
@@ -50,13 +50,15 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/google/uuid v1.2.0 // indirect
+	github.com/google/uuid v1.1.2 // indirect
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
+	github.com/kr/pretty v0.2.1 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
@@ -73,6 +75,7 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	golang.org/x/net v0.0.0-20210520170846-37e1c6afe023 // indirect
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
@@ -88,12 +91,11 @@ require (
 	gopkg.in/resty.v1 v1.12.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	k8s.io/apiextensions-apiserver v0.22.2 // indirect
-	k8s.io/cluster-bootstrap v0.22.2 // indirect
-	k8s.io/component-base v0.22.2 // indirect
+	k8s.io/apiextensions-apiserver v0.21.4 // indirect
+	k8s.io/component-base v0.21.4 // indirect
 	k8s.io/klog/v2 v2.9.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
-	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
+	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 )
 
