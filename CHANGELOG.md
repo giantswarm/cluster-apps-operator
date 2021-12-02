@@ -20,10 +20,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update CAPZ types to `v1alpha4`.
 - Use `<cluster>.<base domain>` instead of `<cluster>.k8s.<base domain>` for cluster configmap helm template values (breaking change).
 
-### Changed
-
-- Drop `apiextensions` dependency.
-
 ## [0.6.1] - 2021-09-13
 
 ### Fixed
