@@ -10,7 +10,6 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/crud"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/configmapresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/secretresource"
-
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
 	"github.com/giantswarm/resource/v4/appresource"
@@ -40,6 +39,7 @@ type ClusterConfig struct {
 	BaseDomain           string
 	ClusterIPRange       string
 	DNSIP                string
+	Provider             string
 	RawAppDefaultConfig  string
 	RawAppOverrideConfig string
 	RegistryDomain       string
@@ -211,8 +211,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		c := clustersecret.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-
-			RawAppOverrideConfig: config.RawAppOverrideConfig,
 		}
 
 		clusterSecretGetter, err = clustersecret.New(c)
@@ -262,9 +260,15 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// clusterConfigMapResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
+	}
+
+	if config.Provider == "openstack" {
 		// clusterSecretResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
-		clusterSecretResource,
+		resources = append(resources, clusterSecretResource)
+	}
+
+	resources = append(resources,
 		// appResource manages the per cluster app-operator instance and the
 		// workload cluster apps.
 		appResource,
@@ -274,7 +278,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// appVersionLabel resource ensures the version label is correct for
 		// optional app CRs.
 		appVersionLabelResource,
-	}
+	)
 
 	{
 		c := retryresource.WrapConfig{

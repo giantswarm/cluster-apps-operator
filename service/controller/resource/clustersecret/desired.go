@@ -10,17 +10,15 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
+	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.Secret, error) {
-	if !r.enabled {
-		return nil, nil
-	}
-
 	cr, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -33,11 +31,32 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		return secrets, nil
 	}
 
+	values := map[string]interface{}{}
+
+	{
+		infrastructureRef := cr.Spec.InfrastructureRef
+		if infrastructureRef != nil {
+			switch infrastructureRef.Kind {
+			case "OpenStackCluster":
+				var infraCluster capo.OpenStackCluster
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &infraCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				values["cloudConfig"], err = r.generateOpenStackCloudConfig(ctx, infraCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+			}
+		}
+	}
+
 	secretSpecs := []secretSpec{
 		{
 			Name:      key.ClusterValuesResourceName(&cr),
 			Namespace: key.ClusterID(&cr),
-			Values:    map[string]interface{}{},
+			Values:    values,
 		},
 	}
 
