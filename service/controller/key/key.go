@@ -27,7 +27,7 @@ func BaseDomain(getter LabelsGetter, base string) string {
 	return fmt.Sprintf("%s.%s", ClusterID(getter), base)
 }
 
-func ClusterConfigMapName(getter LabelsGetter) string {
+func ClusterValuesResourceName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-cluster-values", ClusterID(getter))
 }
 

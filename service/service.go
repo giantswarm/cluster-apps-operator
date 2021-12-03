@@ -73,6 +73,7 @@ func New(config Config) (*Service, error) {
 	calicoSubnet := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.Subnet)
 	calicoCIDR := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.CIDR)
 	clusterIPRange := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange)
+	provider := config.Viper.GetString(config.Flag.Service.Provider.Kind)
 	registryDomain := config.Viper.GetString(config.Flag.Service.Image.Registry.Domain)
 
 	var dnsIP string
@@ -175,6 +176,7 @@ func New(config Config) (*Service, error) {
 			BaseDomain:           baseDomain,
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
+			Provider:             provider,
 			RawAppDefaultConfig:  config.Viper.GetString(config.Flag.Service.Release.App.Config.Default),
 			RawAppOverrideConfig: config.Viper.GetString(config.Flag.Service.Release.App.Config.Override),
 			RegistryDomain:       registryDomain,

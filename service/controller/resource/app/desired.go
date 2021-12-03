@@ -79,11 +79,17 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 }
 
 func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec key.AppSpec, userConfig appv1alpha1.AppSpecUserConfig) *appv1alpha1.App {
-	configMapName := key.ClusterConfigMapName(&cr)
+	configMapName := key.ClusterValuesResourceName(&cr)
+	secretName := key.ClusterValuesResourceName(&cr)
 
 	// Override config map name when specified.
 	if appSpec.ConfigMapName != "" {
 		configMapName = appSpec.ConfigMapName
+	}
+
+	// Override secret name when specified.
+	if appSpec.SecretName != "" {
+		secretName = appSpec.SecretName
 	}
 
 	var appName string
@@ -103,12 +109,24 @@ func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec ke
 				Namespace: appSpec.ConfigMapNamespace,
 			},
 		}
+		if appSpec.HasClusterValuesSecret {
+			config.Secret = appv1alpha1.AppSpecConfigSecret{
+				Name:      appSpec.SecretName,
+				Namespace: appSpec.SecretNamespace,
+			}
+		}
 	} else {
 		config = appv1alpha1.AppSpecConfig{
 			ConfigMap: appv1alpha1.AppSpecConfigConfigMap{
 				Name:      configMapName,
 				Namespace: key.ClusterID(&cr),
 			},
+		}
+		if appSpec.HasClusterValuesSecret {
+			config.Secret = appv1alpha1.AppSpecConfigSecret{
+				Name:      secretName,
+				Namespace: key.ClusterID(&cr),
+			}
 		}
 	}
 
@@ -197,6 +215,9 @@ func (r *Resource) newAppSpecs(ctx context.Context, cr capi.Cluster) ([]key.AppS
 		if val, ok := r.overrideConfig[appName]; ok {
 			if val.Chart != "" {
 				spec.Chart = val.Chart
+			}
+			if val.HasClusterValuesSecret != nil {
+				spec.HasClusterValuesSecret = *val.HasClusterValuesSecret
 			}
 			if val.Namespace != "" {
 				spec.Namespace = val.Namespace

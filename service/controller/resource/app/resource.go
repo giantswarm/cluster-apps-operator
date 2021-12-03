@@ -55,9 +55,10 @@ type defaultConfig struct {
 }
 
 type overrideProperties struct {
-	Chart           string `json:"chart"`
-	Namespace       string `json:"namespace"`
-	UseUpgradeForce *bool  `json:"useUpgradeForce,omitempty"`
+	Chart                  string `json:"chart"`
+	HasClusterValuesSecret *bool  `json:"hasClusterValuesSecret,omitempty"`
+	Namespace              string `json:"namespace"`
+	UseUpgradeForce        *bool  `json:"useUpgradeForce,omitempty"`
 }
 
 type overrideConfig map[string]overrideProperties

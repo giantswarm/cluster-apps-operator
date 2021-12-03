@@ -1,4 +1,7 @@
-base: ginger.eu-west-1.aws.gigantic.io
+base: example.gigantic.io
+
+provider:
+  kind: ""
 
 cni:
   mask: 16
@@ -51,6 +54,8 @@ release:
         chart-operator:
           chart:     "chart-operator"
           namespace: "giantswarm"
+        cloud-provider-openstack-app:
+          hasClusterValuesSecret: true
         # Upgrade force is disabled to avoid affecting customer workloads.
         coredns:
           useUpgradeForce: false
