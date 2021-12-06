@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix RBAC permissions for creating secrets and getting OpenStack clusters.
+
+### Changed
+
+- Adjust label selector to watch all Clusters with an organization label instead of those matching the current operator version to
+allow the operator to be deployed in the app collection instead of by release-operator. Watching clusters with an organization label
+ensures that self-managed MCs (containing their own Cluster CR) won't overwrite their own apps.
+
 ## [1.0.0] - 2021-12-03
 
 ### Added
