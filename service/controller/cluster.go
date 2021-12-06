@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
 	"github.com/giantswarm/resource/v4/appresource"
+	"k8s.io/apimachinery/pkg/labels"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -69,6 +70,9 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 			// Name is used to compute finalizer names. This here results in something
 			// like operatorkit.giantswarm.io/cluster-apps-operator-cluster-controller.
 			Name: project.Name() + "-cluster-controller",
+			Selector: labels.SelectorFromSet(map[string]string{
+				label.ManagedBy: project.Name(),
+			}),
 		}
 
 		operatorkitController, err = controller.New(c)
