@@ -45,6 +45,7 @@ rules:
     resources:
       - configmaps
       - namespaces
+      - secrets
     verbs:
       - create
       - update
