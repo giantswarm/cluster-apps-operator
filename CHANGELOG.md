@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Adjust label selector to watch all Clusters with an organization label instead of those matching the current operator version to
-allow the operator to be deployed in the app collection instead of by release-operator. Watching clusters with an organization label
-ensures that self-managed MCs (containing their own Cluster CR) won't overwrite their own apps.
+- Adjust label selector to watch all Clusters with any `cluster-apps-operator.giantswarm.io/version`
+  label instead of those matching the current operator version to allow the operator to be 
+  deployed in the app collection instead of by `release-operator`.
 
 ## [1.0.0] - 2021-12-03
 
