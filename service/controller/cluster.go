@@ -59,7 +59,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 
 	var operatorkitController *controller.Controller
 	{
-		selector, err := labels.Parse(label.ClusterAppsOperatorVersion)
+		selector, err := labels.Parse(label.ClusterAppsOperatorWatching)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
