@@ -45,6 +45,7 @@ rules:
     resources:
       - configmaps
       - namespaces
+      - secrets
     verbs:
       - create
       - update
@@ -94,6 +95,7 @@ rules:
       - infrastructure.cluster.x-k8s.io
     resources:
       - azureclusters
+      - openstackclusters
     verbs:
       - "get"
   - nonResourceURLs:

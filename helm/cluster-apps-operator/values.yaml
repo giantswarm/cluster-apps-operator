@@ -54,7 +54,7 @@ release:
         chart-operator:
           chart:     "chart-operator"
           namespace: "giantswarm"
-        cloud-provider-openstack-app:
+        cloud-provider-openstack:
           hasClusterValuesSecret: true
         # Upgrade force is disabled to avoid affecting customer workloads.
         coredns:
