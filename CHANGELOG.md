@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Adjust label selector to watch all Clusters with any `cluster-apps-operator.giantswarm.io/version`
+- Adjust label selector to watch all Clusters with any `cluster-apps-operator.giantswarm.io/watching`
   label instead of those matching the current operator version to allow the operator to be 
   deployed in the app collection instead of by `release-operator`.
 
