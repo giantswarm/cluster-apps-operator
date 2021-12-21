@@ -18,7 +18,7 @@ require (
 	github.com/giantswarm/resource/v4 v4.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
-	github.com/spf13/viper v1.10.0
+	github.com/spf13/viper v1.10.1
 	k8s.io/api v0.21.4
 	k8s.io/apimachinery v0.21.4
 	k8s.io/client-go v0.21.4
