@@ -7,13 +7,13 @@ require (
 	github.com/giantswarm/apptest v1.0.0
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.0.0
-	github.com/giantswarm/k8sclient/v6 v6.0.0
+	github.com/giantswarm/k8sclient/v6 v6.1.0
 	github.com/giantswarm/k8smetadata v0.7.1
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/microkit v1.0.0
 	github.com/giantswarm/micrologger v0.6.0
-	github.com/giantswarm/operatorkit/v6 v6.0.0
+	github.com/giantswarm/operatorkit/v6 v6.1.0
 	github.com/giantswarm/release-operator/v2 v2.5.0
 	github.com/giantswarm/resource/v4 v4.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
