@@ -31,22 +31,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 		return apps, nil
 	}
 
-	appSpecs, err := r.newAppSpecs(ctx, cr)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	componentVersions, err := r.releaseVersion.ComponentVersion(ctx, &cr)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	configMaps, err := r.getConfigMaps(ctx, cr)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	secrets, err := r.getSecrets(ctx, cr)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -60,20 +45,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 	// Define app CR for app-operator in the management cluster namespace.
 	appOperatorAppSpec := newAppOperatorAppSpec(cr, appOperatorComponent)
 	apps = append(apps, r.newApp(uniqueOperatorVersion, cr, appOperatorAppSpec, appv1alpha1.AppSpecUserConfig{}))
-
-	for _, appSpec := range appSpecs {
-		// These apps are pre-installed when the control plane is
-		// managed by AWS.
-		if key.InfrastructureRefKind(cr) == "AWSManagedControlPlane" {
-			if appSpec.App == "aws-cns" || appSpec.App == "coredns" {
-				r.logger.Debugf(ctx, "not creating app %#q for infra ref kind %#q", appSpec.App, key.InfrastructureRefKind(cr))
-				continue
-			}
-		}
-
-		userConfig := newUserConfig(cr, appSpec, configMaps, secrets)
-		apps = append(apps, r.newApp(appOperatorVersion, cr, appSpec, userConfig))
-	}
 
 	return apps, nil
 }
