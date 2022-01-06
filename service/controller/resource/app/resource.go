@@ -1,18 +1,12 @@
 package app
 
 import (
-	"context"
-
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	corev1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
@@ -120,42 +114,4 @@ func New(config Config) (*Resource, error) {
 
 func (r *Resource) Name() string {
 	return Name
-}
-
-func (r *Resource) getConfigMaps(ctx context.Context, cr capi.Cluster) (map[string]corev1.ConfigMap, error) {
-	configMaps := map[string]corev1.ConfigMap{}
-
-	r.logger.Debugf(ctx, "finding configMaps in namespace %#q", key.ClusterID(&cr))
-
-	list, err := r.k8sClient.CoreV1().ConfigMaps(key.ClusterID(&cr)).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	for _, cm := range list.Items {
-		configMaps[cm.Name] = cm
-	}
-
-	r.logger.Debugf(ctx, "found %d configMaps in namespace %#q", len(configMaps), key.ClusterID(&cr))
-
-	return configMaps, nil
-}
-
-func (r *Resource) getSecrets(ctx context.Context, cr capi.Cluster) (map[string]corev1.Secret, error) {
-	secrets := map[string]corev1.Secret{}
-
-	r.logger.Debugf(ctx, "finding secrets in namespace %#q", key.ClusterID(&cr))
-
-	list, err := r.k8sClient.CoreV1().Secrets(key.ClusterID(&cr)).List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	for _, s := range list.Items {
-		secrets[s.Name] = s
-	}
-
-	r.logger.Debugf(ctx, "found %d secrets in namespace %#q", len(secrets), key.ClusterID(&cr))
-
-	return secrets, nil
 }
