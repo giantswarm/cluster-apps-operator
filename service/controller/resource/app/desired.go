@@ -57,7 +57,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*app
 		return nil, microerror.Maskf(notFoundError, "%#q component version not found", releaseversion.AppOperator)
 	}
 
-	// Define app CR for app-operator in the management cluster namespace.
+	// Define app CR for app-operator in the workload cluster namespace.
 	appOperatorAppSpec := newAppOperatorAppSpec(cr, appOperatorComponent)
 	apps = append(apps, r.newApp(uniqueOperatorVersion, cr, appOperatorAppSpec, appv1alpha1.AppSpecUserConfig{}))
 
@@ -100,6 +100,11 @@ func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec ke
 		appName = appSpec.App
 	}
 
+	// Add cluster ID prefix for app CRs in organization namespace.
+	if !appSpec.InCluster {
+		appName = fmt.Sprintf("%s=%s", key.ClusterID(&cr), appName)
+	}
+
 	var config appv1alpha1.AppSpecConfig
 
 	if appSpec.InCluster {
@@ -128,6 +133,14 @@ func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec ke
 				Namespace: key.ClusterID(&cr),
 			}
 		}
+	}
+
+	var appNamespace string
+
+	if appSpec.InCluster {
+		appNamespace = key.ClusterID(&cr)
+	} else {
+		appNamespace = cr.GetNamespace()
 	}
 
 	var kubeConfig appv1alpha1.AppSpecKubeConfig
@@ -166,7 +179,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec ke
 				label.ManagedBy:          project.Name(),
 			},
 			Name:      appName,
-			Namespace: key.ClusterID(&cr),
+			Namespace: appNamespace,
 		},
 		Spec: appv1alpha1.AppSpec{
 			Catalog:    appSpec.Catalog,
