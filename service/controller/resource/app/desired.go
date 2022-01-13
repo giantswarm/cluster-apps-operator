@@ -162,14 +162,14 @@ func newAppOperatorAppSpec(cr capi.Cluster, component releaseversion.ReleaseComp
 
 	return key.AppSpec{
 		App: releaseversion.AppOperator,
-		// Override app name to include the cluster ID.
-		AppName:            fmt.Sprintf("%s-%s", releaseversion.AppOperator, key.ClusterID(&cr)),
+		// Override app name to include the cluster ID prefix.
+		AppName:            fmt.Sprintf("%s-%s", key.ClusterID(&cr), releaseversion.AppOperator),
 		Catalog:            component.Catalog,
 		Chart:              releaseversion.AppOperator,
 		ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
-		ConfigMapNamespace: key.ClusterID(&cr),
+		ConfigMapNamespace: cr.GetNamespace(),
 		InCluster:          true,
-		Namespace:          key.ClusterID(&cr),
+		Namespace:          cr.GetNamespace(),
 		UseUpgradeForce:    false,
 		Version:            operatorAppVersion,
 	}

@@ -30,7 +30,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*app
 		}
 
 		o := client.ListOptions{
-			Namespace:     key.ClusterID(&cr),
+			Namespace:     cr.GetNamespace(),
 			LabelSelector: selector,
 		}
 
