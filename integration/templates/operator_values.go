@@ -1,7 +1,7 @@
 package templates
 
-// ClusterAppOperatorValues values required by the cluster-apps-operator chart.
-const ClusterAppOperatorValues = `
+// ClusterAppsOperatorValues values required by the cluster-apps-operator chart.
+const ClusterAppsOperatorValues = `
  provider:
    kind: aws
  registry:

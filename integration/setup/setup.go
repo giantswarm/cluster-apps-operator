@@ -42,7 +42,7 @@ func installResources(ctx context.Context, config Config) error {
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
 				SHA:           env.CircleSHA(),
-				ValuesYAML:    templates.ClusterAppOperatorValues,
+				ValuesYAML:    templates.ClusterAppsOperatorValues,
 				WaitForDeploy: true,
 			},
 		}
