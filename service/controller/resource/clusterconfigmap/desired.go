@@ -46,7 +46,20 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		}
 	}
 
-	values := map[string]interface{}{
+	appOperatorValues := map[string]interface{}{
+		"app": map[string]interface{}{
+			"watchNamespace":    cr.GetNamespace(),
+			"workloadClusterID": key.ClusterID(&cr),
+		},
+		"provider": map[string]interface{}{
+			"kind": r.provider,
+		},
+		"registry": map[string]interface{}{
+			"domain": r.registryDomain,
+		},
+	}
+
+	clusterValues := map[string]interface{}{
 		"baseDomain": key.BaseDomain(&cr, r.baseDomain),
 		"chartOperator": map[string]interface{}{
 			"cni": map[string]interface{}{
@@ -77,10 +90,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
 			case "AWSCluster":
-				values["provider"] = "aws"
+				clusterValues["provider"] = "aws"
 
 			case "AzureCluster":
-				values["provider"] = "azure"
+				clusterValues["provider"] = "azure"
 
 				var azureCluster capz.AzureCluster
 				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
@@ -90,26 +103,31 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
 				if len(blocks) > 0 {
-					values["clusterCIDR"] = blocks[0]
+					clusterValues["clusterCIDR"] = blocks[0]
 				}
 
 			case "OpenStackCluster":
-				values["provider"] = "openstack"
+				clusterValues["provider"] = "openstack"
 
 			case "VSphereCluster":
-				values["provider"] = "vsphere"
+				clusterValues["provider"] = "vsphere"
 
 			default:
-				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific values for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
+				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
 		}
 	}
 
 	configMapSpecs := []configMapSpec{
 		{
+			Name:      key.AppOperatorValuesResourceName(&cr),
+			Namespace: key.ClusterID(&cr),
+			Values:    appOperatorValues,
+		},
+		{
 			Name:      key.ClusterValuesResourceName(&cr),
 			Namespace: key.ClusterID(&cr),
-			Values:    values,
+			Values:    clusterValues,
 		},
 	}
 

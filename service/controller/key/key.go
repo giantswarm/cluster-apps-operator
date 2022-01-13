@@ -15,6 +15,10 @@ const (
 	defaultDNSLastOctet = 10
 )
 
+func AppOperatorValuesResourceName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-app-operator-values", ClusterID(getter))
+}
+
 func AppUserConfigMapName(appSpec AppSpec) string {
 	return fmt.Sprintf("%s-user-values", appSpec.App)
 }
