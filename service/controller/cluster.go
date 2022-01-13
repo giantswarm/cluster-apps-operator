@@ -177,6 +177,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 
 			ClusterIPRange: config.ClusterIPRange,
 			DNSIP:          config.DNSIP,
+			Provider:       config.Provider,
 			RegistryDomain: config.RegistryDomain,
 		}
 
