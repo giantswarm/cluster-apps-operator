@@ -43,8 +43,8 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	// Make sure there is no running app-operator in the cluster namespace.
 	o := func() error {
-		name := fmt.Sprintf("%s-%s", releaseversion.AppOperator, key.ClusterID(&cr))
-		_, err = r.k8sClient.AppsV1().Deployments(key.ClusterID(&cr)).Get(ctx, name, metav1.GetOptions{})
+		name := fmt.Sprintf("%s-%s", key.ClusterID(&cr), releaseversion.AppOperator)
+		_, err = r.k8sClient.AppsV1().Deployments(cr.GetNamespace()).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// no-op
 			return nil
@@ -62,13 +62,13 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	// We keep the finalizer for the app-operator app CR so the resources in
 	// the management cluster are deleted.
-	selector, err := labels.Parse(fmt.Sprintf("%s!=%s", label.AppKubernetesName, "app-operator"))
+	selector, err := labels.Parse(fmt.Sprintf("%s=%s,%s!=%s", label.Cluster, key.ClusterID(&cr), label.AppKubernetesName, "app-operator"))
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	listOptions := client.ListOptions{
-		Namespace:     key.ClusterID(&cr),
+		Namespace:     cr.GetNamespace(),
 		LabelSelector: selector,
 	}
 
