@@ -21,13 +21,13 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 
 	var configMaps []*corev1.ConfigMap
 	{
-		r.logger.Debugf(ctx, "finding cluster configmaps in namespace %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "finding cluster configmaps in namespace %#q", cr.GetNamespace())
 
 		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=%s,%s=%s", label.Cluster, cr.Namespace, label.ManagedBy, project.Name()),
+			LabelSelector: fmt.Sprintf("%s=%s,%s=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()),
 		}
 
-		list, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(cr.Namespace).List(ctx, lo)
+		list, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(cr.GetNamespace()).List(ctx, lo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -36,7 +36,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 			configMaps = append(configMaps, item.DeepCopy())
 		}
 
-		r.logger.Debugf(ctx, "found %d configmaps in namespace %#q", len(configMaps), key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "found %d configmaps in namespace %#q", len(configMaps), cr.GetNamespace())
 	}
 
 	return configMaps, nil
