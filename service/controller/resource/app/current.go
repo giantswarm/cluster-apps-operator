@@ -24,7 +24,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*app
 	{
 		r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
 
-		selector, err := labels.Parse(fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()))
+		selector, err := labels.Parse(fmt.Sprintf("%s=%s,%s=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
