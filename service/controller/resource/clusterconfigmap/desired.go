@@ -121,12 +121,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	configMapSpecs := []configMapSpec{
 		{
 			Name:      key.AppOperatorValuesResourceName(&cr),
-			Namespace: key.ClusterID(&cr),
+			Namespace: cr.Namespace,
 			Values:    appOperatorValues,
 		},
 		{
 			Name:      key.ClusterValuesResourceName(&cr),
-			Namespace: key.ClusterID(&cr),
+			Namespace: cr.Namespace,
 			Values:    clusterValues,
 		},
 	}

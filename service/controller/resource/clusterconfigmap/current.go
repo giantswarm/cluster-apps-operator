@@ -24,10 +24,10 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 		r.logger.Debugf(ctx, "finding cluster configmaps in namespace %#q", key.ClusterID(&cr))
 
 		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()),
+			LabelSelector: fmt.Sprintf("%s=%s,%s=%s", label.Cluster, cr.Namespace, label.ManagedBy, project.Name()),
 		}
 
-		list, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.ClusterID(&cr)).List(ctx, lo)
+		list, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(cr.Namespace).List(ctx, lo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
