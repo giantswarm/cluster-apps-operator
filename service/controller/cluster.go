@@ -20,7 +20,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appversionlabel"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clustersecret"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
@@ -152,20 +151,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var appVersionLabelResource resource.Interface
-	{
-		c := appversionlabel.Config{
-			G8sClient:      config.K8sClient.CtrlClient(),
-			Logger:         config.Logger,
-			ReleaseVersion: config.ReleaseVersion,
-		}
-
-		appVersionLabelResource, err = appversionlabel.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var clusterConfigMapGetter configmapresource.StateGetter
 	{
 		c := clusterconfigmap.Config{
@@ -263,9 +248,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// appFinalizerResource removes finalizers after the per cluster
 		// app-operator instance has been deleted.
 		appFinalizerResource,
-		// appVersionLabel resource ensures the version label is correct for
-		// optional app CRs.
-		appVersionLabelResource,
 	)
 
 	{
