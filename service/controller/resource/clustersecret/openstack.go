@@ -58,10 +58,16 @@ func (r *Resource) generateOpenStackCloudConfig(ctx context.Context, cluster cap
 		return nil, microerror.Mask(invalidConfigError)
 	}
 
-	networkID := cluster.Status.Network.ID
-	subnetID := cluster.Status.Network.Subnet.ID
-	floatingNetworkID := cluster.Status.ExternalNetwork.ID
-	publicNetworkName := cluster.Status.ExternalNetwork.Name
+	var networkID, subnetID, floatingNetworkID, publicNetworkName string
+
+	if cluster.Status.Network != nil {
+		networkID = cluster.Status.Network.ID
+		subnetID = cluster.Status.Network.Subnet.ID
+	}
+	if cluster.Status.ExternalNetwork != nil {
+		floatingNetworkID = cluster.Status.ExternalNetwork.ID
+		publicNetworkName = cluster.Status.ExternalNetwork.Name
+	}
 
 	authURL := cloudConfig.Auth.AuthURL
 	username := cloudConfig.Auth.Username
