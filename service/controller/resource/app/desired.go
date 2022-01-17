@@ -136,7 +136,7 @@ func (r *Resource) newApp(appOperatorVersion string, cr capi.Cluster, appSpec ke
 				label.ManagedBy:          project.Name(),
 			},
 			Name:      appName,
-			Namespace: key.ClusterID(&cr),
+			Namespace: cr.GetNamespace(),
 		},
 		Spec: appv1alpha1.AppSpec{
 			Catalog:    appSpec.Catalog,
