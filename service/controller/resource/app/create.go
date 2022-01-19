@@ -130,7 +130,7 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			AppOperatorVersion: r.appOperatorVersion,
 			AppName:            key.ChartOperatorAppName(&cr),
 			Catalog:            r.chartOperatorCatalog,
-			ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
+			ConfigMapName:      key.ClusterValuesResourceName(&cr),
 			ConfigMapNamespace: cr.GetNamespace(),
 			InCluster:          false,
 			TargetNamespace:    "giantswarm",
