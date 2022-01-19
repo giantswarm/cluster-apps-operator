@@ -12,19 +12,16 @@ import (
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/k8s/secretresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v6/pkg/resource/wrapper/retryresource"
-	"github.com/giantswarm/resource/v4/appresource"
 	"k8s.io/apimachinery/pkg/labels"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/appfinalizer"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clustersecret"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
 type ClusterConfig struct {
@@ -38,8 +35,6 @@ type ClusterConfig struct {
 	ClusterIPRange       string
 	DNSIP                string
 	Provider             string
-	RawAppDefaultConfig  string
-	RawAppOverrideConfig string
 	RegistryDomain       string
 }
 
@@ -137,15 +132,8 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var appFinalizerResource resource.Interface
-	{
-		c := appfinalizer.Config{
-			G8sClient: config.K8sClient.CtrlClient(),
-			K8sClient: config.K8sClient.K8sClient(),
-			Logger:    config.Logger,
 		}
 
-		appFinalizerResource, err = appfinalizer.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -245,9 +233,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// appResource manages the per cluster app-operator instance and the
 		// workload cluster apps.
 		appResource,
-		// appFinalizerResource removes finalizers after the per cluster
-		// app-operator instance has been deleted.
-		appFinalizerResource,
 	)
 
 	{

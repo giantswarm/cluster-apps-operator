@@ -27,7 +27,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
 // Config represents the configuration used to create a new service.
@@ -151,34 +150,19 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var rv releaseversion.Interface
-	{
-		c := releaseversion.Config{
-			K8sClient: k8sClient,
-		}
-
-		rv, err = releaseversion.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var clusterController *controller.Cluster
 	{
 
 		c := controller.ClusterConfig{
-			ChartName:      cn,
-			K8sClient:      k8sClient,
-			Logger:         config.Logger,
-			PodCIDR:        pc,
-			ReleaseVersion: rv,
+			ChartName: cn,
+			K8sClient: k8sClient,
+			Logger:    config.Logger,
+			PodCIDR:   pc,
 
 			BaseDomain:           baseDomain,
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
 			Provider:             provider,
-			RawAppDefaultConfig:  config.Viper.GetString(config.Flag.Service.Release.App.Config.Default),
-			RawAppOverrideConfig: config.Viper.GetString(config.Flag.Service.Release.App.Config.Override),
 			RegistryDomain:       registryDomain,
 		}
 
