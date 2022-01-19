@@ -92,7 +92,10 @@ func (r *Resource) currentApps(ctx context.Context, cr capi.Cluster) ([]*v1alpha
 func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1.App {
 	appSpecs := []AppSpec{
 		{
-			App:                "app-operator",
+			App: "app-operator",
+			// app-operator is deployed by the management cluster
+			// instance.
+			AppOperatorVersion: uniqueOperatorVersion,
 			AppName:            key.AppOperatorAppName(&cr),
 			Catalog:            r.appOperatorCatalog,
 			ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
@@ -103,7 +106,10 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			Version:            r.appOperatorVersion,
 		},
 		{
-			App:                "chart-operator",
+			App: "chart-operator",
+			// chart-operator is deployed by the workload cluster
+			// instance.
+			AppOperatorVersion: r.appOperatorVersion,
 			AppName:            key.ChartOperatorAppName(&cr),
 			Catalog:            r.chartOperatorCatalog,
 			ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
@@ -143,15 +149,6 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 		}
 	}
 
-	labels := map[string]string{
-		label.AppKubernetesName: appSpec.App,
-		label.Cluster:           key.ClusterID(&cr),
-		label.ManagedBy:         project.Name(),
-	}
-	if appSpec.InCluster {
-		labels[label.AppOperatorVersion] = uniqueOperatorVersion
-	}
-
 	return &v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
@@ -161,7 +158,12 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			Annotations: map[string]string{
 				annotation.ChartOperatorForceHelmUpgrade: strconv.FormatBool(appSpec.UseUpgradeForce),
 			},
-			Labels:    labels,
+			Labels: map[string]string{
+				label.AppKubernetesName:  appSpec.App,
+				label.AppOperatorVersion: appSpec.AppOperatorVersion,
+				label.Cluster:            key.ClusterID(&cr),
+				label.ManagedBy:          project.Name(),
+			},
 			Name:      appSpec.AppName,
 			Namespace: cr.GetNamespace(),
 		},
