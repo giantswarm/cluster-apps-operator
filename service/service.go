@@ -159,7 +159,11 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 			PodCIDR:   pc,
 
+			AppOperatorCatalog:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
+			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
 			BaseDomain:           baseDomain,
+			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
+			ChartOperatorVersion: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
 			Provider:             provider,

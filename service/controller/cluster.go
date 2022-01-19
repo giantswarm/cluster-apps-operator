@@ -25,12 +25,15 @@ import (
 )
 
 type ClusterConfig struct {
-	ChartName      chartname.Interface
-	K8sClient      k8sclient.Interface
-	Logger         micrologger.Logger
-	ReleaseVersion releaseversion.Interface
-	PodCIDR        podcidr.Interface
+	ChartName chartname.Interface
+	K8sClient k8sclient.Interface
+	Logger    micrologger.Logger
+	PodCIDR   podcidr.Interface
 
+	AppOperatorCatalog   string
+	AppOperatorVersion   string
+	ChartOperatorCatalog string
+	ChartOperatorVersion string
 	BaseDomain           string
 	ClusterIPRange       string
 	DNSIP                string
@@ -87,53 +90,20 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
 
-	var appGetter appresource.StateGetter
-	{
-		c := app.Config{
-			ChartName:      config.ChartName,
-			G8sClient:      config.K8sClient.CtrlClient(),
-			K8sClient:      config.K8sClient.K8sClient(),
-			Logger:         config.Logger,
-			ReleaseVersion: config.ReleaseVersion,
-
-			RawAppDefaultConfig:  config.RawAppDefaultConfig,
-			RawAppOverrideConfig: config.RawAppOverrideConfig,
-		}
-
-		appGetter, err = app.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var appResource resource.Interface
 	{
-		c := appresource.Config{
-			G8sClient: config.K8sClient.CtrlClient(),
-			Logger:    config.Logger,
+		c := app.Config{
+			ChartName:  config.ChartName,
+			CtrlClient: config.K8sClient.CtrlClient(),
+			Logger:     config.Logger,
 
-			Name:        app.Name,
-			StateGetter: appGetter,
+			AppOperatorCatalog:   config.AppOperatorCatalog,
+			AppOperatorVersion:   config.AppOperatorVersion,
+			ChartOperatorCatalog: config.ChartOperatorCatalog,
+			ChartOperatorVersion: config.ChartOperatorVersion,
 		}
 
-		c.AllowedAnnotations = []string{
-			"app-operator.giantswarm.io/giantswarm.io/latest-configmap-version",
-			"app-operator.giantswarm.io/latest-secret-version",
-		}
-
-		ops, err := appresource.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		appResource, err = toCRUDResource(config.Logger, ops)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-		}
-
+		appResource, err = app.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

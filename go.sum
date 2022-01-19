@@ -265,7 +265,6 @@ github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeME
 github.com/giantswarm/apiextensions-application v0.1.0/go.mod h1:O6mg+EdXC9CyTLgi0d3rf6QTXrQX/79iw4kjMJRinig=
 github.com/giantswarm/apiextensions-application v0.3.0 h1:U1dQPNo7DXdH4VAFXdPhAWZNI98XE4nMonaUFhclIqo=
 github.com/giantswarm/apiextensions-application v0.3.0/go.mod h1:O6mg+EdXC9CyTLgi0d3rf6QTXrQX/79iw4kjMJRinig=
-github.com/giantswarm/app/v6 v6.0.0 h1:BElAw3eVegpdjukYJCVfqJP8+fZ9lfPuv2K29uBd6eQ=
 github.com/giantswarm/app/v6 v6.0.0/go.mod h1:oq9qBedss6ctqFAyEgLkBwjKAik+D5C+0LDNQOicLGA=
 github.com/giantswarm/appcatalog v0.6.0 h1:lJMmiPK2pyWQtOaLlBwq0Ut1XrMhcnGeA+3j4OMHyfU=
 github.com/giantswarm/appcatalog v0.6.0/go.mod h1:MaglaykZAeFukjpD/jVHrm/zZFwa9uusuN6BgT4NXpY=
@@ -305,8 +304,6 @@ github.com/giantswarm/operatorkit/v6 v6.1.0 h1:RyiBSgC+5zFSMynHeCTl5Bpc4TZErke34
 github.com/giantswarm/operatorkit/v6 v6.1.0/go.mod h1:IR6g8cRtYdT5hyuXq3/vfX5Bp95MvUQl4+wUezjBK7w=
 github.com/giantswarm/release-operator/v2 v2.5.0 h1:GnqI7JfeDrLijidUE6oeJDLAlO4AN3aFfpc1NNkXkPc=
 github.com/giantswarm/release-operator/v2 v2.5.0/go.mod h1:v4frUlQ0ggQcDqR+maUbvOG4exzxugeqA9qgmhZzNms=
-github.com/giantswarm/resource/v4 v4.0.0 h1:ynpmhOS/begYi2N05y5SxJYP86qBMBI9B0bkPOCIDhM=
-github.com/giantswarm/resource/v4 v4.0.0/go.mod h1:vfj7UzfQcJgrcYA2IxhEtFrwFZoarZUuuloMd5yzwAg=
 github.com/giantswarm/silence-operator v0.4.0/go.mod h1:BIOvMB3TfQj0TSb+aOREkqpfCOeoo7Cy4dnfAtyswEo=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/to v0.4.0 h1:x0GjbI94/nxcHztJiRtJzihCjgmUlEOto8RD98VA7WI=

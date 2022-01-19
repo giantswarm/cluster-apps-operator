@@ -14,6 +14,13 @@ data:
       listen:
         address: 'http://0.0.0.0:8000'
     service:
+      app:
+        appOperator:
+          catalog: {{ .Values.appOperator.catalog }}
+          version: {{ .Values.appOperator.version }}
+        chartOperator:
+          catalog: {{ .Values.chartOperator.catalog }}
+          version: {{ .Values.chartOperator.version }}
       kubernetes:
         address: ''
         inCluster: true
@@ -23,11 +30,6 @@ data:
           keyFile: ''
       provider:
         kind: {{ .Values.provider.kind }}
-      release:
-        app:
-          config:
-            default: {{ toYaml .Values.release.app.config.default | indent 12 }}
-            override: {{ toYaml .Values.release.app.config.override | indent 12 }}
       workload:
         cluster:
           baseDomain: '{{ .Values.base }}'

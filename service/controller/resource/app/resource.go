@@ -1,14 +1,15 @@
 package app
 
 import (
+	"reflect"
+
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"k8s.io/client-go/kubernetes"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/releaseversion"
 )
 
 const (
@@ -20,42 +21,27 @@ const (
 
 // Config represents the configuration used to create a new app resource.
 type Config struct {
-	ChartName      chartname.Interface
-	G8sClient      client.Client
-	K8sClient      kubernetes.Interface
-	Logger         micrologger.Logger
-	ReleaseVersion releaseversion.Interface
+	ChartName  chartname.Interface
+	CtrlClient client.Client
+	Logger     micrologger.Logger
 
-	RawAppDefaultConfig  string
-	RawAppOverrideConfig string
+	AppOperatorCatalog   string
+	AppOperatorVersion   string
+	ChartOperatorCatalog string
+	ChartOperatorVersion string
 }
 
 // Resource implements the app resource.
 type Resource struct {
-	chartName      chartname.Interface
-	g8sClient      client.Client
-	k8sClient      kubernetes.Interface
-	logger         micrologger.Logger
-	releaseVersion releaseversion.Interface
+	chartName  chartname.Interface
+	ctrlClient client.Client
+	logger     micrologger.Logger
 
-	defaultConfig  defaultConfig
-	overrideConfig overrideConfig
+	appOperatorCatalog   string
+	appOperatorVersion   string
+	chartOperatorCatalog string
+	chartOperatorVersion string
 }
-
-type defaultConfig struct {
-	Catalog         string `json:"catalog"`
-	Namespace       string `json:"namespace"`
-	UseUpgradeForce bool   `json:"useUpgradeForce"`
-}
-
-type overrideProperties struct {
-	Chart                  string `json:"chart"`
-	HasClusterValuesSecret *bool  `json:"hasClusterValuesSecret,omitempty"`
-	Namespace              string `json:"namespace"`
-	UseUpgradeForce        *bool  `json:"useUpgradeForce,omitempty"`
-}
-
-type overrideConfig map[string]overrideProperties
 
 // New creates a new configured app state getter resource managing
 // app CRs.
@@ -66,47 +52,35 @@ func New(config Config) (*Resource, error) {
 	if config.ChartName == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ChartName must not be empty", config)
 	}
-	if config.G8sClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.G8sClient must not be empty", config)
-	}
-	if config.K8sClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
+	if config.CtrlClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.CtrlClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if config.ReleaseVersion == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.ReleaseVersion must not be empty", config)
-	}
 
-	if config.RawAppDefaultConfig == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.RawDefaultConfig must not be empty", config)
+	if config.AppOperatorCatalog == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.AppOperatorCatalog must not be empty", config)
 	}
-	if config.RawAppOverrideConfig == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.RawOverrideConfig must not be empty", config)
+	if config.AppOperatorVersion == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.AppOperatorVersion must not be empty", config)
 	}
-
-	defaultConfig := defaultConfig{}
-	err := yaml.Unmarshal([]byte(config.RawAppDefaultConfig), &defaultConfig)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	if config.ChartOperatorCatalog == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.ChartOperatorCatalog must not be empty", config)
 	}
-
-	overrideConfig := overrideConfig{}
-	err = yaml.Unmarshal([]byte(config.RawAppOverrideConfig), &overrideConfig)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	if config.ChartOperatorVersion == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.ChartOperatorVersion must not be empty", config)
 	}
 
 	r := &Resource{
-		chartName:      config.ChartName,
-		g8sClient:      config.G8sClient,
-		k8sClient:      config.K8sClient,
-		logger:         config.Logger,
-		releaseVersion: config.ReleaseVersion,
+		chartName:  config.ChartName,
+		ctrlClient: config.CtrlClient,
+		logger:     config.Logger,
 
-		defaultConfig:  defaultConfig,
-		overrideConfig: overrideConfig,
+		appOperatorCatalog:   config.AppOperatorCatalog,
+		appOperatorVersion:   config.AppOperatorVersion,
+		chartOperatorCatalog: config.ChartOperatorCatalog,
+		chartOperatorVersion: config.ChartOperatorVersion,
 	}
 
 	return r, nil
@@ -114,4 +88,46 @@ func New(config Config) (*Resource, error) {
 
 func (r *Resource) Name() string {
 	return Name
+}
+
+func containsApp(apps []*v1alpha1.App, app *v1alpha1.App) bool {
+	for _, a := range apps {
+		if app.Name == a.Name && app.Namespace == a.Namespace {
+			return true
+		}
+	}
+
+	return false
+}
+
+func hasAppChanged(apps []*v1alpha1.App, desired *v1alpha1.App) bool {
+	allowedAnnotations := map[string]bool{
+		annotation.AppOperatorLatestConfigMapVersion: true,
+		annotation.AppOperatorLatestSecretVersion:    true,
+	}
+
+	for _, current := range apps {
+		if desired.Name == current.Name && desired.Namespace == current.Namespace {
+			merged := current.DeepCopy()
+			merged.Annotations = desired.Annotations
+
+			for k, v := range desired.Annotations {
+				if _, exist := current.Annotations[k]; exist {
+					// if annotation is already in desired spec, skip it.
+					continue
+				}
+
+				if _, ok := allowedAnnotations[k]; ok {
+					merged.Annotations[k] = v
+				}
+			}
+
+			merged.Labels = desired.Labels
+			merged.Spec = desired.Spec
+
+			return reflect.DeepEqual(current, merged)
+		}
+	}
+
+	return false
 }
