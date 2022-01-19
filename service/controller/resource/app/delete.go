@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v6/pkg/controller/context/finalizerskeptcontext"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
@@ -55,6 +56,10 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	if len(apps) > 0 {
 		r.logger.Debugf(ctx, "waiting for %d apps to be deleted for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+
+		finalizerskeptcontext.SetKept(ctx)
+		r.logger.Debugf(ctx, "keeping finalizers")
+
 		r.logger.Debugf(ctx, "canceling resource")
 		return nil
 	}
@@ -65,6 +70,10 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	err = r.waitForAppDeletion(ctx, cr, key.ChartOperatorAppName(&cr), desiredApps)
 	if IsNotDeleted(err) {
 		r.logger.Debugf(ctx, "%s not deleted yet", key.ChartOperatorAppName(&cr))
+
+		finalizerskeptcontext.SetKept(ctx)
+		r.logger.Debugf(ctx, "keeping finalizers")
+
 		r.logger.Debugf(ctx, "canceling resource")
 		return nil
 	} else if err != nil {
@@ -76,6 +85,10 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	err = r.waitForAppDeletion(ctx, cr, fmt.Sprintf("%s-app-operator", key.ClusterID(&cr)), desiredApps)
 	if IsNotDeleted(err) {
 		r.logger.Debugf(ctx, "%s not deleted yet", key.AppOperatorAppName(&cr))
+
+		finalizerskeptcontext.SetKept(ctx)
+		r.logger.Debugf(ctx, "keeping finalizers")
+
 		r.logger.Debugf(ctx, "canceling resource")
 		return nil
 	} else if err != nil {
