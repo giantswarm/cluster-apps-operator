@@ -100,6 +100,16 @@ func containsApp(apps []*v1alpha1.App, app *v1alpha1.App) bool {
 	return false
 }
 
+func findAppByName(apps []*v1alpha1.App, name, namespace string) *v1alpha1.App {
+	for _, a := range apps {
+		if name == a.Name && namespace == a.Namespace {
+			return a
+		}
+	}
+
+	return nil
+}
+
 func hasAppChanged(apps []*v1alpha1.App, desired *v1alpha1.App) bool {
 	allowedAnnotations := map[string]bool{
 		annotation.AppOperatorLatestConfigMapVersion: true,

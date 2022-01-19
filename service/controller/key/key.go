@@ -15,20 +15,20 @@ const (
 	defaultDNSLastOctet = 10
 )
 
+func AppOperatorAppName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-app-operator", ClusterID(getter))
+}
+
 func AppOperatorValuesResourceName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-app-operator-values", ClusterID(getter))
 }
 
-func AppUserConfigMapName(appSpec AppSpec) string {
-	return fmt.Sprintf("%s-user-values", appSpec.App)
-}
-
-func AppUserSecretName(appSpec AppSpec) string {
-	return fmt.Sprintf("%s-user-secrets", appSpec.App)
-}
-
 func BaseDomain(getter LabelsGetter, base string) string {
 	return fmt.Sprintf("%s.%s", ClusterID(getter), base)
+}
+
+func ChartOperatorAppName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-chart-operator", ClusterID(getter))
 }
 
 func ClusterValuesResourceName(getter LabelsGetter) string {
@@ -96,14 +96,6 @@ func PodCIDR(cr capi.Cluster) string {
 	}
 
 	return cr.Spec.ClusterNetwork.Pods.CIDRBlocks[0]
-}
-
-func ReleaseName(releaseVersion string) string {
-	return fmt.Sprintf("v%s", releaseVersion)
-}
-
-func ReleaseVersion(getter LabelsGetter) string {
-	return getter.GetLabels()[label.ReleaseVersion]
 }
 
 func ToCluster(v interface{}) (capi.Cluster, error) {

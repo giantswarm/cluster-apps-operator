@@ -1,8 +1,125 @@
 package app
 
-import "context"
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	"github.com/giantswarm/backoff"
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/microerror"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/labels"
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+)
 
 func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	// TODO
+	cr, err := key.ToCluster(obj)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	var apps []*v1alpha1.App
+	{
+		r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
+
+		// Get all apps for cluster not being managed by cluster-apps-operator.
+		selector, err := labels.Parse(fmt.Sprintf("%s=%s,%s!=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()))
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		o := client.ListOptions{
+			Namespace:     cr.GetNamespace(),
+			LabelSelector: selector,
+		}
+
+		var appList v1alpha1.AppList
+
+		err = r.ctrlClient.List(ctx, &appList, &o)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
+		for _, item := range appList.Items {
+			apps = append(apps, item.DeepCopy())
+		}
+
+		r.logger.Debugf(ctx, "found %d apps for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+	}
+
+	if len(apps) > 0 {
+		r.logger.Debugf(ctx, "waiting for %d apps to be deleted for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "canceling resource")
+		return nil
+	}
+
+	desiredApps := r.desiredApps(ctx, cr)
+
+	// There are no more app CRs to manage so we can delete chart-operator.
+	err = r.waitForAppDeletion(ctx, cr, key.ChartOperatorAppName(&cr), desiredApps)
+	if IsNotDeleted(err) {
+		r.logger.Debugf(ctx, "%s not deleted yet", key.ChartOperatorAppName(&cr))
+		r.logger.Debugf(ctx, "canceling resource")
+		return nil
+	} else if err != nil {
+		return microerror.Mask(err)
+	}
+
+	// Once chart-operator is deleted we can delete app-operator and remove
+	// the finalizer.
+	err = r.waitForAppDeletion(ctx, cr, fmt.Sprintf("%s-app-operator", key.ClusterID(&cr)), desiredApps)
+	if IsNotDeleted(err) {
+		r.logger.Debugf(ctx, "%s not deleted yet", key.AppOperatorAppName(&cr))
+		r.logger.Debugf(ctx, "canceling resource")
+		return nil
+	} else if err != nil {
+		return microerror.Mask(err)
+	}
+
 	return nil
+}
+
+// waitForAppDeletion deletes the app CR and waits for a short period. If the
+// deletion takes longer we check again in the next resync period to allow
+// processing other clusters.
+func (r Resource) waitForAppDeletion(ctx context.Context, cr capi.Cluster, appName string, desiredApps []*v1alpha1.App) error {
+	var err error
+
+	app := findAppByName(desiredApps, appName, cr.GetNamespace())
+	if app != nil {
+		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("deleting app '%s/%s'", app.Namespace, app.Name))
+
+		err = r.ctrlClient.Delete(ctx, app)
+		if apierrors.IsNotFound(err) {
+			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("app '%s/%s' already deleted", app.Namespace, app.Name))
+			return nil
+		}
+	}
+
+	o := func() error {
+		err := r.ctrlClient.Get(ctx, client.ObjectKey{
+			Namespace: cr.GetNamespace(),
+			Name:      appName,
+		}, app)
+		if apierrors.IsNotFound(err) {
+			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("deleted app '%s/%s'", app.Namespace, app.Name))
+			return nil
+		}
+
+		return microerror.Maskf(notDeletedError, "'%s/%s' app still persists", app.Namespace, app.Name)
+	}
+	n := func(err error, t time.Duration) {
+		r.logger.Errorf(ctx, err, "retrying in %s", t)
+	}
+
+	b := backoff.NewExponential(15*time.Second, 5*time.Second)
+	err = backoff.RetryNotify(o, b, n)
+
+	return err
 }

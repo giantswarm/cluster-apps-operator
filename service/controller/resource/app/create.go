@@ -93,7 +93,7 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 	appSpecs := []AppSpec{
 		{
 			App:                "app-operator",
-			AppName:            fmt.Sprintf("%s-%s", key.ClusterID(&cr), "app-operator"),
+			AppName:            key.AppOperatorAppName(&cr),
 			Catalog:            r.appOperatorCatalog,
 			ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
 			ConfigMapNamespace: cr.GetNamespace(),
@@ -104,7 +104,7 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 		},
 		{
 			App:                "chart-operator",
-			AppName:            fmt.Sprintf("%s-%s", key.ClusterID(&cr), "chart-operator"),
+			AppName:            key.ChartOperatorAppName(&cr),
 			Catalog:            r.chartOperatorCatalog,
 			ConfigMapName:      key.AppOperatorValuesResourceName(&cr),
 			ConfigMapNamespace: cr.GetNamespace(),

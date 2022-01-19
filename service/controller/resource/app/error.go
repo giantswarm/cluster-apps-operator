@@ -13,11 +13,11 @@ func IsInvalidConfigError(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
 }
 
-var notFoundError = &microerror.Error{
-	Kind: "notFoundError",
+var notDeletedError = &microerror.Error{
+	Kind: "notDeletedError",
 }
 
-// IsNotFound asserts notFoundError.
-func IsNotFound(err error) bool {
-	return microerror.Cause(err) == notFoundError
+// IsNotDeleted asserts notDeletedError.
+func IsNotDeleted(err error) bool {
+	return microerror.Cause(err) == notDeletedError
 }
