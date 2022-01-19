@@ -12,6 +12,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/types"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -45,7 +46,24 @@ func (r Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		} else if hasAppChanged(currentApps, app) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("updating app '%s/%s'", app.Namespace, app.Name))
 
-			err = r.ctrlClient.Update(ctx, app)
+			// Get app CR again to ensure the resource version is correct.
+			var currentApp v1alpha1.App
+
+			err = r.ctrlClient.Get(
+				ctx,
+				types.NamespacedName{Name: app.Name, Namespace: app.Namespace},
+				&currentApp,
+			)
+			if err != nil {
+				return microerror.Mask(err)
+			}
+
+			// TODO: Handle annotations added by app-operator.
+			currentApp.Annotations = app.Annotations
+			currentApp.Labels = app.Labels
+			currentApp.Spec = app.Spec
+
+			err = r.ctrlClient.Update(ctx, &currentApp)
 			if err != nil {
 				return microerror.Mask(err)
 			}
