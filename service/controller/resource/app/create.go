@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"strconv"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -32,7 +33,9 @@ func (r Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	for _, app := range r.desiredApps(ctx, cr) {
-		if !containsApp(currentApps, app) {
+		currentApp := findAppByName(currentApps, app.Name, app.Namespace)
+
+		if currentApp == nil {
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating app '%s/%s'", app.Namespace, app.Name))
 
 			err = r.ctrlClient.Create(ctx, app)
@@ -43,7 +46,7 @@ func (r Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			}
 
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("created app '%s/%s'", app.Namespace, app.Name))
-		} else if hasAppChanged(currentApps, app) {
+		} else if hasAppChanged(currentApp, app) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("updating app '%s/%s'", app.Namespace, app.Name))
 
 			// Get app CR again to ensure the resource version is correct.
@@ -199,4 +202,21 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			KubeConfig: kubeConfig,
 		},
 	}
+}
+
+func hasAppChanged(current, desired *v1alpha1.App) bool {
+	if current == nil || desired == nil {
+		return false
+	}
+	if !reflect.DeepEqual(current.Spec, desired.Spec) {
+		return true
+	}
+	if !reflect.DeepEqual(current.Annotations, desired.Annotations) {
+		return true
+	}
+	if !reflect.DeepEqual(current.Labels, desired.Labels) {
+		return true
+	}
+
+	return false
 }

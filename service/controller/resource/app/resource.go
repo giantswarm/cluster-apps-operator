@@ -1,10 +1,7 @@
 package app
 
 import (
-	"reflect"
-
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
-	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -82,16 +79,6 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func containsApp(apps []*v1alpha1.App, app *v1alpha1.App) bool {
-	for _, a := range apps {
-		if app.Name == a.Name && app.Namespace == a.Namespace {
-			return true
-		}
-	}
-
-	return false
-}
-
 func findAppByName(apps []*v1alpha1.App, name, namespace string) *v1alpha1.App {
 	for _, a := range apps {
 		if name == a.Name && namespace == a.Namespace {
@@ -100,36 +87,4 @@ func findAppByName(apps []*v1alpha1.App, name, namespace string) *v1alpha1.App {
 	}
 
 	return nil
-}
-
-func hasAppChanged(apps []*v1alpha1.App, desired *v1alpha1.App) bool {
-	allowedAnnotations := map[string]bool{
-		annotation.AppOperatorLatestConfigMapVersion: true,
-		annotation.AppOperatorLatestSecretVersion:    true,
-	}
-
-	for _, current := range apps {
-		if desired.Name == current.Name && desired.Namespace == current.Namespace {
-			merged := current.DeepCopy()
-			merged.Annotations = desired.Annotations
-
-			for k, v := range desired.Annotations {
-				if _, exist := current.Annotations[k]; exist {
-					// if annotation is already in desired spec, skip it.
-					continue
-				}
-
-				if _, ok := allowedAnnotations[k]; ok {
-					merged.Annotations[k] = v
-				}
-			}
-
-			merged.Labels = desired.Labels
-			merged.Spec = desired.Spec
-
-			return reflect.DeepEqual(current, merged)
-		}
-	}
-
-	return false
 }
