@@ -111,9 +111,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Release.App.Config.Default, "", "Default properties for app.")
-	daemonCommand.PersistentFlags().String(f.Service.Release.App.Config.Override, "", "Overriding properties for app.")
-
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.BaseDomain, "", "Parent cluster base domain.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.CIDR, "", "Prefix length for the CIDR block used by Calico.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.Subnet, "", "Network address for the CIDR block used by Calico.")

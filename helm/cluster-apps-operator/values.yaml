@@ -41,29 +41,5 @@ registry:
   pullSecret:
     dockerConfigJSON: ""
 
-release:
-  app:
-    config:
-      default: |
-        catalog: default
-        namespace: kube-system
-        useUpgradeForce: true
-      override: |
-        cert-exporter:
-          chart: "cert-exporter"
-        chart-operator:
-          chart:     "chart-operator"
-          namespace: "giantswarm"
-        cloud-provider-openstack:
-          hasClusterValuesSecret: true
-        # Upgrade force is disabled to avoid affecting customer workloads.
-        coredns:
-          useUpgradeForce: false
-        net-exporter:
-          chart: "net-exporter"
-        # Upgrade force is disabled to avoid affecting customer workloads.
-        nginx-ingress-controller:
-          useUpgradeForce: false
-
 verticalPodAutoscaler:
   enabled: true

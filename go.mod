@@ -15,8 +15,6 @@ require (
 	github.com/giantswarm/micrologger v0.6.0
 	github.com/giantswarm/operatorkit/v6 v6.1.0
 	github.com/giantswarm/release-operator/v2 v2.5.0
-	github.com/giantswarm/resource/v4 v4.0.0
-	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/spf13/viper v1.10.1
 	k8s.io/api v0.21.4
@@ -37,7 +35,6 @@ require (
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/getsentry/sentry-go v0.11.0 // indirect
-	github.com/giantswarm/app/v6 v6.0.0 // indirect
 	github.com/giantswarm/appcatalog v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
 	github.com/giantswarm/versionbundle v1.0.0 // indirect
@@ -65,6 +62,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
