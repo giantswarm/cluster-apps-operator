@@ -5,7 +5,6 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/flag/service/image"
 	"github.com/giantswarm/cluster-apps-operator/flag/service/provider"
-	"github.com/giantswarm/cluster-apps-operator/flag/service/release"
 	"github.com/giantswarm/cluster-apps-operator/flag/service/workload"
 )
 
@@ -14,6 +13,5 @@ type Service struct {
 	Image      image.Image
 	Kubernetes kubernetes.Kubernetes
 	Provider   provider.Provider
-	Release    release.Release
 	Workload   workload.Workload
 }

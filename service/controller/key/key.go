@@ -15,14 +15,6 @@ const (
 	defaultDNSLastOctet = 10
 )
 
-func AppUserConfigMapName(appSpec AppSpec) string {
-	return fmt.Sprintf("%s-user-values", appSpec.App)
-}
-
-func AppUserSecretName(appSpec AppSpec) string {
-	return fmt.Sprintf("%s-user-secrets", appSpec.App)
-}
-
 func BaseDomain(getter LabelsGetter, base string) string {
 	return fmt.Sprintf("%s.%s", ClusterID(getter), base)
 }
