@@ -20,12 +20,10 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clustersecret"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
 
 type ClusterConfig struct {
-	ChartName chartname.Interface
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
@@ -93,7 +91,6 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var appResource resource.Interface
 	{
 		c := app.Config{
-			ChartName:  config.ChartName,
 			CtrlClient: config.K8sClient.CtrlClient(),
 			Logger:     config.Logger,
 

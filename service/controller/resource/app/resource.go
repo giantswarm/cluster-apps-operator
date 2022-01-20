@@ -8,8 +8,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-
-	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 )
 
 const (
@@ -21,7 +19,6 @@ const (
 
 // Config represents the configuration used to create a new app resource.
 type Config struct {
-	ChartName  chartname.Interface
 	CtrlClient client.Client
 	Logger     micrologger.Logger
 
@@ -33,7 +30,6 @@ type Config struct {
 
 // Resource implements the app resource.
 type Resource struct {
-	chartName  chartname.Interface
 	ctrlClient client.Client
 	logger     micrologger.Logger
 
@@ -49,9 +45,6 @@ type Resource struct {
 //     https://pkg.go.dev/github.com/giantswarm/resource/v2/appresource#StateGetter
 //
 func New(config Config) (*Resource, error) {
-	if config.ChartName == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.ChartName must not be empty", config)
-	}
 	if config.CtrlClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.CtrlClient must not be empty", config)
 	}
@@ -73,7 +66,6 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		chartName:  config.ChartName,
 		ctrlClient: config.CtrlClient,
 		logger:     config.Logger,
 

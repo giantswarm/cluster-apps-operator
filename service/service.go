@@ -13,7 +13,6 @@ import (
 	"github.com/giantswarm/microendpoint/service/version"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	releasev1alpha1 "github.com/giantswarm/release-operator/v2/api/v1alpha1"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
@@ -25,7 +24,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/service/controller"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/chartname"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
 
@@ -113,26 +111,12 @@ func New(config Config) (*Service, error) {
 				capi.AddToScheme,
 				capo.AddToScheme,
 				capz.AddToScheme,
-				releasev1alpha1.AddToScheme,
 			},
 
 			RestConfig: restConfig,
 		}
 
 		k8sClient, err = k8sclient.NewClients(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var cn chartname.Interface
-	{
-		c := chartname.Config{
-			G8sClient: k8sClient.CtrlClient(),
-			Logger:    config.Logger,
-		}
-
-		cn, err = chartname.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -154,20 +138,15 @@ func New(config Config) (*Service, error) {
 	{
 
 		c := controller.ClusterConfig{
-			ChartName: cn,
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 			PodCIDR:   pc,
 
-			AppOperatorCatalog:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
-			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
-			BaseDomain:           baseDomain,
-			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
-			ChartOperatorVersion: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
-			ClusterIPRange:       clusterIPRange,
-			DNSIP:                dnsIP,
-			Provider:             provider,
-			RegistryDomain:       registryDomain,
+			BaseDomain:     baseDomain,
+			ClusterIPRange: clusterIPRange,
+			DNSIP:          dnsIP,
+			Provider:       provider,
+			RegistryDomain: registryDomain,
 		}
 
 		clusterController, err = controller.NewCluster(c)
