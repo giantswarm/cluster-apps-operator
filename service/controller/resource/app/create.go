@@ -58,12 +58,12 @@ func (r Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			// TODO: Handle annotations added by app-operator.
-			currentApp.Annotations = app.Annotations
-			currentApp.Labels = app.Labels
-			currentApp.Spec = app.Spec
+			modifiedApp := currentApp.DeepCopy()
+			modifiedApp.Annotations = app.Annotations
+			modifiedApp.Labels = app.Labels
+			modifiedApp.Spec = app.Spec
 
-			err = r.ctrlClient.Update(ctx, &currentApp)
+			err = r.ctrlClient.Patch(ctx, modifiedApp, client.MergeFrom(&currentApp))
 			if err != nil {
 				return microerror.Mask(err)
 			}
