@@ -13,7 +13,6 @@ import (
 	"github.com/giantswarm/microendpoint/service/version"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	releasev1alpha1 "github.com/giantswarm/release-operator/v2/api/v1alpha1"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
@@ -112,7 +111,6 @@ func New(config Config) (*Service, error) {
 				capi.AddToScheme,
 				capo.AddToScheme,
 				capz.AddToScheme,
-				releasev1alpha1.AddToScheme,
 			},
 
 			RestConfig: restConfig,
