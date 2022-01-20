@@ -142,11 +142,15 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 			PodCIDR:   pc,
 
-			BaseDomain:     baseDomain,
-			ClusterIPRange: clusterIPRange,
-			DNSIP:          dnsIP,
-			Provider:       provider,
-			RegistryDomain: registryDomain,
+			AppOperatorCatalog:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
+			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
+			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
+			ChartOperatorVersion: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
+			BaseDomain:           baseDomain,
+			ClusterIPRange:       clusterIPRange,
+			DNSIP:                dnsIP,
+			Provider:             provider,
+			RegistryDomain:       registryDomain,
 		}
 
 		clusterController, err = controller.NewCluster(c)
