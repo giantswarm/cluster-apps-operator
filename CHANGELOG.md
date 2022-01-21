@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- App CRs and related resources are created in the organization namespace.
+- App CRs are selected using the `giantswarm.io/cluster` label.
+- `app-operator` and `chart-operator` app CRs are managed by the operator and
+versioned via the operator's configmap.
+
+### Removed
+
+- Workload cluster namespace in the management cluster is no longer created.
+- Release CRs are no longer used.
+
 ## [1.1.0] - 2021-12-08
 
 ### Fixed
