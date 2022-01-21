@@ -85,7 +85,7 @@ workflows:
           app_name: "app-operator"
           app_collection_repo: "openstack-app-collection"
           requires:
-            - push-app-operator-to-control-plane-app-catalog
+            - push-cluster-apps-operator-to-control-plane-app-catalog
           filters:
             branches:
               ignore: /.*/
