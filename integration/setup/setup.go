@@ -14,6 +14,7 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/integration/env"
 	"github.com/giantswarm/cluster-apps-operator/integration/key"
+	"github.com/giantswarm/cluster-apps-operator/integration/templates"
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 )
 
@@ -41,6 +42,7 @@ func installResources(ctx context.Context, config Config) error {
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
 				SHA:           env.CircleSHA(),
+				ValuesYAML:    templates.ClusterAppsOperatorValues,
 				WaitForDeploy: true,
 			},
 		}

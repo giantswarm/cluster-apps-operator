@@ -14,6 +14,13 @@ data:
       listen:
         address: 'http://0.0.0.0:8000'
     service:
+      app:
+        appOperator:
+          catalog: {{ .Values.appOperator.catalog }}
+          version: {{ .Values.appOperator.version }}
+        chartOperator:
+          catalog: {{ .Values.chartOperator.catalog }}
+          version: {{ .Values.chartOperator.version }}
       kubernetes:
         address: ''
         inCluster: true

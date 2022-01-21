@@ -55,7 +55,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	secretSpecs := []secretSpec{
 		{
 			Name:      key.ClusterValuesResourceName(&cr),
-			Namespace: key.ClusterID(&cr),
+			Namespace: cr.GetNamespace(),
 			Values:    values,
 		},
 	}

@@ -101,6 +101,11 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand := newCommand.DaemonCommand().CobraCommand()
 
+	daemonCommand.PersistentFlags().String(f.Service.App.AppOperator.Catalog, "", "Catalog for app-operator app CR.")
+	daemonCommand.PersistentFlags().String(f.Service.App.AppOperator.Version, "", "Version for app-operator app CR.")
+	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Catalog, "", "Catalog for chart-operator app CR.")
+	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Version, "", "Version for chart-operator app CR.")
+
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of management cluster this operator is running in. Used to determine provider-specific cluster values.")
 	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "quay.io", "Image registry.")
 

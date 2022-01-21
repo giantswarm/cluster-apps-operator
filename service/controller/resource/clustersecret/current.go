@@ -21,13 +21,13 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 
 	var secrets []*corev1.Secret
 	{
-		r.logger.Debugf(ctx, "finding cluster secrets in namespace %#q", key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "finding cluster secrets in namespace %#q", cr.GetNamespace())
 
 		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("%s=%s", label.ManagedBy, project.Name()),
+			LabelSelector: fmt.Sprintf("%s=%s,%s=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()),
 		}
 
-		list, err := r.k8sClient.K8sClient().CoreV1().Secrets(key.ClusterID(&cr)).List(ctx, lo)
+		list, err := r.k8sClient.K8sClient().CoreV1().Secrets(cr.GetNamespace()).List(ctx, lo)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -36,7 +36,7 @@ func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*cor
 			secrets = append(secrets, item.DeepCopy())
 		}
 
-		r.logger.Debugf(ctx, "found %d secrets in namespace %#q", len(secrets), key.ClusterID(&cr))
+		r.logger.Debugf(ctx, "found %d secrets in namespace %#q", len(secrets), cr.GetNamespace())
 	}
 
 	return secrets, nil

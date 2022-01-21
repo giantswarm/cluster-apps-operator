@@ -1,3 +1,11 @@
+appOperator:
+  catalog: control-plane-catalog
+  version: 5.5.1
+
+chartOperator:
+  catalog: default
+  version: 2.20.0
+
 base: example.gigantic.io
 
 provider:

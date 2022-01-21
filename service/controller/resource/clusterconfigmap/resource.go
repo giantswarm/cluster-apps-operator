@@ -25,6 +25,8 @@ type Config struct {
 	BaseDomain     string
 	ClusterIPRange string
 	DNSIP          string
+	Provider       string
+	RegistryDomain string
 }
 
 // Resource implements the clusterConfigMap resource.
@@ -36,6 +38,8 @@ type Resource struct {
 	baseDomain     string
 	clusterIPRange string
 	dnsIP          string
+	provider       string
+	registryDomain string
 }
 
 // New creates a new configured config map state getter resource managing
@@ -63,6 +67,12 @@ func New(config Config) (*Resource, error) {
 	if config.DNSIP == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DNSIP must not be empty", config)
 	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
+	}
+	if config.RegistryDomain == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.RegistryDomain must not be empty", config)
+	}
 
 	r := &Resource{
 		k8sClient: config.K8sClient,
@@ -72,6 +82,8 @@ func New(config Config) (*Resource, error) {
 		baseDomain:     strings.TrimPrefix(config.BaseDomain, "k8s."),
 		clusterIPRange: config.ClusterIPRange,
 		dnsIP:          config.DNSIP,
+		provider:       config.Provider,
+		registryDomain: config.RegistryDomain,
 	}
 
 	return r, nil

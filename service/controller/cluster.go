@@ -17,6 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/app"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/service/controller/resource/clustersecret"
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
@@ -27,12 +28,14 @@ type ClusterConfig struct {
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
 
+	AppOperatorCatalog   string
+	AppOperatorVersion   string
+	ChartOperatorCatalog string
+	ChartOperatorVersion string
 	BaseDomain           string
 	ClusterIPRange       string
 	DNSIP                string
 	Provider             string
-	RawAppDefaultConfig  string
-	RawAppOverrideConfig string
 	RegistryDomain       string
 }
 
@@ -85,6 +88,24 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 	var err error
 
+	var appResource resource.Interface
+	{
+		c := app.Config{
+			CtrlClient: config.K8sClient.CtrlClient(),
+			Logger:     config.Logger,
+
+			AppOperatorCatalog:   config.AppOperatorCatalog,
+			AppOperatorVersion:   config.AppOperatorVersion,
+			ChartOperatorCatalog: config.ChartOperatorCatalog,
+			ChartOperatorVersion: config.ChartOperatorVersion,
+		}
+
+		appResource, err = app.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var clusterConfigMapGetter configmapresource.StateGetter
 	{
 		c := clusterconfigmap.Config{
@@ -95,6 +116,8 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 
 			ClusterIPRange: config.ClusterIPRange,
 			DNSIP:          config.DNSIP,
+			Provider:       config.Provider,
+			RegistryDomain: config.RegistryDomain,
 		}
 
 		clusterConfigMapGetter, err = clusterconfigmap.New(c)
@@ -172,6 +195,12 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// app CRs are accepted by the validation webhook.
 		resources = append(resources, clusterSecretResource)
 	}
+
+	resources = append(resources,
+		// appResource manages the per cluster app-operator instance and the
+		// workload cluster apps.
+		appResource,
+	)
 
 	{
 		c := retryresource.WrapConfig{
