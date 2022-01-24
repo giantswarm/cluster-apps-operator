@@ -78,3 +78,16 @@ workflows:
                 - master
           requires:
             - push-cluster-apps-operator-to-control-plane-app-catalog
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-cluster-apps-operator-to-openstack-app-collection
+          app_name: "cluster-apps-operator"
+          app_collection_repo: "openstack-app-collection"
+          requires:
+            - push-cluster-apps-operator-to-control-plane-app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
