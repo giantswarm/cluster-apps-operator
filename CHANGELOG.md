@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update app-operator to `v5.5.2` with fix for chart CR watcher.
+
 ## [1.2.0] - 2022-01-21
 
 ### Changed
