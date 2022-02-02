@@ -2,13 +2,13 @@ package collector
 
 import (
 	"github.com/giantswarm/exporterkit/collector"
+	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"k8s.io/client-go/kubernetes"
 )
 
 type SetConfig struct {
-	K8sClient kubernetes.Interface
+	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 }
 
@@ -23,16 +23,24 @@ type Set struct {
 func NewSet(config SetConfig) (*Set, error) {
 	var err error
 
-	todo, err := NewTodo(TodoConfig{})
-	if err != nil {
-		return nil, microerror.Mask(err)
+	var clusterCollector *Cluster
+	{
+		c := ClusterConfig{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		clusterCollector, err = NewCluster(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	var collectorSet *collector.Set
 	{
 		c := collector.SetConfig{
 			Collectors: []collector.Interface{
-				todo,
+				clusterCollector,
 			},
 			Logger: config.Logger,
 		}
