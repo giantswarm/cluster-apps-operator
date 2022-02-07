@@ -283,8 +283,8 @@ github.com/giantswarm/micrologger v0.5.0/go.mod h1:J/jbt7A8eixqE40yq4JY8Hdbs/qeb
 github.com/giantswarm/micrologger v0.6.0 h1:FBI0YXBwvJ6Djmgk7TUjXXTu2/3Pdy6B7BpbNdLG4SE=
 github.com/giantswarm/micrologger v0.6.0/go.mod h1:/qEWo7q9w+yiD2H6E1DKbErcBQ1bAjXErVIkQYFas14=
 github.com/giantswarm/operatorkit/v6 v6.0.0/go.mod h1:6VuuSTYD0CIAPKf2D4ici179FhB8s4Zq+F+exb6iVYI=
-github.com/giantswarm/operatorkit/v7 v7.0.1-0.20220207145555-be3ff9dd7b8b h1:+6XKrfJ5vXvdYImvFe8ewi3EpA2AFYMKyo23XZvixzM=
-github.com/giantswarm/operatorkit/v7 v7.0.1-0.20220207145555-be3ff9dd7b8b/go.mod h1:5enwhyIjd4xKrYXV9+enqttcmB9BE2Ocl1V12IwJIuw=
+github.com/giantswarm/operatorkit/v7 v7.0.1 h1:RmebxAH7LRM9vPjVN0fZfAFpfDLe93s9i21TIxHhaLM=
+github.com/giantswarm/operatorkit/v7 v7.0.1/go.mod h1:5enwhyIjd4xKrYXV9+enqttcmB9BE2Ocl1V12IwJIuw=
 github.com/giantswarm/silence-operator v0.4.0/go.mod h1:BIOvMB3TfQj0TSb+aOREkqpfCOeoo7Cy4dnfAtyswEo=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/to v0.4.0 h1:x0GjbI94/nxcHztJiRtJzihCjgmUlEOto8RD98VA7WI=
