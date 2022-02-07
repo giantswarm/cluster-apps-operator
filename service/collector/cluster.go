@@ -2,6 +2,7 @@ package collector
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
@@ -11,7 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	k8slabels "k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/selection"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
@@ -28,7 +29,6 @@ var (
 		"Number of dangling apps for a terminating cluster.",
 		[]string{
 			labelClusterID,
-			labelInstallation,
 		},
 		nil,
 	)
@@ -40,6 +40,7 @@ type ClusterConfig struct {
 }
 
 type Cluster struct {
+	context   context.Context
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 }
@@ -53,6 +54,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 	}
 
 	np := &Cluster{
+		context:   context.Background(),
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 	}
@@ -61,12 +63,10 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 }
 
 func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
-	ctx := context.Background()
-
-	var clusterList apiv1alpha3.ClusterList
+	var clusterList capiv1alpha4.ClusterList
 	{
 		err := c.k8sClient.CtrlClient().List(
-			ctx,
+			c.context,
 			&clusterList,
 		)
 		if err != nil {
@@ -75,45 +75,20 @@ func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
 	}
 
 	for _, cl := range clusterList.Items {
-		if cl.DeletionTimestamp.IsZero() || hasDesiredFinalizer(cl.GetFinalizers()) {
+		if cl.DeletionTimestamp.IsZero() || !hasProjectFinalizer(cl.GetFinalizers()) {
 			continue
 		}
 
-		var appList v1alpha1.AppList
-		{
-			var err error
-
-			selector := k8slabels.NewSelector()
-			clusterLabel, err := k8slabels.NewRequirement(label.Cluster, selection.Equals, []string{cl.GetName()})
-			if err != nil {
-				return microerror.Mask(err)
-			}
-
-			managedByLabel, err := k8slabels.NewRequirement(label.ManagedBy, selection.DoesNotExist, []string{})
-			if err != nil {
-				return microerror.Mask(err)
-			}
-
-			selector = selector.Add(*clusterLabel)
-			selector = selector.Add(*managedByLabel)
-
-			err = c.k8sClient.CtrlClient().List(
-				ctx,
-				&appList,
-				client.InNamespace(cl.GetNamespace()),
-				client.MatchingLabelsSelector{Selector: selector},
-			)
-			if err != nil {
-				return microerror.Mask(err)
-			}
+		dangling, err := c.getNumberOfApps(cl.GetName(), cl.GetNamespace())
+		if err != nil {
+			return microerror.Mask(err)
 		}
 
 		ch <- prometheus.MustNewConstMetric(
 			danglingApps,
 			prometheus.GaugeValue,
-			float64(len(appList.Items)),
+			float64(dangling),
 			cl.GetName(),
-			"test",
 		)
 
 	}
@@ -127,9 +102,43 @@ func (c *Cluster) Describe(ch chan<- *prometheus.Desc) error {
 	return nil
 }
 
-func hasDesiredFinalizer(finalizers []string) bool {
+func (c *Cluster) getNumberOfApps(name, namespace string) (int, error) {
+	var appList v1alpha1.AppList
+	{
+		var err error
+
+		selector := k8slabels.NewSelector()
+		clusterLabel, err := k8slabels.NewRequirement(label.Cluster, selection.Equals, []string{name})
+		if err != nil {
+			return -1, microerror.Mask(err)
+		}
+
+		managedByLabel, err := k8slabels.NewRequirement(label.ManagedBy, selection.NotEquals, []string{"cluster-apps-operator"})
+		if err != nil {
+			return -1, microerror.Mask(err)
+		}
+
+		selector = selector.Add(*clusterLabel)
+		selector = selector.Add(*managedByLabel)
+
+		err = c.k8sClient.CtrlClient().List(
+			c.context,
+			&appList,
+			client.InNamespace(namespace),
+			client.MatchingLabelsSelector{Selector: selector},
+		)
+
+		if err != nil {
+			return -1, microerror.Mask(err)
+		}
+	}
+
+	return len(appList.Items), nil
+}
+
+func hasProjectFinalizer(finalizers []string) bool {
 	for _, f := range finalizers {
-		if f == project.Name()+"-cluster-controller" {
+		if f == fmt.Sprintf("operatorkit.giantswarm.io/%s-cluster-controller", project.Name()) {
 			return true
 		}
 	}
