@@ -5,13 +5,12 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
-	"github.com/giantswarm/k8sclient/v6/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/client_golang/prometheus"
 	k8slabels "k8s.io/apimachinery/pkg/labels"
-	"k8s.io/apimachinery/pkg/selection"
 	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -19,14 +18,13 @@ import (
 )
 
 const (
-	labelInstallation = "installation"
-	labelClusterID    = "cluster_id"
+	labelClusterID = "cluster_id"
 )
 
 var (
 	danglingApps *prometheus.Desc = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, subsystem, "dangling_apps"),
-		"Number of dangling apps for a terminating cluster.",
+		"Number of apps not yet deleted for a terminating cluster.",
 		[]string{
 			labelClusterID,
 		},
@@ -75,7 +73,7 @@ func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
 	}
 
 	for _, cl := range clusterList.Items {
-		if cl.DeletionTimestamp.IsZero() || !hasProjectFinalizer(cl.GetFinalizers()) {
+		if cl.DeletionTimestamp.IsZero() || !hasFinalizer(cl.GetFinalizers()) {
 			continue
 		}
 
@@ -107,27 +105,17 @@ func (c *Cluster) getNumberOfApps(name, namespace string) (int, error) {
 	{
 		var err error
 
-		selector := k8slabels.NewSelector()
-		clusterLabel, err := k8slabels.NewRequirement(label.Cluster, selection.Equals, []string{name})
+		selector, err := k8slabels.Parse(fmt.Sprintf("%s=%s,%s!=%s", label.Cluster, name, label.ManagedBy, project.Name()))
 		if err != nil {
 			return -1, microerror.Mask(err)
 		}
 
-		managedByLabel, err := k8slabels.NewRequirement(label.ManagedBy, selection.NotEquals, []string{"cluster-apps-operator"})
-		if err != nil {
-			return -1, microerror.Mask(err)
+		o := client.ListOptions{
+			Namespace:     namespace,
+			LabelSelector: selector,
 		}
 
-		selector = selector.Add(*clusterLabel)
-		selector = selector.Add(*managedByLabel)
-
-		err = c.k8sClient.CtrlClient().List(
-			c.context,
-			&appList,
-			client.InNamespace(namespace),
-			client.MatchingLabelsSelector{Selector: selector},
-		)
-
+		err = c.k8sClient.CtrlClient().List(c.context, &appList, &o)
 		if err != nil {
 			return -1, microerror.Mask(err)
 		}
@@ -136,7 +124,7 @@ func (c *Cluster) getNumberOfApps(name, namespace string) (int, error) {
 	return len(appList.Items), nil
 }
 
-func hasProjectFinalizer(finalizers []string) bool {
+func hasFinalizer(finalizers []string) bool {
 	for _, f := range finalizers {
 		if f == fmt.Sprintf("operatorkit.giantswarm.io/%s-cluster-controller", project.Name()) {
 			return true

@@ -13,7 +13,7 @@ import (
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
-	"github.com/giantswarm/k8sclient/v6/pkg/k8sclienttest"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
 	"github.com/giantswarm/micrologger/microloggertest"
 )
 
@@ -33,7 +33,7 @@ func TestClusterCollector(t *testing.T) {
 			expected: []string{
 				prometheus.NewDesc(
 					"cluster_apps_operator_cluster_dangling_apps",
-					"Number of dangling apps for a terminating cluster.",
+					"Number of apps not yet deleted for a terminating cluster.",
 					[]string{
 						labelClusterID,
 					},
@@ -102,14 +102,14 @@ func Test_getNumberOfApps(t *testing.T) {
 	testcases := []struct {
 		name             string
 		clusterName      string
-		clusterNamesapce string
+		clusterNamespace string
 		resources        []runtime.Object
 		expected         int
 	}{
 		{
 			name:             "flawless with a single app for cluster",
 			clusterName:      "1abc2",
-			clusterNamesapce: "org-test",
+			clusterNamespace: "org-test",
 			resources: []runtime.Object{
 				newV1alpha1App("hello-world", "org-test", "1abc2", ""),
 			},
@@ -118,7 +118,7 @@ func Test_getNumberOfApps(t *testing.T) {
 		{
 			name:             "flawless for ignoring other cluster apps",
 			clusterName:      "1abc2",
-			clusterNamesapce: "org-test",
+			clusterNamespace: "org-test",
 			resources: []runtime.Object{
 				newV1alpha1App("hello-world", "org-test", "3def4", ""),
 			},
@@ -127,7 +127,7 @@ func Test_getNumberOfApps(t *testing.T) {
 		{
 			name:             "flawless for ignoring managed apps",
 			clusterName:      "1abc2",
-			clusterNamesapce: "org-test",
+			clusterNamespace: "org-test",
 			resources: []runtime.Object{
 				newV1alpha1App("app-operator", "org-test", "1abc2", "cluster-apps-operator"),
 				newV1alpha1App("chart-operator", "org-test", "1abc2", "cluster-apps-operator"),
@@ -137,7 +137,7 @@ func Test_getNumberOfApps(t *testing.T) {
 		{
 			name:             "flawless with mixed resources",
 			clusterName:      "1abc2",
-			clusterNamesapce: "org-test",
+			clusterNamespace: "org-test",
 			resources: []runtime.Object{
 				newV1alpha1App("app-operator", "org-test", "1abc2", "cluster-apps-operator"),
 				newV1alpha1App("chart-operator", "org-test", "1abc2", "cluster-apps-operator"),
@@ -185,7 +185,7 @@ func Test_getNumberOfApps(t *testing.T) {
 				}
 			}
 
-			got, err := clusterCollector.getNumberOfApps(test.clusterName, test.clusterNamesapce)
+			got, err := clusterCollector.getNumberOfApps(test.clusterName, test.clusterNamespace)
 			if err != nil {
 				t.Fatal(err)
 			}
