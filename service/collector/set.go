@@ -25,10 +25,13 @@ func NewSet(config SetConfig) (*Set, error) {
 
 	var clusterCollector *Cluster
 	{
-		c := ClusterConfig{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
+		/*
+			c := ClusterConfig{
+				K8sClient: config.K8sClient,
+				Logger:    config.Logger,
+			}
+		*/
+		c := ClusterConfig(config)
 
 		clusterCollector, err = NewCluster(c)
 		if err != nil {
