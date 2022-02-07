@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add the `cluster_apps_operator_cluster_dangling_apps` metric for detecting not yet deleted apps.
+
+### Changed
+
+- Bump version of the Operatorkit to `v7.0.0`.
+
 ### Fixed
 
 - Update app-operator to `v5.6.0`.

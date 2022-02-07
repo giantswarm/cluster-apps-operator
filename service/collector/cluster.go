@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/giantswarm/operatorkit/v7/pkg/controller"
 	"github.com/prometheus/client_golang/prometheus"
 	k8slabels "k8s.io/apimachinery/pkg/labels"
 	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
@@ -126,7 +127,7 @@ func (c *Cluster) getNumberOfApps(name, namespace string) (int, error) {
 
 func hasFinalizer(finalizers []string) bool {
 	for _, f := range finalizers {
-		if f == fmt.Sprintf("operatorkit.giantswarm.io/%s-cluster-controller", project.Name()) {
+		if f == controller.GetFinalizerName(project.Name()+"-cluster-controller") {
 			return true
 		}
 	}
