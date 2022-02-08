@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2022-02-08
+
 ### Added
 
 - Add the `cluster_apps_operator_cluster_dangling_apps` metric for detecting not yet deleted apps.
@@ -115,7 +117,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/giantswarm/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/giantswarm/giantswarm/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v0.6.1...v1.0.0
