@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Rename helm chart value `base` to `baseDomain` to improve clarity.
+
+### Added
+
+- Add management cluster name to cluster values to support tagging of resources for improved deletion.
+- Add workload cluster Kubernetes API CA to cluster values ConfigMap to support Dex configuration for OIDC.
+
 ## [1.3.0] - 2022-02-08
 
 ### Added
@@ -44,7 +53,7 @@ versioned via the operator's configmap.
 ### Changed
 
 - Adjust label selector to watch all Clusters with any `cluster-apps-operator.giantswarm.io/watching`
-  label instead of those matching the current operator version to allow the operator to be 
+  label instead of those matching the current operator version to allow the operator to be
   deployed in the app collection instead of by `release-operator`.
 
 ## [1.0.0] - 2021-12-03
