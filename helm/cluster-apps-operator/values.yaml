@@ -6,7 +6,8 @@ chartOperator:
   catalog: default
   version: 2.20.0
 
-base: example.gigantic.io
+baseDomain: ""
+managementCluster: ""
 
 provider:
   kind: ""

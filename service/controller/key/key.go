@@ -35,6 +35,10 @@ func ClusterValuesResourceName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-cluster-values", ClusterID(getter))
 }
 
+func ClusterCAName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-ca", ClusterID(getter))
+}
+
 func ClusterID(getter LabelsGetter) string {
 	clusterID := getter.GetLabels()[label.Cluster]
 	// If the Giant Swarm cluster name is empty, attempt to retrieve it from the
@@ -66,14 +70,6 @@ func DNSIP(clusterIPRange string) (string, error) {
 	ip[3] = defaultDNSLastOctet
 
 	return ip.String(), nil
-}
-
-func InfrastructureRefKind(cr capi.Cluster) string {
-	if cr.Spec.InfrastructureRef == nil {
-		return ""
-	}
-
-	return cr.Spec.InfrastructureRef.Kind
 }
 
 func IsDeleted(getter DeletionTimestampGetter) bool {

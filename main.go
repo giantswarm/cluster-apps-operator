@@ -106,7 +106,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Catalog, "", "Catalog for chart-operator app CR.")
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Version, "", "Version for chart-operator app CR.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of management cluster this operator is running in. Used to determine provider-specific cluster values.")
 	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "quay.io", "Image registry.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.Address, "http://127.0.0.1:6443", "Address used to connect to Kubernetes. When empty in-cluster config is created.")
@@ -116,7 +115,11 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.BaseDomain, "", "Parent cluster base domain.")
+	daemonCommand.PersistentFlags().String(f.Service.Management.Cluster.Name, "", "Name of cluster which manages workload cluster.")
+
+	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of management cluster this operator is running in. Used to determine provider-specific cluster values.")
+
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.BaseDomain, "", "Cluster owner base domain.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.CIDR, "", "Prefix length for the CIDR block used by Calico.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.Subnet, "", "Network address for the CIDR block used by Calico.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange, "", "CIDR Range for Pods in cluster.")

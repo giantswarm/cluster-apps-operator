@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -46,6 +47,22 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		}
 	}
 
+	var clusterCA string
+	{
+		var secret corev1.Secret
+		err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
+			Namespace: cr.Namespace,
+			Name:      key.ClusterCAName(&cr),
+		}, &secret)
+		if apierrors.IsNotFound(err) {
+			// During cluster creation there may be a delay until the
+			// ca is created.
+			r.logger.Debugf(ctx, "secret '%s/%s' not found, cannot set cluster CA", cr.Namespace, key.ClusterCAName(&cr))
+		} else if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	appOperatorValues := map[string]interface{}{
 		"app": map[string]interface{}{
 			"watchNamespace":    cr.GetNamespace(),
@@ -72,6 +89,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			},
 			"kubernetes": map[string]interface{}{
 				"API": map[string]interface{}{
+					"CACert":         clusterCA,
 					"clusterIPRange": r.clusterIPRange,
 				},
 				"DNS": map[string]interface{}{
