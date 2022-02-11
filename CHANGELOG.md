@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Set `dns.service=kube-dns` for `net-exporter` in CAPO cluster.
 - Add the `cluster_apps_operator_cluster_dangling_apps` metric for detecting not yet deleted apps.
 
 ### Changed
@@ -44,7 +45,7 @@ versioned via the operator's configmap.
 ### Changed
 
 - Adjust label selector to watch all Clusters with any `cluster-apps-operator.giantswarm.io/watching`
-  label instead of those matching the current operator version to allow the operator to be 
+  label instead of those matching the current operator version to allow the operator to be
   deployed in the app collection instead of by `release-operator`.
 
 ## [1.0.0] - 2021-12-03

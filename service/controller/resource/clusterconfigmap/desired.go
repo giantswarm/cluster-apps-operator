@@ -108,6 +108,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 			case "OpenStackCluster":
 				clusterValues["provider"] = "openstack"
+				clusterValues["dns"] = map[string]interface{}{
+					"service": "kube-dns",
+				}
 
 			case "VSphereCluster":
 				clusterValues["provider"] = "vsphere"
