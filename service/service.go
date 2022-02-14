@@ -146,7 +146,6 @@ func New(config Config) (*Service, error) {
 			BaseDomain:           config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain),
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
-			ManagementCluster:    config.Viper.GetString(config.Flag.Service.Management.Cluster.Name),
 			Provider:             config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			RegistryDomain:       config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
 		}

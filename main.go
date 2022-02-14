@@ -115,8 +115,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Management.Cluster.Name, "", "Name of cluster which manages workload cluster.")
-
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of management cluster this operator is running in. Used to determine provider-specific cluster values.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.BaseDomain, "", "Cluster owner base domain.")

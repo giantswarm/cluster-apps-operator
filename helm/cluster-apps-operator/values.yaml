@@ -7,7 +7,6 @@ chartOperator:
   version: 2.20.0
 
 baseDomain: ""
-managementCluster: ""
 
 provider:
   kind: ""

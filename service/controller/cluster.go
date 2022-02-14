@@ -35,7 +35,6 @@ type ClusterConfig struct {
 	BaseDomain           string
 	ClusterIPRange       string
 	DNSIP                string
-	ManagementCluster    string
 	Provider             string
 	RegistryDomain       string
 }
@@ -115,11 +114,10 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 			Logger:     config.Logger,
 			PodCIDR:    config.PodCIDR,
 
-			ClusterIPRange:    config.ClusterIPRange,
-			DNSIP:             config.DNSIP,
-			ManagementCluster: config.ManagementCluster,
-			Provider:          config.Provider,
-			RegistryDomain:    config.RegistryDomain,
+			ClusterIPRange: config.ClusterIPRange,
+			DNSIP:          config.DNSIP,
+			Provider:       config.Provider,
+			RegistryDomain: config.RegistryDomain,
 		}
 
 		clusterConfigMapGetter, err = clusterconfigmap.New(c)

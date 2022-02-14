@@ -22,12 +22,11 @@ type Config struct {
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
 
-	BaseDomain        string
-	ClusterIPRange    string
-	DNSIP             string
-	ManagementCluster string
-	Provider          string
-	RegistryDomain    string
+	BaseDomain     string
+	ClusterIPRange string
+	DNSIP          string
+	Provider       string
+	RegistryDomain string
 }
 
 // Resource implements the clusterConfigMap resource.
@@ -36,12 +35,11 @@ type Resource struct {
 	logger    micrologger.Logger
 	podCIDR   podcidr.Interface
 
-	baseDomain        string
-	clusterIPRange    string
-	dnsIP             string
-	managementCluster string
-	provider          string
-	registryDomain    string
+	baseDomain     string
+	clusterIPRange string
+	dnsIP          string
+	provider       string
+	registryDomain string
 }
 
 // New creates a new configured config map state getter resource managing
@@ -69,9 +67,6 @@ func New(config Config) (*Resource, error) {
 	if config.DNSIP == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DNSIP must not be empty", config)
 	}
-	if config.ManagementCluster == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.ManagementCluster must not be empty", config)
-	}
 	if config.Provider == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
@@ -84,12 +79,11 @@ func New(config Config) (*Resource, error) {
 		logger:    config.Logger,
 		podCIDR:   config.PodCIDR,
 
-		baseDomain:        strings.TrimPrefix(config.BaseDomain, "k8s."),
-		clusterIPRange:    config.ClusterIPRange,
-		dnsIP:             config.DNSIP,
-		managementCluster: config.ManagementCluster,
-		provider:          config.Provider,
-		registryDomain:    config.RegistryDomain,
+		baseDomain:     strings.TrimPrefix(config.BaseDomain, "k8s."),
+		clusterIPRange: config.ClusterIPRange,
+		dnsIP:          config.DNSIP,
+		provider:       config.Provider,
+		registryDomain: config.RegistryDomain,
 	}
 
 	return r, nil

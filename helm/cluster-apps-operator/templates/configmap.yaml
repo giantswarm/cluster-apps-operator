@@ -28,9 +28,6 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
-      management:
-        cluster:
-          name: {{ .Values.managementCluster }}
       provider:
         kind: {{ .Values.provider.kind }}
       workload:
