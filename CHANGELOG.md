@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add management cluster name to cluster values to support tagging of resources for improved deletion.
 - Add workload cluster Kubernetes API CA to cluster values ConfigMap to support Dex configuration for OIDC.
 
 ## [1.3.0] - 2022-02-08
