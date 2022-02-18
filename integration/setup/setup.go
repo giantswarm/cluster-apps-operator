@@ -8,8 +8,10 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/giantswarm/apptest"
+	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 
 	"github.com/giantswarm/cluster-apps-operator/integration/env"
@@ -46,7 +48,20 @@ func installResources(ctx context.Context, config Config) error {
 				WaitForDeploy: true,
 			},
 		}
-		err = config.AppTest.InstallApps(ctx, apps)
+
+		o := func() error {
+			err = config.AppTest.InstallApps(ctx, apps)
+			if err != nil {
+				return microerror.Mask(err)
+			}
+
+			return nil
+		}
+
+		b := backoff.NewConstant(5*time.Minute, 10*time.Second)
+		n := backoff.NewNotifier(config.Logger, ctx)
+
+		err = backoff.RetryNotify(o, b, n)
 		if err != nil {
 			return microerror.Mask(err)
 		}
