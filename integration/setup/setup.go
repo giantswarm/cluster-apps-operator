@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/giantswarm/apptest"
 	"github.com/giantswarm/backoff"
