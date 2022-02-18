@@ -58,7 +58,7 @@ func installResources(ctx context.Context, config Config) error {
 			return nil
 		}
 
-		b := backoff.NewConstant(2*time.Minute, 10*time.Second)
+		b := backoff.NewConstant(5*time.Minute, 10*time.Second)
 		n := backoff.NewNotifier(config.Logger, ctx)
 
 		err = backoff.RetryNotify(o, b, n)
