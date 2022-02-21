@@ -123,9 +123,9 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/giantswarm/compare/v1.4.0...HEAD
-[1.4.0]: https://github.com/giantswarm/giantswarm/compare/v1.3.0...v1.4.0
-[1.3.0]: https://github.com/giantswarm/giantswarm/compare/v1.2.0...v1.3.0
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v0.6.1...v1.0.0
