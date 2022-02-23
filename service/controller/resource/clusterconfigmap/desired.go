@@ -89,7 +89,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			},
 			"kubernetes": map[string]interface{}{
 				"API": map[string]interface{}{
-					"CACert":         clusterCA,
+					"clusterCA":         clusterCA,
 					"clusterIPRange": r.clusterIPRange,
 				},
 				"DNS": map[string]interface{}{
