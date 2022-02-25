@@ -57,10 +57,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		if apierrors.IsNotFound(err) {
 			// During cluster creation there may be a delay until the
 			// ca is created.
-			r.logger.Debugf(ctx, "secret '%s/%s' not found, cannot set cluster CA", cr.Namespace, key.ClusterCAName(&cr))
+			r.logger.Debugf(ctx, "secret '%s/%s' not found, cannot get cluster CA", cr.Namespace, key.ClusterCAName(&cr))
 		} else if err != nil {
 			return nil, microerror.Mask(err)
 		}
+
+		clusterCA = secret.Data["tls.crt"]
 	}
 
 	appOperatorValues := map[string]interface{}{
