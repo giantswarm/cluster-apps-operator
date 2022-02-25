@@ -62,7 +62,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			return nil, microerror.Mask(err)
 		}
 
-		clusterCA = secret.Data["tls.crt"]
+		clusterCA = string(secret.Data["tls.crt"])
 	}
 
 	appOperatorValues := map[string]interface{}{
