@@ -32,7 +32,7 @@ data:
         kind: {{ .Values.provider.kind }}
       workload:
         cluster:
-          baseDomain: '{{ .Values.base }}'
+          baseDomain: '{{ .Values.baseDomain }}'
           calico:
             subnet: '{{ .Values.cni.subnet }}'
             cidr: '{{ .Values.cni.mask }}'

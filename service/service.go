@@ -64,17 +64,10 @@ func New(config Config) (*Service, error) {
 		return nil, microerror.Maskf(invalidConfigError, "logger must not be empty")
 	}
 
-	var err error
-
-	baseDomain := config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain)
-	calicoSubnet := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.Subnet)
-	calicoCIDR := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.CIDR)
 	clusterIPRange := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange)
-	provider := config.Viper.GetString(config.Flag.Service.Provider.Kind)
-	registryDomain := config.Viper.GetString(config.Flag.Service.Image.Registry.Domain)
-
 	var dnsIP string
 	{
+		var err error
 		dnsIP, err = key.DNSIP(clusterIPRange)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -96,6 +89,7 @@ func New(config Config) (*Service, error) {
 			},
 		}
 
+		var err error
 		restConfig, err = k8srestconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -116,6 +110,7 @@ func New(config Config) (*Service, error) {
 			RestConfig: restConfig,
 		}
 
+		var err error
 		k8sClient, err = k8sclient.NewClients(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -124,10 +119,13 @@ func New(config Config) (*Service, error) {
 
 	var pc podcidr.Interface
 	{
+		calicoSubnet := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.Subnet)
+		calicoCIDR := config.Viper.GetString(config.Flag.Service.Workload.Cluster.Calico.CIDR)
 		c := podcidr.Config{
 			InstallationCIDR: fmt.Sprintf("%s/%s", calicoSubnet, calicoCIDR),
 		}
 
+		var err error
 		pc, err = podcidr.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -136,7 +134,6 @@ func New(config Config) (*Service, error) {
 
 	var clusterController *controller.Cluster
 	{
-
 		c := controller.ClusterConfig{
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
@@ -146,13 +143,14 @@ func New(config Config) (*Service, error) {
 			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
 			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
 			ChartOperatorVersion: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
-			BaseDomain:           baseDomain,
+			BaseDomain:           config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain),
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
-			Provider:             provider,
-			RegistryDomain:       registryDomain,
+			Provider:             config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			RegistryDomain:       config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
 		}
 
+		var err error
 		clusterController, err = controller.NewCluster(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -166,6 +164,7 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 		}
 
+		var err error
 		operatorCollector, err = collector.NewSet(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -182,6 +181,7 @@ func New(config Config) (*Service, error) {
 			Version:     project.Version(),
 		}
 
+		var err error
 		versionService, err = version.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
