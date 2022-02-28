@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Rename helm chart value `base` to `baseDomain` to improve clarity.
-- Bump app-operator to `v5.7.3`
+- Bump `app-operator` version to `v5.7.3`.
 
 ### Added
 
