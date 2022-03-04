@@ -1,4 +1,4 @@
-apiVersion: "v1"
+apiVersion: "v2"
 appVersion: "[[ .AppVersion ]]"
 description: "Chart holding cluster-apps-operator."
 home: "https://github.com/giantswarm/cluster-apps-operator"
