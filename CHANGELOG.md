@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.3] - 2022-03-04
+
 ### Changed
 
 - Move `clusterCA` to match the location expected by `dex-app`.
@@ -144,7 +146,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.2...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.3...HEAD
+[1.4.3]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.3.0...v1.4.0
