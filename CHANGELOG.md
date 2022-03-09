@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.4] - 2022-03-09
+
 ### Changed
 
 - Add operator to `aws-app-collection`.
@@ -150,7 +152,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.3...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.4...HEAD
+[1.4.4]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.0...v1.4.1
