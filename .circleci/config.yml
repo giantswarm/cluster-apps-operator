@@ -96,7 +96,7 @@ workflows:
           context: architect
           name: push-cluster-apps-operator-to-aws-app-collection
           app_name: "cluster-apps-operator"
-          app_collection_repo: "aws--app-collection"
+          app_collection_repo: "aws-app-collection"
           requires:
             - push-cluster-apps-operator-to-control-plane-app-catalog
           filters:
