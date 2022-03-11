@@ -131,7 +131,7 @@ func (r Resource) waitForAppDeletion(ctx context.Context, cr capi.Cluster, appNa
 		r.logger.Errorf(ctx, err, "retrying in %s", t)
 	}
 
-	b := backoff.NewExponential(15*time.Second, 5*time.Second)
+	b := backoff.NewConstant(15*time.Second, 5*time.Second)
 	err = backoff.RetryNotify(o, b, n)
 
 	return err
