@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix backoff when waiting for app CRs to be deleted.
+
 ## [1.4.5] - 2022-03-11
 
 ### Changed
