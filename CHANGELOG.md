@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add to `gcp-app-collection`.
+
 ## [1.5.0] - 2022-03-25
 
 ### Added
