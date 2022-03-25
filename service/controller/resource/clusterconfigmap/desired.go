@@ -125,6 +125,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if len(blocks) > 0 {
 					clusterValues["clusterCIDR"] = blocks[0]
 				}
+			case "GCPCluster":
+				clusterValues["provider"] = "gcp"
 
 			case "OpenStackCluster":
 				clusterValues["provider"] = "openstack"
