@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add to `gcp-app-collection`.
 - Add to `vsphere-app-collection`.
 
+### Changed
+
+- Bump `chart-operator` version to `v2.20.1`.
+
 ## [1.5.0] - 2022-03-25
 
 ### Added
