@@ -16,11 +16,11 @@ const (
 )
 
 func AppOperatorAppName(getter LabelsGetter) string {
-	return fmt.Sprintf("%s-app-operator", ClusterID(getter))
+	return fmt.Sprintf("app-operator-%s", ClusterID(getter))
 }
 
 func AppOperatorValuesResourceName(getter LabelsGetter) string {
-	return fmt.Sprintf("%s-app-operator-values", ClusterID(getter))
+	return fmt.Sprintf("app-operator-values-%s", ClusterID(getter))
 }
 
 func BaseDomain(getter LabelsGetter, base string) string {
@@ -28,15 +28,15 @@ func BaseDomain(getter LabelsGetter, base string) string {
 }
 
 func ChartOperatorAppName(getter LabelsGetter) string {
-	return fmt.Sprintf("%s-chart-operator", ClusterID(getter))
+	return fmt.Sprintf("chart-operator-%s", ClusterID(getter))
 }
 
 func ClusterValuesResourceName(getter LabelsGetter) string {
-	return fmt.Sprintf("%s-cluster-values", ClusterID(getter))
+	return fmt.Sprintf("cluster-values-%s", ClusterID(getter))
 }
 
 func ClusterCAName(getter LabelsGetter) string {
-	return fmt.Sprintf("%s-ca", ClusterID(getter))
+	return fmt.Sprintf("ca-%s", ClusterID(getter))
 }
 
 func ClusterID(getter LabelsGetter) string {
