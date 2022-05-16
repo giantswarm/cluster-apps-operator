@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2022-05-16
+
 ### Added
 
 - Add to `gcp-app-collection`.
@@ -180,7 +182,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.6...v1.5.0
 [1.4.6]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.5...v1.4.6
 [1.4.5]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.4.4...v1.4.5
