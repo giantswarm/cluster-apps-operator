@@ -177,8 +177,7 @@ github.com/codegangsta/inject v0.0.0-20150114235600-33e0aa1cb7c0/go.mod h1:4Zcju
 github.com/coredns/caddy v1.1.0/go.mod h1:A6ntJQlAWuQfFlsd9hvigKbo2WS0VUs2l1e2F+BawD4=
 github.com/coredns/corefile-migration v1.0.12/go.mod h1:NJOI8ceUF/NTgEwtjD+TUq3/BnH/GF7WAM3RzCa3hBo=
 github.com/coreos/bbolt v1.3.2/go.mod h1:iRUV2dpdMOn7Bo10OQBFzIJO9kkE559Wcmn+qkEiiKk=
-github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
-github.com/coreos/etcd v3.3.13+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
+github.com/coreos/etcd v3.3.25+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
 github.com/coreos/go-etcd v2.0.0+incompatible/go.mod h1:Jez6KQU2B/sWsbdaef3ED8NzMklzPG4d5KIOhIy30Tk=
 github.com/coreos/go-oidc v2.1.0+incompatible/go.mod h1:CgnwVTmzoESiwO9qyAFEMiHoZ1nMCKZlZ9V6mm3/LKc=
 github.com/coreos/go-semver v0.2.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3EedlOD2RNk=
@@ -202,7 +201,7 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/daviddengcn/go-colortext v0.0.0-20160507010035-511bcaf42ccd/go.mod h1:dv4zxwHi5C/8AeI+4gX4dCWOIvNi7I6JCSX0HvlKPgE=
 github.com/dgraph-io/badger v1.6.0/go.mod h1:zwt7syl517jmP8s94KqSxTlM6IMsdhYy6psNgSztDR4=
-github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
+github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1/go.mod h1:+hnT3ywWDTAFrW5aE+u2Sa/wT555ZqwoCS+pk3p6ry4=
 github.com/dgryski/go-farm v0.0.0-20190423205320-6a90982ecee2/go.mod h1:SqUrOPUnsFjfmXRMNPybcSiG0BgUW2AuFH8PAnS2iTw=
 github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/docker/distribution v2.7.1+incompatible/go.mod h1:J2gT2udsDAN96Uj4KfcMRqY0/ypR+oyYUYmja8H+y+w=
@@ -300,9 +299,8 @@ github.com/giantswarm/microkit v1.0.0 h1:i72WS1JDRorcWVbnxKjK9VwVnSdnIJP3XDE+Mgj
 github.com/giantswarm/microkit v1.0.0/go.mod h1:vMKfEv9A6lBbhkByPSxw+Rpvu/vpUDSW5htNZ9R0oFw=
 github.com/giantswarm/micrologger v0.3.1/go.mod h1:PjAgtcJ922ZMX/Aa05IPi0bdYvOj2P7pZ7+6dBShMQs=
 github.com/giantswarm/micrologger v0.5.0/go.mod h1:J/jbt7A8eixqE40yq4JY8Hdbs/qeboe2FjHlq05UWjA=
+github.com/giantswarm/micrologger v0.6.0 h1:FBI0YXBwvJ6Djmgk7TUjXXTu2/3Pdy6B7BpbNdLG4SE=
 github.com/giantswarm/micrologger v0.6.0/go.mod h1:/qEWo7q9w+yiD2H6E1DKbErcBQ1bAjXErVIkQYFas14=
-github.com/giantswarm/micrologger v1.0.0 h1:5W4h3K414CXhoXQ3rkGbrMl8yUGdbCLKMdg/EezccM4=
-github.com/giantswarm/micrologger v1.0.0/go.mod h1:jFY9TUZLYnQ437GwbodmGmwEJ5cImEJ1f5NTPyDHB24=
 github.com/giantswarm/operatorkit/v6 v6.0.0/go.mod h1:6VuuSTYD0CIAPKf2D4ici179FhB8s4Zq+F+exb6iVYI=
 github.com/giantswarm/operatorkit/v7 v7.0.1 h1:RmebxAH7LRM9vPjVN0fZfAFpfDLe93s9i21TIxHhaLM=
 github.com/giantswarm/operatorkit/v7 v7.0.1/go.mod h1:5enwhyIjd4xKrYXV9+enqttcmB9BE2Ocl1V12IwJIuw=
@@ -339,9 +337,8 @@ github.com/go-logfmt/logfmt v0.5.1/go.mod h1:WYhtIu8zTZfxdn5+rREduYbwxfcBr/Vr6KE
 github.com/go-logr/logr v0.1.0/go.mod h1:ixOQHD9gLJUVQQ2ZOR7zLEifBX6tGkNJF4QyIY7sIas=
 github.com/go-logr/logr v0.2.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
 github.com/go-logr/logr v0.3.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
+github.com/go-logr/logr v0.4.0 h1:K7/B1jt6fIBQVd4Owv2MqGQClcgf0R266+7C/QjRcLc=
 github.com/go-logr/logr v0.4.0/go.mod h1:z6/tIYblkpsD+a4lm/fGIIU9mZ+XfAiaFtq7xTgseGU=
-github.com/go-logr/logr v1.2.2 h1:ahHml/yUpnlb96Rp8HCvtYVPY8ZYpxq3g7UYchIYwbs=
-github.com/go-logr/logr v1.2.2/go.mod h1:jdQByPbusPIv2/zmleS9BjJVeZ6kBagPoEUsqbVz/1A=
 github.com/go-logr/zapr v0.1.0/go.mod h1:tabnROwaDl0UNxkVeFRbY8bwB37GwRv0P8lg6aAiEnk=
 github.com/go-logr/zapr v0.2.0/go.mod h1:qhKdvif7YF5GI9NWEpyxTSSBdGmzkNguibrdCNVPunU=
 github.com/go-logr/zapr v0.4.0 h1:uc1uML3hRYL9/ZZPdgHS/n8Nzo+eaYL/Efxkkamf7OM=
