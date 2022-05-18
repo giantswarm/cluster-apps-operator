@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump `app-operator` version to `v5.10.1`.
+
 ## [1.6.0] - 2022-05-16
 
 ### Added
