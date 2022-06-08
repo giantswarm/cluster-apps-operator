@@ -18,8 +18,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/pkg/project"
 )
 
-type empty struct{}
-
 func Test_EnsureDeleted(t *testing.T) {
 	testCases := []struct {
 		name                string
