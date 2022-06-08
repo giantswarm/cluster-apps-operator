@@ -40,7 +40,7 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	// For the apps returned in the previous step, let's try to remove them,
 	// skipping apps managed by Flux and the ones whose deletion has already
-	// be requested.
+	// been requested.
 	err = r.deleteClusterApps(ctx, apps)
 	if err != nil {
 		r.logger.Errorf(ctx, err, "encountered problem removing apps")
