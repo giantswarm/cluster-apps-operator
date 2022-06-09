@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
+	appkey "github.com/giantswarm/app/v6/pkg/key"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -19,49 +20,42 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
 )
 
+const (
+	fluxManagedByLabel = "flux"
+)
+
 func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	cr, err := key.ToCluster(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	var apps []*v1alpha1.App
-	{
-		r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
-
-		// Get all apps for cluster not being managed by cluster-apps-operator.
-		selector, err := labels.Parse(fmt.Sprintf("%s=%s,%s!=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()))
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		o := client.ListOptions{
-			Namespace:     cr.GetNamespace(),
-			LabelSelector: selector,
-		}
-
-		var appList v1alpha1.AppList
-
-		err = r.ctrlClient.List(ctx, &appList, &o)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		for _, item := range appList.Items {
-			apps = append(apps, item.DeepCopy())
-		}
-
-		r.logger.Debugf(ctx, "found %d apps for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+	// Get apps for the given cluster, not managed by the cluster-apps-operator.
+	// Note: this list may be incomplete depending on the label missing or present
+	// by mistake on apps that shouldn't have it.
+	apps, err := r.getClusterApps(ctx, cr)
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
-	if len(apps) > 0 {
+	// For the apps returned in the previous step, let's try to remove them,
+	// skipping apps managed by Flux and the ones whose deletion has already
+	// been requested.
+	err = r.deleteClusterApps(ctx, apps)
+	if err != nil {
+		r.logger.Errorf(ctx, err, "encountered problem removing apps")
+		return r.cancel(ctx)
+	}
+
+	// We don't want to initiate deletion of the `app-operator` and `chart-operator`
+	// apps in case the apps we requested deletion for are still not gone from the
+	// cluster, or we have Flux managed apps.
+	apps, err = r.getClusterApps(ctx, cr)
+	if err != nil {
+		return microerror.Mask(err)
+	} else if len(apps) > 0 {
 		r.logger.Debugf(ctx, "waiting for %d apps to be deleted for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
-
-		finalizerskeptcontext.SetKept(ctx)
-		r.logger.Debugf(ctx, "keeping finalizers")
-
-		r.logger.Debugf(ctx, "canceling resource")
-		return nil
+		return r.cancel(ctx)
 	}
 
 	desiredApps := r.desiredApps(ctx, cr)
@@ -96,6 +90,86 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	}
 
 	return nil
+}
+
+func (r Resource) cancel(ctx context.Context) error {
+	finalizerskeptcontext.SetKept(ctx)
+
+	r.logger.Debugf(ctx, "keeping finalizers")
+	r.logger.Debugf(ctx, "canceling resource")
+
+	return nil
+}
+
+// deleteClusterApps tries to delete given apps, skipping apps with
+// Flux managed-by label.
+func (r Resource) deleteClusterApps(ctx context.Context, apps []*v1alpha1.App) error {
+	for _, app := range apps {
+		managedBy := appkey.ManagedByLabel(*app)
+
+		// No need to delete app whose deletion has already been requested,
+		// or when managed by Flux as the app may be recreated in such case.
+		// There is one valid case when deleting Flux-managed app makes sense,
+		// namely when `prune: false` is used and app is gone in the repository,
+		// but there is no way to recognize this case here.
+		if managedBy == fluxManagedByLabel {
+			r.logger.Debugf(ctx, "skipping Flux-managed '%s/%s' app", app.Namespace, app.Name)
+			continue
+		}
+
+		if !app.DeletionTimestamp.IsZero() {
+			r.logger.Debugf(ctx, "deletion already requested for '%s/%s' app", app.Namespace, app.Name)
+			continue
+		}
+
+		r.logger.Debugf(ctx, "requesting deletion of '%s/%s' app", app.Namespace, app.Name)
+
+		err := r.ctrlClient.Delete(ctx, app)
+		if apierrors.IsNotFound(err) {
+			r.logger.Debugf(ctx, "app '%s/%s' already deleted", app.Namespace, app.Name)
+			continue
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
+
+		r.logger.Debugf(ctx, "successfully requested deletion of '%s/%s' app", app.Namespace, app.Name)
+	}
+
+	return nil
+}
+
+// getClusterApps gets all the App CRs with matching selector, not managed
+// by the `cluster-apps-operator`.
+func (r Resource) getClusterApps(ctx context.Context, cr capi.Cluster) ([]*v1alpha1.App, error) {
+	var apps []*v1alpha1.App
+
+	r.logger.Debugf(ctx, "finding apps for cluster '%s/%s'", cr.GetNamespace(), key.ClusterID(&cr))
+
+	// Get all apps for cluster not being managed by cluster-apps-operator.
+	selector, err := labels.Parse(fmt.Sprintf("%s=%s,%s!=%s", label.Cluster, key.ClusterID(&cr), label.ManagedBy, project.Name()))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	o := client.ListOptions{
+		Namespace:     cr.GetNamespace(),
+		LabelSelector: selector,
+	}
+
+	var appList v1alpha1.AppList
+
+	err = r.ctrlClient.List(ctx, &appList, &o)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	for _, item := range appList.Items {
+		apps = append(apps, item.DeepCopy())
+	}
+
+	r.logger.Debugf(ctx, "found %d app(s) for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+
+	return apps, nil
 }
 
 // waitForAppDeletion deletes the app CR and waits for a short period. If the
