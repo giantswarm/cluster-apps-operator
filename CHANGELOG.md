@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bumping `app-operator` to the `v6.3.0` version.
+- Bumping `chart-operator` to the `v2.27.0` version.
+
 ## [1.8.2] - 2022-06-17
 
 ## [1.8.1] - 2022-06-17

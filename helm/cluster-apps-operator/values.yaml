@@ -1,10 +1,10 @@
 appOperator:
   catalog: control-plane-catalog
-  version: 5.10.2
+  version: 6.3.0
 
 chartOperator:
   catalog: default
-  version: 2.24.0
+  version: 2.27.0
 
 baseDomain: ""
 
