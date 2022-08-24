@@ -11,6 +11,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
@@ -127,6 +129,32 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 			case "GCPCluster":
 				clusterValues["provider"] = "gcp"
+
+				gcpCluster := &unstructured.Unstructured{}
+				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   infrastructureRef.GroupVersionKind().Group,
+					Kind:    infrastructureRef.Kind,
+					Version: infrastructureRef.GroupVersionKind().Version,
+				})
+				err = r.k8sClient.CtrlClient().Get(context.Background(), client.ObjectKey{
+					Namespace: infrastructureRef.Namespace,
+					Name:      infrastructureRef.Name,
+				}, gcpCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				gcpProject, _, err := unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				clusterValues["gcpProject"] = gcpProject
+
+				region, _, err := unstructured.NestedString(gcpCluster.Object, []string{"spec", "region"}...)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				clusterValues["region"] = region
 
 			case "OpenStackCluster":
 				clusterValues["provider"] = "openstack"
