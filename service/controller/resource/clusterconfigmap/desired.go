@@ -67,97 +67,13 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		clusterCA = string(secret.Data["tls.crt"])
 	}
 
-	provider := r.provider
-	clusterCIDR := ""
-	serviceCidr := r.dnsIP
-	region := ""
-	gcpProject := ""
-
-	{
-		infrastructureRef := cr.Spec.InfrastructureRef
-		if infrastructureRef != nil {
-			switch infrastructureRef.Kind {
-			case "AWSCluster":
-				provider = "aws"
-
-			case "AzureCluster":
-				provider = "azure"
-
-				var azureCluster capz.AzureCluster
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
-				if len(blocks) > 0 {
-					clusterCIDR = blocks[0]
-				}
-			case "GCPCluster":
-				provider = "gcp"
-
-				gcpCluster := &unstructured.Unstructured{}
-				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
-					Group:   infrastructureRef.GroupVersionKind().Group,
-					Kind:    infrastructureRef.Kind,
-					Version: infrastructureRef.GroupVersionKind().Version,
-				})
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
-					Namespace: infrastructureRef.Namespace,
-					Name:      infrastructureRef.Name,
-				}, gcpCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				gcpProject, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				region, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "region"}...)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				kubeadmControlPlane := &unstructured.Unstructured{}
-				kubeadmControlPlane.SetGroupVersionKind(schema.GroupVersionKind{
-					Group:   cr.Spec.ControlPlaneRef.GroupVersionKind().Group,
-					Kind:    cr.Spec.ControlPlaneRef.Kind,
-					Version: cr.Spec.ControlPlaneRef.GroupVersionKind().Version,
-				})
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
-					Namespace: cr.Spec.ControlPlaneRef.Namespace,
-					Name:      cr.Spec.ControlPlaneRef.Name,
-				}, kubeadmControlPlane)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				serviceCidr, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "kubeadmConfigSpec", "clusterConfiguration", "networking", "serviceSubnet"}...)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-			case "OpenStackCluster":
-				provider = "openstack"
-
-			case "VSphereCluster":
-				provider = "vsphere"
-
-			default:
-				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
-			}
-		}
-	}
-
 	appOperatorValues := map[string]interface{}{
 		"app": map[string]interface{}{
 			"watchNamespace":    cr.GetNamespace(),
 			"workloadClusterID": key.ClusterID(&cr),
 		},
 		"provider": map[string]interface{}{
-			"kind": provider,
+			"kind": r.provider,
 		},
 		"registry": map[string]interface{}{
 			"domain": r.registryDomain,
@@ -180,17 +96,76 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					"clusterIPRange": r.clusterIPRange,
 				},
 				"DNS": map[string]interface{}{
-					"IP": serviceCidr,
+					"IP": r.dnsIP,
 				},
 			},
 		},
 		"clusterCA":    clusterCA,
 		"clusterDNSIP": r.dnsIP,
 		"clusterID":    key.ClusterID(&cr),
-		"clusterCIDR":  clusterCIDR,
+		"clusterCIDR":  "",
 		"provider":     "unknown",
-		"region":       region,
-		"gcpProject":   gcpProject,
+	}
+
+	{
+		infrastructureRef := cr.Spec.InfrastructureRef
+		if infrastructureRef != nil {
+			switch infrastructureRef.Kind {
+			case "AWSCluster":
+				clusterValues["provider"] = "aws"
+
+			case "AzureCluster":
+				clusterValues["provider"] = "azure"
+
+				var azureCluster capz.AzureCluster
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
+				if len(blocks) > 0 {
+					clusterValues["clusterCIDR"] = blocks[0]
+				}
+			case "GCPCluster":
+				clusterValues["provider"] = "gcp"
+
+				gcpCluster := &unstructured.Unstructured{}
+				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   infrastructureRef.GroupVersionKind().Group,
+					Kind:    infrastructureRef.Kind,
+					Version: infrastructureRef.GroupVersionKind().Version,
+				})
+				err = r.k8sClient.CtrlClient().Get(context.Background(), client.ObjectKey{
+					Namespace: infrastructureRef.Namespace,
+					Name:      infrastructureRef.Name,
+				}, gcpCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				gcpProject, _, err := unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				clusterValues["gcpProject"] = gcpProject
+
+				region, _, err := unstructured.NestedString(gcpCluster.Object, []string{"spec", "region"}...)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+				clusterValues["region"] = region
+
+			case "OpenStackCluster":
+				clusterValues["provider"] = "openstack"
+
+			case "VSphereCluster":
+				clusterValues["provider"] = "vsphere"
+
+			default:
+				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
+			}
+		}
 	}
 
 	configMapSpecs := []configMapSpec{
