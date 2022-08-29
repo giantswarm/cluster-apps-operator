@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/giantswarm/apiextensions-application v0.5.1
-	github.com/giantswarm/app/v6 v6.12.0
+	github.com/giantswarm/app/v6 v6.13.0
 	github.com/giantswarm/apptest v1.2.1
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.0.0
