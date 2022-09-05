@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add additional information from `GCPCluster` to `cluster-values` configmap when running on `gcp`.
 
+### Changed
+
+- The DNS IP needs to come from the cluster `Services` CIDR.
+
 ## [1.10.0] - 2022-08-09
 
 ### Changed

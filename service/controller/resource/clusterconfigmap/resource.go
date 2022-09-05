@@ -57,7 +57,6 @@ func New(config Config) (*Resource, error) {
 	if config.PodCIDR == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.PodCIDR must not be empty", config)
 	}
-
 	if config.BaseDomain == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
 	}
