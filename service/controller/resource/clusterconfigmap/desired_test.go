@@ -267,8 +267,8 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 		Logger:         microloggertest.New(),
 		PodCIDR:        podCidr,
 		BaseDomain:     "fadi.gigantic.io",
-		ClusterIPRange: "10.0.0.0/16",
-		DNSIP:          "192.168.0.10",
+		ClusterIPRange: "10.96.0.0/12",
+		DNSIP:          "10.96.0.10",
 		Provider:       "gcp",
 		RegistryDomain: "quay.io/giantswarm",
 	}

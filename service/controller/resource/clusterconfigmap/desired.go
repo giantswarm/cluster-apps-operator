@@ -22,8 +22,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
 )
 
-const DefaultK8sServiceCidr = "10.96.0.0/12"
-
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {
 	cr, err := key.ToCluster(obj)
 	if err != nil {
@@ -68,9 +66,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		clusterCA = string(secret.Data["tls.crt"])
 	}
 
-	// By default, the IP for the coredns Service belongs to the pod CIDR,
-	// but if "serviceSubnet" is set in KubeadmControlPlane CR then we want to override it with an IP belonging
-	// to the service CIDR.
+	// clusterDNSIP contains the `coredns` k8s `Service` IP.
+	// This IP needs to belong to the `Services` CIDR configured for the k8s cluster, which can be set in the
+	// "serviceSubnet" field of the KubeadmControlPlane CR. If this field is set we want to take the IP from that CIDR.
+	// If it's not, we take the IP from the CIDR passed as parameter, which will probably be the default Service CIDR.
 	var clusterDNSIP = r.dnsIP
 	{
 		if cr.Spec.ControlPlaneRef != nil {
@@ -93,13 +92,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				return nil, microerror.Mask(err)
 			}
 
-			if !serviceCidrFound {
-				serviceCidr = DefaultK8sServiceCidr
-			}
-
-			clusterDNSIP, err = key.DNSIP(serviceCidr)
-			if err != nil {
-				return nil, microerror.Mask(err)
+			if serviceCidrFound {
+				clusterDNSIP, err = key.DNSIP(serviceCidr)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
 			}
 		}
 	}

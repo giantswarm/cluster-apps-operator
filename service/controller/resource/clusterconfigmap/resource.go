@@ -35,8 +35,10 @@ type Resource struct {
 	logger    micrologger.Logger
 	podCIDR   podcidr.Interface
 
-	baseDomain     string
+	baseDomain string
+	// clusterIPRange is the CIDR for the k8s `Services`.
 	clusterIPRange string
+	// dnsIP is an IP within the `clusterIPRange` CIDR, that will be used for the coredns `Service`.
 	dnsIP          string
 	provider       string
 	registryDomain string
