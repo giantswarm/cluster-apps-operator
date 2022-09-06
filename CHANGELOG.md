@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The DNS IP needs to come from the cluster `Services` CIDR.
+- Default `Services` CIDR changed from `172.31.0.0/16` to `10.96.0.0/12` to match k8s default.
 
 ## [1.10.0] - 2022-08-09
 
