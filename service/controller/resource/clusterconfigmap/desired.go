@@ -105,12 +105,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	var (
-		// clusterCIDR is are only used on azure.
+		// clusterCIDR is only used on azure.
 		clusterCIDR = ""
 		// gcpProject is only used on gcp.
 		gcpProject = ""
-		// region is only used on gcp.
-		region = ""
 	)
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
@@ -147,11 +145,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				gcpProject, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				region, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "region"}...)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
@@ -212,7 +205,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
 		Provider:     r.provider,
-		Region:       region,
 	}
 
 	clusterValuesYaml, err := yaml.Marshal(clusterValues)

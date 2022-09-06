@@ -21,6 +21,5 @@ type ClusterValuesConfig struct {
 	ClusterCIDR   string              `yaml:"clusterCIDR"`
 	Provider      string              `yaml:"provider"`
 	GcpProject    string              `yaml:"gcpProject"`
-	Region        string              `yaml:"region"`
 	ChartOperator ChartOperatorConfig `yaml:"chartOperator"`
 }

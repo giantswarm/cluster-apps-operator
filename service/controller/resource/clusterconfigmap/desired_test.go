@@ -35,7 +35,6 @@ func Test_ClusterValuesGCP(t *testing.T) {
 		},
 		"spec": map[string]interface{}{
 			"project": "12345",
-			"region":  "europe-west3",
 		},
 	}
 	gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
@@ -109,7 +108,6 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			}
 			assertEquals(t, "test-cluster.fadi.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "12345", cmData.GcpProject, "Wrong gcpProject set in cluster-values configmap")
-			assertEquals(t, "europe-west3", cmData.Region, "Wrong region set in cluster-values configmap")
 		}
 	}
 }
