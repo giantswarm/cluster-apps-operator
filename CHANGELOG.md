@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Add RBAC rules to get `KubeadmControlPlanes` and `GCPClusters`.
+
 ## [2.0.0] - 2022-09-12
 
 ### Added
