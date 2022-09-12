@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.2] - 2022-09-12
+
 ### Fixed
 
 - Use `json` marshaller instead of `yaml` to get lowercase field names in configmaps.
@@ -258,7 +260,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.9.2...v1.10.0
