@@ -9,8 +9,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 )
 
 func (r *Resource) GetCurrentState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {

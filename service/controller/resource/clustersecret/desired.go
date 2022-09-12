@@ -13,9 +13,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
+	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.Secret, error) {

@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/cluster-apps-operator/integration/env"
+	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
 )
 
 type Config struct {

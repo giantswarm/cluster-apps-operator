@@ -1,4 +1,4 @@
-module github.com/giantswarm/cluster-apps-operator
+module github.com/giantswarm/cluster-apps-operator/v2
 
 go 1.18
 

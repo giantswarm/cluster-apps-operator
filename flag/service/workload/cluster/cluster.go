@@ -1,8 +1,8 @@
 package cluster
 
 import (
-	"github.com/giantswarm/cluster-apps-operator/flag/service/workload/cluster/calico"
-	"github.com/giantswarm/cluster-apps-operator/flag/service/workload/cluster/kubernetes"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/workload/cluster/calico"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/workload/cluster/kubernetes"
 )
 
 // Cluster is a data structure to hold cluster specific configuration flags.

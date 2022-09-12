@@ -16,10 +16,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capz "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha4"
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
+	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {
