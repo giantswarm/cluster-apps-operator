@@ -19,3 +19,12 @@ var wrongTypeError = &microerror.Error{
 func IsWrongType(err error) bool {
 	return microerror.Cause(err) == wrongTypeError
 }
+
+var fieldNotFoundOnInfrastructureTypeError = &microerror.Error{
+	Kind: "fieldNotFoundOnInfrastructureType",
+}
+
+// IsFieldNotFoundOnInfrastructureType asserts fieldNotFoundOnInfrastructureTypeError.
+func IsFieldNotFoundOnInfrastructureType(err error) bool {
+	return microerror.Cause(err) == fieldNotFoundOnInfrastructureTypeError
+}

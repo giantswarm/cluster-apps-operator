@@ -35,8 +35,10 @@ type Resource struct {
 	logger    micrologger.Logger
 	podCIDR   podcidr.Interface
 
-	baseDomain     string
+	baseDomain string
+	// clusterIPRange is the CIDR for the k8s `Services`.
 	clusterIPRange string
+	// dnsIP is the 10th IP within the `clusterIPRange` CIDR, that will be used for the coredns `Service`.
 	dnsIP          string
 	provider       string
 	registryDomain string
@@ -57,7 +59,6 @@ func New(config Config) (*Resource, error) {
 	if config.PodCIDR == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.PodCIDR must not be empty", config)
 	}
-
 	if config.BaseDomain == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
 	}
