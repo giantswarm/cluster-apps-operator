@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2022-09-12
+
 ### Fixed
 
 - Add RBAC rules to get `KubeadmControlPlanes` and `GCPClusters`.
@@ -252,7 +254,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.1...HEAD
+[2.0.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.10.0...v2.0.0
 [1.10.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.9.2...v1.10.0
 [1.9.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v1.9.1...v1.9.2
