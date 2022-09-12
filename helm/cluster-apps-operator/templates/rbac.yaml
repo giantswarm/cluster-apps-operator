@@ -35,6 +35,12 @@ rules:
       - get
       - list
   - apiGroups:
+      - controlplane.cluster.x-k8s.io
+    resources:
+      - kubeadmcontrolplanes
+    verbs:
+      - get
+  - apiGroups:
       - release.giantswarm.io
     resources:
       - releases
@@ -96,6 +102,7 @@ rules:
     resources:
       - azureclusters
       - openstackclusters
+      - gcpclusters
     verbs:
       - "get"
   - nonResourceURLs:
