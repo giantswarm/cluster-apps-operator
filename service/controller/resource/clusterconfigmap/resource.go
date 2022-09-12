@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
 const (

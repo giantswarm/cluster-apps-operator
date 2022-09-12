@@ -17,7 +17,7 @@ import (
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
 func Test_ClusterValuesGCP(t *testing.T) {
