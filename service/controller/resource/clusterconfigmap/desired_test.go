@@ -295,6 +295,94 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 	}
 }
 
+func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
+	podCidrConfig := podcidr.Config{InstallationCIDR: "10.0.0.0/16"}
+	podCidr, err := podcidr.New(podCidrConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	openstackCluster := &unstructured.Unstructured{}
+	openstackCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "test-cluster",
+			"namespace": "default",
+		},
+		"spec": map[string]interface{}{},
+	}
+	openstackCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Kind:    "OpenstackCluster",
+		Version: "v1beta1",
+	})
+
+	cluster := &capi.Cluster{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "test-cluster",
+			Namespace: "default",
+		},
+		Spec: capi.ClusterSpec{
+			InfrastructureRef: &corev1.ObjectReference{
+				Kind:       "OpenstackCluster",
+				Namespace:  "default",
+				Name:       "test-cluster",
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
+		},
+	}
+
+	var fakeClient *k8sclienttest.Clients
+	{
+		schemeBuilder := runtime.SchemeBuilder{
+			capi.AddToScheme,
+		}
+
+		err = schemeBuilder.AddToScheme(scheme.Scheme)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
+			CtrlClient: clientfake.NewClientBuilder().
+				WithRuntimeObjects(openstackCluster, cluster).
+				Build(),
+		})
+	}
+
+	config := Config{
+		K8sClient:      fakeClient,
+		Logger:         microloggertest.New(),
+		PodCIDR:        podCidr,
+		BaseDomain:     "fadi.gigantic.io",
+		ClusterIPRange: "10.96.0.0/12",
+		DNSIP:          "10.96.0.10",
+		Provider:       "vsphere",
+		RegistryDomain: "quay.io/giantswarm",
+	}
+	resource, err := New(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	configmaps, err := resource.GetDesiredState(context.Background(), cluster)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, configMap := range configmaps {
+		if strings.HasSuffix(configMap.Name, "-cluster-values") {
+			cmData := &ClusterValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertEquals(t, "", cmData.GcpProject, "GCPProject is only set when using gcp")
+			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+		}
+	}
+}
+
 func assertEquals(t *testing.T, expected, actual, message string) {
 	if expected != actual {
 		t.Fatalf("%s, expected %q, actual %q", message, expected, actual)

@@ -105,7 +105,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		// clusterCIDR is only used on azure.
 		clusterCIDR = ""
 		// gcpProject is only used on gcp.
-		gcpProject = ""
+		gcpProject      = ""
+		gcpProjectFound bool
 	)
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
@@ -125,7 +126,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			case "aws":
 			case "openstack":
 			case "vsphere":
-				fallthrough
 			case "gcp":
 				gcpCluster := &unstructured.Unstructured{}
 				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
@@ -141,9 +141,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, microerror.Mask(err)
 				}
 
-				gcpProject, _, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
-				if err != nil {
-					return nil, microerror.Mask(err)
+				gcpProject, gcpProjectFound, err = unstructured.NestedString(gcpCluster.Object, []string{"spec", "project"}...)
+				if err != nil || !gcpProjectFound {
+					return nil, fieldNotFoundOnInfrastructureTypeError
 				}
 			default:
 				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", r.provider)
