@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Use `json` marshaller instead of `yaml` to get lowercase field names in configmaps.
+
 ## [2.0.1] - 2022-09-12
 
 ### Fixed

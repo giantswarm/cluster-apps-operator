@@ -1,25 +1,25 @@
 package clusterconfigmap
 
 type ChartOperatorConfig struct {
-	Cni map[string]bool `yaml:"cni"`
+	Cni map[string]bool `json:"cni"`
 }
 type KubernetesConfig struct {
-	API map[string]string `yaml:"api"`
-	DNS map[string]string `yaml:"dns"`
+	API map[string]string `json:"api"`
+	DNS map[string]string `json:"dns"`
 }
 type ClusterConfig struct {
-	Calico     map[string]string `yaml:"calico"`
-	Kubernetes KubernetesConfig  `yaml:"kubernetes"`
+	Calico     map[string]string `json:"calico"`
+	Kubernetes KubernetesConfig  `json:"kubernetes"`
 }
 type ClusterValuesConfig struct {
-	BaseDomain string        `yaml:"baseDomain"`
-	Cluster    ClusterConfig `yaml:"cluster"`
-	ClusterCA  string        `yaml:"clusterCA"`
+	BaseDomain string        `json:"baseDomain"`
+	Cluster    ClusterConfig `json:"cluster"`
+	ClusterCA  string        `json:"clusterCA"`
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
-	ClusterDNSIP  string              `yaml:"clusterDNSIP"`
-	ClusterID     string              `yaml:"clusterID"`
-	ClusterCIDR   string              `yaml:"clusterCIDR"`
-	Provider      string              `yaml:"provider"`
-	GcpProject    string              `yaml:"gcpProject"`
-	ChartOperator ChartOperatorConfig `yaml:"chartOperator"`
+	ClusterDNSIP  string              `json:"clusterDNSIP"`
+	ClusterID     string              `json:"clusterID"`
+	ClusterCIDR   string              `json:"clusterCIDR"`
+	Provider      string              `json:"provider"`
+	GcpProject    string              `json:"gcpProject"`
+	ChartOperator ChartOperatorConfig `json:"chartOperator"`
 }
