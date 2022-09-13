@@ -4,8 +4,8 @@ type ChartOperatorConfig struct {
 	Cni map[string]bool `json:"cni"`
 }
 type KubernetesConfig struct {
-	API map[string]string `json:"api"`
-	DNS map[string]string `json:"dns"`
+	API map[string]string `json:"API"`
+	DNS map[string]string `json:"DNS"`
 }
 type ClusterConfig struct {
 	Calico     map[string]string `json:"calico"`
