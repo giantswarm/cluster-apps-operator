@@ -15,7 +15,7 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake" //nolint:staticcheck
 
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 )
 
 func Test_EnsureDeleted(t *testing.T) {

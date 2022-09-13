@@ -17,14 +17,14 @@ import (
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 
-	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
-	capz "github.com/giantswarm/cluster-apps-operator/api/capz/v1alpha4"
-	"github.com/giantswarm/cluster-apps-operator/flag"
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/service/collector"
-	"github.com/giantswarm/cluster-apps-operator/service/controller"
-	"github.com/giantswarm/cluster-apps-operator/service/controller/key"
-	"github.com/giantswarm/cluster-apps-operator/service/internal/podcidr"
+	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
+	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/collector"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
 // Config represents the configuration used to create a new service.

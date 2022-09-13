@@ -8,7 +8,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capo "github.com/giantswarm/cluster-apps-operator/api/capo/v1alpha4"
+	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
 )
 
 type openStackClouds struct {

@@ -29,7 +29,7 @@ image:
 
 kubernetes:
   api:
-    clusterIPRange: 172.31.0.0/16
+    clusterIPRange: 10.96.0.0/12
   clusterDomain: cluster.local
 
 pod:

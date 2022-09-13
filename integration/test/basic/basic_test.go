@@ -14,8 +14,8 @@ import (
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/cluster-apps-operator/integration/key"
-	"github.com/giantswarm/cluster-apps-operator/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
+	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 )
 
 // TestBasic is a smoke test to check the helm chart is installed and the
