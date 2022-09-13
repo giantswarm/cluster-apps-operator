@@ -1,6 +1,6 @@
 module github.com/giantswarm/cluster-apps-operator/v2
 
-go 1.19
+go 1.18
 
 require (
 	github.com/giantswarm/apiextensions-application v0.5.1
