@@ -202,6 +202,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
 		Provider:     r.provider,
+		Organization: key.OrganizationID(&cr),
+		RemoteWrite:  []RemoteWrite{RemoteWrite{Url: remoteWriteUrl(r.baseDomain, key.ClusterID(&cr))}},
 	}
 
 	clusterValuesYaml, err := yaml.Marshal(clusterValues)

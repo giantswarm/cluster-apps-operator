@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -47,6 +48,10 @@ func ClusterID(getter LabelsGetter) string {
 		clusterID = getter.GetLabels()[capi.ClusterLabelName]
 	}
 	return clusterID
+}
+
+func OrganizationID(getter LabelsGetter) string {
+	return getter.GetLabels()[label.Organization]
 }
 
 // DNSIP returns the IP of the DNS service given a cluster IP range.
@@ -105,4 +110,8 @@ func ToCluster(v interface{}) (capi.Cluster, error) {
 	}
 
 	return *p, nil
+}
+
+func IsBundle(appName string) bool {
+	return strings.HasSuffix(appName, "-bundle")
 }

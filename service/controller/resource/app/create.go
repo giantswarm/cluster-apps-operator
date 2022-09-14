@@ -169,7 +169,12 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			},
 		}
 	}
-
+	operatorVersion := appSpec.AppOperatorVersion
+	// If the app is a bundle, we ensure the MC app operator deploys the apps
+	// so the cluster-operator for the wc deploys the apps to the WC.
+	if key.IsBundle(appSpec.App) {
+		operatorVersion = uniqueOperatorVersion
+	}
 	return &v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
@@ -181,7 +186,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			},
 			Labels: map[string]string{
 				label.AppKubernetesName:  appSpec.App,
-				label.AppOperatorVersion: appSpec.AppOperatorVersion,
+				label.AppOperatorVersion: operatorVersion,
 				label.Cluster:            key.ClusterID(&cr),
 				label.ManagedBy:          project.Name(),
 			},

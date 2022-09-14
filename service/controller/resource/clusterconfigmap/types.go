@@ -11,6 +11,9 @@ type ClusterConfig struct {
 	Calico     map[string]string `json:"calico"`
 	Kubernetes KubernetesConfig  `json:"kubernetes"`
 }
+type RemoteWrite struct {
+	Url string `json:"url"`
+}
 type ClusterValuesConfig struct {
 	BaseDomain string        `json:"baseDomain"`
 	Cluster    ClusterConfig `json:"cluster"`
@@ -18,6 +21,8 @@ type ClusterValuesConfig struct {
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
 	ClusterDNSIP  string              `json:"clusterDNSIP"`
 	ClusterID     string              `json:"clusterID"`
+	Organization  string              `json:"organization"`
+	RemoteWrite   []RemoteWrite       `json:"remoteWrite"`
 	ClusterCIDR   string              `json:"clusterCIDR"`
 	Provider      string              `json:"provider"`
 	GcpProject    string              `json:"gcpProject"`
