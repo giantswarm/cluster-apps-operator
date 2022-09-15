@@ -158,6 +158,17 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			InCluster: true,
 		}
+	} else if key.IsBundle(appSpec.AppName) {
+		kubeConfig = v1alpha1.AppSpecKubeConfig{
+			InCluster: true,
+			Context: v1alpha1.AppSpecKubeConfigContext{
+				Name: key.KubeConfigSecretName(&cr),
+			},
+			Secret: v1alpha1.AppSpecKubeConfigSecret{
+				Name:      key.KubeConfigSecretName(&cr),
+				Namespace: key.ClusterID(&cr),
+			},
+		}
 	} else {
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			Context: v1alpha1.AppSpecKubeConfigContext{
@@ -169,11 +180,13 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			},
 		}
 	}
+	targetNamespace := appSpec.TargetNamespace
 	operatorVersion := appSpec.AppOperatorVersion
 	// If the app is a bundle, we ensure the MC app operator deploys the apps
 	// so the cluster-operator for the wc deploys the apps to the WC.
 	if key.IsBundle(appSpec.App) {
 		operatorVersion = uniqueOperatorVersion
+		targetNamespace = key.ClusterID(&cr)
 	}
 	return &v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
@@ -202,7 +215,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				},
 			},
 			Name:       appSpec.App,
-			Namespace:  appSpec.TargetNamespace,
+			Namespace:  targetNamespace,
 			Version:    appSpec.Version,
 			KubeConfig: kubeConfig,
 		},
