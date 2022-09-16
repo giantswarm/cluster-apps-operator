@@ -181,11 +181,13 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 		}
 	}
 
+	appName := appSpec.AppName
 	appNamespace := appSpec.TargetNamespace
 	// If the app is a bundle, we ensure the MC app operator deploys the apps
 	// so the cluster-operator for the wc deploys the apps to the WC.
 	appOperatorVersion := appSpec.AppOperatorVersion
 	if key.IsBundle(appSpec.App) {
+		appName = fmt.Sprintf("%s-%s", key.ClusterID(&cr), appName)
 		appOperatorVersion = uniqueOperatorVersion
 		appNamespace = cr.GetNamespace()
 	}
@@ -205,7 +207,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				label.Cluster:            key.ClusterID(&cr),
 				label.ManagedBy:          project.Name(),
 			},
-			Name:      appSpec.AppName,
+			Name:      appName,
 			Namespace: cr.GetNamespace(),
 		},
 		Spec: v1alpha1.AppSpec{
