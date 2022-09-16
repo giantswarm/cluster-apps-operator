@@ -158,6 +158,17 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			InCluster: true,
 		}
+	} else if key.IsBundle(appSpec.App) {
+		kubeConfig = v1alpha1.AppSpecKubeConfig{
+			InCluster: true,
+			Context: v1alpha1.AppSpecKubeConfigContext{
+				Name: key.KubeConfigSecretName(&cr),
+			},
+			Secret: v1alpha1.AppSpecKubeConfigSecret{
+				Name:      key.KubeConfigSecretName(&cr),
+				Namespace: key.ClusterID(&cr),
+			},
+		}
 	} else {
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			Context: v1alpha1.AppSpecKubeConfigContext{
@@ -168,6 +179,15 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				Namespace: cr.GetNamespace(),
 			},
 		}
+	}
+
+	appNamespace := appSpec.TargetNamespace
+	// If the app is a bundle, we ensure the MC app operator deploys the apps
+	// so the cluster-operator for the wc deploys the apps to the WC.
+	appOperatorVersion := appSpec.AppOperatorVersion
+	if key.IsBundle(appSpec.App) {
+		appOperatorVersion = uniqueOperatorVersion
+		appNamespace = cr.GetNamespace()
 	}
 
 	return &v1alpha1.App{
@@ -181,7 +201,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			},
 			Labels: map[string]string{
 				label.AppKubernetesName:  appSpec.App,
-				label.AppOperatorVersion: appSpec.AppOperatorVersion,
+				label.AppOperatorVersion: appOperatorVersion,
 				label.Cluster:            key.ClusterID(&cr),
 				label.ManagedBy:          project.Name(),
 			},
@@ -197,7 +217,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				},
 			},
 			Name:       appSpec.App,
-			Namespace:  appSpec.TargetNamespace,
+			Namespace:  appNamespace,
 			Version:    appSpec.Version,
 			KubeConfig: kubeConfig,
 		},

@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -70,6 +71,10 @@ func DNSIP(clusterIPRange string) (string, error) {
 	ip[3] = defaultDNSLastOctet
 
 	return ip.String(), nil
+}
+
+func IsBundle(appName string) bool {
+	return strings.HasSuffix(appName, "-bundle")
 }
 
 func IsDeleted(getter DeletionTimestampGetter) bool {
