@@ -154,20 +154,9 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec) *v1alpha1.App {
 	var kubeConfig v1alpha1.AppSpecKubeConfig
 
-	if appSpec.InCluster {
+	if appSpec.InCluster || key.IsBundle(appSpec.App) {
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			InCluster: true,
-		}
-	} else if key.IsBundle(appSpec.App) {
-		kubeConfig = v1alpha1.AppSpecKubeConfig{
-			InCluster: true,
-			Context: v1alpha1.AppSpecKubeConfigContext{
-				Name: key.KubeConfigSecretName(&cr),
-			},
-			Secret: v1alpha1.AppSpecKubeConfigSecret{
-				Name:      key.KubeConfigSecretName(&cr),
-				Namespace: key.ClusterID(&cr),
-			},
 		}
 	} else {
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
