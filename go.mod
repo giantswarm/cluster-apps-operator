@@ -1,6 +1,6 @@
 module github.com/giantswarm/cluster-apps-operator/v2
 
-go 1.18
+go 1.19
 
 require (
 	github.com/giantswarm/apiextensions-application v0.5.1
@@ -99,6 +99,6 @@ require (
 )
 
 replace (
-	github.com/coreos/etcd => github.com/coreos/etcd v3.3.25+incompatible
+	github.com/coreos/etcd => github.com/coreos/etcd v3.3.27+incompatible+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 )
