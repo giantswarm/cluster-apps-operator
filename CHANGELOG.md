@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2022-09-23
+
 ### Changed
 
 - Bumping `chart-operator` to the `v2.30.0` version, and `app-operator` to the `v6.4.0` version.
@@ -270,7 +272,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.3...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.3...v2.1.0
 [2.0.3]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.0.0...v2.0.1
