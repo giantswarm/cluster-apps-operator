@@ -10,7 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Support for App bundles in default apps.
-- Change default CNI subnet to not contain the mask
+
+### Fixed
+
+- Change default CNI subnet to not contain the mask.
 
 ## [2.1.0] - 2022-09-23
 
