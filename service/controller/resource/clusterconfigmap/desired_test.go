@@ -108,6 +108,10 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			}
 			assertEquals(t, "test-cluster.fadi.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "12345", cmData.GcpProject, "Wrong gcpProject set in cluster-values configmap")
+
+			if !cmData.BootstrapMode.Enabled {
+				t.Fatal("bootstrap mode should be enabled")
+			}
 		}
 	}
 }

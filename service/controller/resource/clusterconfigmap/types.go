@@ -1,5 +1,8 @@
 package clusterconfigmap
 
+type ChartOperatorBootstrapMode struct {
+	Enabled bool `json:"enabled"`
+}
 type ChartOperatorConfig struct {
 	Cni map[string]bool `json:"cni"`
 }
@@ -12,9 +15,11 @@ type ClusterConfig struct {
 	Kubernetes KubernetesConfig  `json:"kubernetes"`
 }
 type ClusterValuesConfig struct {
-	BaseDomain string        `json:"baseDomain"`
-	Cluster    ClusterConfig `json:"cluster"`
-	ClusterCA  string        `json:"clusterCA"`
+	BaseDomain string `json:"baseDomain"`
+	// BootstrapMode allows to configure chart-operator in bootstrap mode so that it can install charts without cni or kube-proxy.
+	BootstrapMode ChartOperatorBootstrapMode `json:"bootstrapMode"`
+	Cluster       ClusterConfig              `json:"cluster"`
+	ClusterCA     string                     `json:"clusterCA"`
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
 	ClusterDNSIP  string              `json:"clusterDNSIP"`
 	ClusterID     string              `json:"clusterID"`

@@ -188,6 +188,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 	clusterValues := ClusterValuesConfig{
 		BaseDomain:    key.BaseDomain(&cr, r.baseDomain),
+		BootstrapMode: ChartOperatorBootstrapMode{Enabled: true},
 		ChartOperator: ChartOperatorConfig{Cni: map[string]bool{"install": true}},
 		Cluster: ClusterConfig{
 			Calico: map[string]string{"CIDR": podCIDR},
