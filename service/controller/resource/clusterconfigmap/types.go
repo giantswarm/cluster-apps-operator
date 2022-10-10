@@ -1,7 +1,8 @@
 package clusterconfigmap
 
 type ChartOperatorBootstrapMode struct {
-	Enabled bool `json:"enabled"`
+	Enabled          bool  `json:"enabled"`
+	ApiServerPodPort int32 `json:"apiServerPodPort"`
 }
 type ChartOperatorConfig struct {
 	Cni map[string]bool `json:"cni"`
