@@ -112,6 +112,10 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
 			}
+
+			if cmData.BootstrapMode.ApiServerPodPort != 6443 {
+				t.Fatal("bootstrap mode should use 6443 on GCP")
+			}
 		}
 	}
 }
