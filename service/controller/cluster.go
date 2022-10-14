@@ -190,7 +190,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		clusterConfigMapResource,
 	}
 
-	if config.Provider == "openstack" {
+	if config.Provider == "openstack" || config.Provider == "cloud-director" {
 		// clusterSecretResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
 		resources = append(resources, clusterSecretResource)

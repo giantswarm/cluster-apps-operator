@@ -4,14 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/giantswarm/k8smetadata/pkg/annotation"
-	"github.com/giantswarm/k8smetadata/pkg/label"
-	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
+
+	"github.com/giantswarm/k8smetadata/pkg/annotation"
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/microerror"
+
+	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
 
 	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
@@ -48,7 +51,19 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
+			case "VCDCluster":
+				var infraCluster capvcd.VCDCluster
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &infraCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				values["global"], err = r.generateCloudDirectorConfig(ctx, infraCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
 			}
+
 		}
 	}
 
