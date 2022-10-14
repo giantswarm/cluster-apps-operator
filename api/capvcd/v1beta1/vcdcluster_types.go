@@ -19,7 +19,6 @@ package v1beta1
 import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	clusterv1 "sigs.k8s.io/cluster-api/api/v1beta1"
 )
 
 const (
@@ -110,10 +109,6 @@ type VCDClusterStatus struct {
 	// MetadataUpdated denotes that the metadata of Vapp is updated.
 	// +optional
 	VAppMetadataUpdated bool `json:"vappMetadataUpdated,omitempty"`
-
-	// Conditions defines current service state of the VCDCluster.
-	// +optional
-	Conditions clusterv1.Conditions `json:"conditions,omitempty"`
 
 	// optional
 	Site string `json:"site,omitempty"`
