@@ -103,6 +103,7 @@ rules:
       - azureclusters
       - openstackclusters
       - gcpclusters
+      - vcdclusters
     verbs:
       - "get"
   - nonResourceURLs:
