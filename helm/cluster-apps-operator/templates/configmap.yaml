@@ -30,6 +30,10 @@ data:
           keyFile: ''
       provider:
         kind: {{ .Values.provider.kind }}
+      proxy:
+        noProxy: {{ .Values.proxy.noProxy }}
+        http: {{ .Values.proxy.http }}
+        https: {{ .Values.proxy.https }}
       workload:
         cluster:
           baseDomain: '{{ .Values.baseDomain }}'

@@ -21,6 +21,7 @@ import (
 	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
 	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/flag"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/collector"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller"
@@ -149,7 +150,12 @@ func New(config Config) (*Service, error) {
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
 			Provider:             config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			RegistryDomain:       config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
+			Proxy: proxy.Proxy{
+				HttpProxy:  config.Viper.GetString(config.Flag.Service.Proxy.HttpProxy),
+				HttpsProxy: config.Viper.GetString(config.Flag.Service.Proxy.HttpsProxy),
+				NoProxy:    config.Viper.GetString(config.Flag.Service.Proxy.NoProxy),
+			},
+			RegistryDomain: config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
 		}
 
 		var err error
