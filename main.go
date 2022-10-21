@@ -123,6 +123,15 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange, "", "CIDR Range for Pods in cluster.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.ClusterDomain, "cluster.local", "Internal Kubernetes domain.")
 
+	daemonCommand.PersistentFlags().String(f.Service.Proxy.NoProxy, "", "Installation specific no_proxy values.")
+	daemonCommand.PersistentFlags().String(f.Service.Proxy.HttpProxy, "", "Installation specific http_proxy value.")
+	daemonCommand.PersistentFlags().String(f.Service.Proxy.HttpsProxy, "", "Installation specific https_proxy value.")
+	/*
+		TODO:
+			* set http and https from external
+			* inject into cluster values
+	*/
+
 	err = newCommand.CobraCommand().Execute()
 	if err != nil {
 		return microerror.Mask(err)
