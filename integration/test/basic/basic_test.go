@@ -22,7 +22,6 @@ import (
 // operator starts without crashing.
 //
 // The operator functionality is tested via Tekton in the releases repo.
-//
 func TestBasic(t *testing.T) {
 	var err error
 

@@ -39,8 +39,7 @@ type Resource struct {
 // New creates a new configured app state getter resource managing
 // app CRs.
 //
-//     https://pkg.go.dev/github.com/giantswarm/resource/v2/appresource#StateGetter
-//
+//	https://pkg.go.dev/github.com/giantswarm/resource/v2/appresource#StateGetter
 func New(config Config) (*Resource, error) {
 	if config.CtrlClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.CtrlClient must not be empty", config)

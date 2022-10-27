@@ -1,4 +1,4 @@
-//+kubebuilder:object:generate=true
+// +kubebuilder:object:generate=true
 package v1alpha4
 
 import (
