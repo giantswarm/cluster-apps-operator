@@ -140,18 +140,32 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			UseUpgradeForce:    false,
 			Version:            r.chartOperatorVersion,
 		},
+		{
+			App: "observability-bundle",
+			// observability-bundle is deployed by the management cluster
+			// instance.
+			AppOperatorVersion: r.appOperatorVersion,
+			AppName:            key.ObservabilityBundleAppName(&cr),
+			Catalog:            r.observabilityBundleCatalog,
+			ConfigMapName:      key.ClusterValuesResourceName(&cr),
+			ConfigMapNamespace: cr.GetNamespace(),
+			InCluster:          true,
+			TargetNamespace:    cr.GetNamespace(),
+			UseUpgradeForce:    false,
+			Version:            r.observabilityBundleVersion,
+		},
 	}
 
 	apps := []*v1alpha1.App{}
 
 	for _, spec := range appSpecs {
-		apps = append(apps, r.newApp(ctx, cr, spec))
+		apps = append(apps, r.newApp(cr, spec))
 	}
 
 	return apps
 }
 
-func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec) *v1alpha1.App {
+func (r *Resource) newApp(cr capi.Cluster, appSpec AppSpec) *v1alpha1.App {
 	var kubeConfig v1alpha1.AppSpecKubeConfig
 
 	if appSpec.InCluster || key.IsBundle(appSpec.App) {

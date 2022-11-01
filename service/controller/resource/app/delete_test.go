@@ -34,6 +34,7 @@ func Test_EnsureDeleted(t *testing.T) {
 				newAppCR("demo0-chart-operator", "org-acme", "demo0", project.Name(), false),
 				newAppCR("other0-app-operator", "org-acme", "demo0", project.Name(), true),
 				newAppCR("other0-chart-operator", "org-acme", "demo0", project.Name(), false),
+				newAppCR("other0-observability-bundle", "org-acme", "demo0", project.Name(), true),
 				newAppCR("demo0-hello-world", "org-acme", "demo0", "", false),
 				newAppCR("other0-hello-world", "org-acme", "other0", "", false),
 				newAppCR("other0-kyverno-policies", "org-acme", "other0", "", false),
@@ -48,10 +49,12 @@ func Test_EnsureDeleted(t *testing.T) {
 				},
 			},
 			config: Config{
-				AppOperatorCatalog:   "control-plane-catalog",
-				AppOperatorVersion:   "1.0.0",
-				ChartOperatorCatalog: "default",
-				ChartOperatorVersion: "1.0.0",
+				AppOperatorCatalog:         "control-plane-catalog",
+				AppOperatorVersion:         "1.0.0",
+				ChartOperatorCatalog:       "default",
+				ChartOperatorVersion:       "1.0.0",
+				ObservabilityBundleCatalog: "default",
+				ObservabilityBundleVersion: "0.1.1",
 			},
 			expectedAppsLeft: []types.NamespacedName{
 				types.NamespacedName{
@@ -60,6 +63,10 @@ func Test_EnsureDeleted(t *testing.T) {
 				},
 				types.NamespacedName{
 					Name:      "other0-chart-operator",
+					Namespace: "org-acme",
+				},
+				types.NamespacedName{
+					Name:      "other0-observability-bundle",
 					Namespace: "org-acme",
 				},
 				types.NamespacedName{
@@ -108,10 +115,12 @@ func Test_EnsureDeleted(t *testing.T) {
 				},
 			},
 			config: Config{
-				AppOperatorCatalog:   "control-plane-catalog",
-				AppOperatorVersion:   "1.0.0",
-				ChartOperatorCatalog: "default",
-				ChartOperatorVersion: "1.0.0",
+				AppOperatorCatalog:         "control-plane-catalog",
+				AppOperatorVersion:         "1.0.0",
+				ChartOperatorCatalog:       "default",
+				ChartOperatorVersion:       "1.0.0",
+				ObservabilityBundleCatalog: "default",
+				ObservabilityBundleVersion: "0.1.1",
 			},
 			expectedAppsLeft: []types.NamespacedName{
 				types.NamespacedName{
@@ -173,10 +182,12 @@ func Test_EnsureDeleted(t *testing.T) {
 				},
 			},
 			config: Config{
-				AppOperatorCatalog:   "control-plane-catalog",
-				AppOperatorVersion:   "1.0.0",
-				ChartOperatorCatalog: "default",
-				ChartOperatorVersion: "1.0.0",
+				AppOperatorCatalog:         "control-plane-catalog",
+				AppOperatorVersion:         "1.0.0",
+				ChartOperatorCatalog:       "default",
+				ChartOperatorVersion:       "1.0.0",
+				ObservabilityBundleCatalog: "default",
+				ObservabilityBundleVersion: "0.1.1",
 			},
 			expectedAppsLeft: []types.NamespacedName{
 				types.NamespacedName{
@@ -237,10 +248,12 @@ func Test_EnsureDeleted(t *testing.T) {
 				},
 			},
 			config: Config{
-				AppOperatorCatalog:   "control-plane-catalog",
-				AppOperatorVersion:   "1.0.0",
-				ChartOperatorCatalog: "default",
-				ChartOperatorVersion: "1.0.0",
+				AppOperatorCatalog:         "control-plane-catalog",
+				AppOperatorVersion:         "1.0.0",
+				ChartOperatorCatalog:       "default",
+				ChartOperatorVersion:       "1.0.0",
+				ObservabilityBundleCatalog: "default",
+				ObservabilityBundleVersion: "0.1.1",
 			},
 			expectedAppsLeft: []types.NamespacedName{
 				types.NamespacedName{

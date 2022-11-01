@@ -141,15 +141,17 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 			PodCIDR:   pc,
 
-			AppOperatorCatalog:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
-			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
-			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
-			ChartOperatorVersion: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
-			BaseDomain:           config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain),
-			ClusterIPRange:       clusterIPRange,
-			DNSIP:                dnsIP,
-			Provider:             config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			RegistryDomain:       config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
+			AppOperatorCatalog:         config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
+			AppOperatorVersion:         config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
+			ChartOperatorCatalog:       config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),
+			ChartOperatorVersion:       config.Viper.GetString(config.Flag.Service.App.ChartOperator.Version),
+			ObservabilityBundleCatalog: config.Viper.GetString(config.Flag.Service.App.ObservabilityBundle.Catalog),
+			ObservabilityBundleVersion: config.Viper.GetString(config.Flag.Service.App.ObservabilityBundle.Version),
+			BaseDomain:                 config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain),
+			ClusterIPRange:             clusterIPRange,
+			DNSIP:                      dnsIP,
+			Provider:                   config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			RegistryDomain:             config.Viper.GetString(config.Flag.Service.Image.Registry.Domain),
 		}
 
 		var err error

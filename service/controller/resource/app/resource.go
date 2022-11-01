@@ -19,10 +19,12 @@ type Config struct {
 	CtrlClient client.Client
 	Logger     micrologger.Logger
 
-	AppOperatorCatalog   string
-	AppOperatorVersion   string
-	ChartOperatorCatalog string
-	ChartOperatorVersion string
+	AppOperatorCatalog         string
+	AppOperatorVersion         string
+	ChartOperatorCatalog       string
+	ChartOperatorVersion       string
+	ObservabilityBundleCatalog string
+	ObservabilityBundleVersion string
 }
 
 // Resource implements the app resource.
@@ -30,10 +32,12 @@ type Resource struct {
 	ctrlClient client.Client
 	logger     micrologger.Logger
 
-	appOperatorCatalog   string
-	appOperatorVersion   string
-	chartOperatorCatalog string
-	chartOperatorVersion string
+	appOperatorCatalog         string
+	appOperatorVersion         string
+	chartOperatorCatalog       string
+	chartOperatorVersion       string
+	observabilityBundleCatalog string
+	observabilityBundleVersion string
 }
 
 // New creates a new configured app state getter resource managing
@@ -60,15 +64,23 @@ func New(config Config) (*Resource, error) {
 	if config.ChartOperatorVersion == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ChartOperatorVersion must not be empty", config)
 	}
+	if config.ObservabilityBundleCatalog == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.ObservabilityBundleCatalog must not be empty", config)
+	}
+	if config.ObservabilityBundleVersion == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.ObservabilityBundleVersion must not be empty", config)
+	}
 
 	r := &Resource{
 		ctrlClient: config.CtrlClient,
 		logger:     config.Logger,
 
-		appOperatorCatalog:   config.AppOperatorCatalog,
-		appOperatorVersion:   config.AppOperatorVersion,
-		chartOperatorCatalog: config.ChartOperatorCatalog,
-		chartOperatorVersion: config.ChartOperatorVersion,
+		appOperatorCatalog:         config.AppOperatorCatalog,
+		appOperatorVersion:         config.AppOperatorVersion,
+		chartOperatorCatalog:       config.ChartOperatorCatalog,
+		chartOperatorVersion:       config.ChartOperatorVersion,
+		observabilityBundleCatalog: config.ObservabilityBundleCatalog,
+		observabilityBundleVersion: config.ObservabilityBundleVersion,
 	}
 
 	return r, nil

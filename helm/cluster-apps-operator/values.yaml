@@ -6,6 +6,10 @@ chartOperator:
   catalog: default
   version: 2.30.0
 
+observabilityBundle:
+  catalog: default
+  version: 0.1.1
+
 baseDomain: ""
 
 provider:

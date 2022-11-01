@@ -28,15 +28,17 @@ type ClusterConfig struct {
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
 
-	AppOperatorCatalog   string
-	AppOperatorVersion   string
-	ChartOperatorCatalog string
-	ChartOperatorVersion string
-	BaseDomain           string
-	ClusterIPRange       string
-	DNSIP                string
-	Provider             string
-	RegistryDomain       string
+	AppOperatorCatalog         string
+	AppOperatorVersion         string
+	ChartOperatorCatalog       string
+	ChartOperatorVersion       string
+	ObservabilityBundleCatalog string
+	ObservabilityBundleVersion string
+	BaseDomain                 string
+	ClusterIPRange             string
+	DNSIP                      string
+	Provider                   string
+	RegistryDomain             string
 }
 
 type Cluster struct {

@@ -32,6 +32,10 @@ func ChartOperatorAppName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-chart-operator", ClusterID(getter))
 }
 
+func ObservabilityBundleAppName(getter LabelsGetter) string {
+	return fmt.Sprintf("%s-observability-bundle", ClusterID(getter))
+}
+
 func ClusterValuesResourceName(getter LabelsGetter) string {
 	return fmt.Sprintf("%s-cluster-values", ClusterID(getter))
 }

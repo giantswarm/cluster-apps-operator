@@ -105,6 +105,8 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.App.AppOperator.Version, "", "Version for app-operator app CR.")
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Catalog, "", "Catalog for chart-operator app CR.")
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Version, "", "Version for chart-operator app CR.")
+	daemonCommand.PersistentFlags().String(f.Service.App.ObservabilityBundle.Catalog, "", "Catalog for observability-bundle app CR.")
+	daemonCommand.PersistentFlags().String(f.Service.App.ObservabilityBundle.Version, "", "Version for observability-bundle app CR.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "quay.io", "Image registry.")
 
