@@ -145,7 +145,7 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			// observability-bundle is deployed by the management cluster
 			// instance.
 			AppOperatorVersion: r.appOperatorVersion,
-			AppName:            key.ObservabilityBundleAppName(&cr),
+			AppName:            key.ObservabilityBundleAppName(),
 			Catalog:            r.observabilityBundleCatalog,
 			ConfigMapName:      key.ClusterValuesResourceName(&cr),
 			ConfigMapNamespace: cr.GetNamespace(),
