@@ -21,6 +21,9 @@ data:
         chartOperator:
           catalog: {{ .Values.chartOperator.catalog }}
           version: {{ .Values.chartOperator.version }}
+        observabilityBundle:
+          catalog: {{ .Values.observabilityBundle.catalog }}
+          version: {{ .Values.observabilityBundle.version }}
       kubernetes:
         address: ''
         inCluster: true

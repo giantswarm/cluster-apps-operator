@@ -96,10 +96,12 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 			CtrlClient: config.K8sClient.CtrlClient(),
 			Logger:     config.Logger,
 
-			AppOperatorCatalog:   config.AppOperatorCatalog,
-			AppOperatorVersion:   config.AppOperatorVersion,
-			ChartOperatorCatalog: config.ChartOperatorCatalog,
-			ChartOperatorVersion: config.ChartOperatorVersion,
+			AppOperatorCatalog:         config.AppOperatorCatalog,
+			AppOperatorVersion:         config.AppOperatorVersion,
+			ChartOperatorCatalog:       config.ChartOperatorCatalog,
+			ChartOperatorVersion:       config.ChartOperatorVersion,
+			ObservabilityBundleCatalog: config.ObservabilityBundleCatalog,
+			ObservabilityBundleVersion: config.ObservabilityBundleVersion,
 		}
 
 		appResource, err = app.New(c)
