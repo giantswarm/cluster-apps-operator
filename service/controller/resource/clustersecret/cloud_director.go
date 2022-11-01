@@ -39,7 +39,7 @@ func (r *Resource) generateCloudDirectorConfig(ctx context.Context, vcdCluster c
 			"ovdc":        vcdCluster.Spec.Ovdc,
 			"ovdcNetwork": vcdCluster.Spec.OvdcNetwork,
 			"vipSubnet":   vcdCluster.Spec.LoadBalancerConfigSpec.VipSubnet,
-			"clusterid":   vcdCluster.Spec.RDEId,
+			"clusterid":   vcdCluster.Status.InfraId,
 			"vAppName":    vcdCluster.Name,
 		},
 	}, nil
