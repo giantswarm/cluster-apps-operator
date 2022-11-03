@@ -40,8 +40,8 @@ type Ports struct {
 	TCP   int32 `json:"tcp,omitempty"`
 }
 
-// LoadBalancer defines load-balancer configuration for the Cluster both for the control plane nodes and for the CPI
-type LoadBalancer struct {
+// LoadBalancerConfig defines load-balancer configuration for the Cluster both for the control plane nodes and for the CPI
+type LoadBalancerConfig struct {
 	// UseOneArm defines the intent to une OneArm when upgrading CAPVCD from 0.5.x to 1.0.0
 	UseOneArm bool   `json:"useOneArm,omitempty"`
 	VipSubnet string `json:"vipSubnet,omitempty"`
@@ -74,7 +74,7 @@ type VCDClusterSpec struct {
 	// +optional
 	ProxyConfigSpec ProxyConfig `json:"proxyConfigSpec,omitempty"`
 	// +optional
-	LoadBalancer LoadBalancer `json:"loadBalancer,omitempty"`
+	LoadBalancerConfigSpec LoadBalancerConfig `json:"loadBalancerConfigSpec,omitempty"`
 }
 
 // VCDClusterStatus defines the observed state of VCDCluster
@@ -119,7 +119,7 @@ type VCDClusterStatus struct {
 	ProxyConfig ProxyConfig `json:"proxyConfig,omitempty"`
 
 	// +optional
-	LoadBalancerConfig LoadBalancer `json:"loadBalancerConfig,omitempty"`
+	LoadBalancerConfig LoadBalancerConfig `json:"loadBalancerConfig,omitempty"`
 }
 
 //+kubebuilder:object:root=true
