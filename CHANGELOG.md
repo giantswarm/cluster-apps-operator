@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update api schema for CAPVCD.
-
+- Bump app-operator to 6.4.1
 
 ## [2.4.0] - 2022-10-17
 
