@@ -19,10 +19,6 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 )
 
-const (
-	fluxManagedByLabel = "flux"
-)
-
 func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	cr, err := key.ToCluster(obj)
 	if err != nil {
