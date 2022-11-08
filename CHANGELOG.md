@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update api schema for CAPVCD.
+- Change how Flux managed Apps are detected in the cluster deletion logic. Instead of looking at not enforced
+  `giantswarm.io/managed-by` label set to `flux` we check for the existence of two common Flux labels:
+  `kustomize.toolkit.fluxcd.io/name` and `kustomize.toolkit.fluxcd.io/namespace` regardless of values.
 
 
 ## [2.4.0] - 2022-10-17
