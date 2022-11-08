@@ -1,8 +1,11 @@
 package clustersecret
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"html/template"
+	"reflect"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -19,6 +22,20 @@ import (
 	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+)
+
+const (
+	mainSecretSection      = "values"
+	containerdProxySection = "containerdProxy"
+
+	containerdProxyTemplate = `[Service]
+Environment="HTTP_PROXY={{ .HttpProxy }}"
+Environment="http_proxy={{ .HttpProxy }}"
+Environment="HTTPS_PROXY={{ .HttpsProxy }}"
+Environment="https_proxy={{ .HttpsProxy }}"
+Environment="NO_PROXY={{ .NoProxy}}"
+Environment="no_proxy={{ .NoProxy }}"
+`
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.Secret, error) {
@@ -63,7 +80,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, microerror.Mask(err)
 				}
 			}
-
 		}
 	}
 
@@ -71,29 +87,41 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		{
 			Name:      key.ClusterValuesResourceName(&cr),
 			Namespace: cr.GetNamespace(),
-			Values:    values,
+			Data:      map[string][]byte{},
 		},
 	}
 
-	for _, spec := range secretSpecs {
-		secret, err := newSecret(cr, spec)
-		if err != nil {
-			return nil, microerror.Mask(err)
+	if !reflect.ValueOf(r.proxy).IsZero() {
+		r.logger.Debugf(ctx, "proxy secrets for cluster '%s/%s' : %v", cr.GetNamespace(), key.ClusterID(&cr), r.proxy)
+
+		// template containerd proxy configuration
+		t := template.Must(template.New("containerd-proxy-template").Parse(containerdProxyTemplate))
+		var tpl bytes.Buffer
+		if err := t.Execute(&tpl, r.proxy); err != nil {
+			return nil, err
 		}
 
+		containerdProxy := tpl.String()
+		secretSpecs[0].Data[containerdProxySection] = []byte(containerdProxy)
+	}
+
+	yamlValues, err := yaml.Marshal(values)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	secretSpecs[0].Data[mainSecretSection] = []byte(yamlValues)
+
+	for _, spec := range secretSpecs {
+		secret := newSecret(cr, spec)
 		secrets = append(secrets, secret)
 	}
 
 	return secrets, nil
 }
 
-func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) (*corev1.Secret, error) {
-	yamlValues, err := yaml.Marshal(secretSpec.Values)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	secret := &corev1.Secret{
+func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) *corev1.Secret {
+	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      secretSpec.Name,
 			Namespace: secretSpec.Namespace,
@@ -105,10 +133,6 @@ func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) (*corev1.Secret, e
 				label.ManagedBy: project.Name(),
 			},
 		},
-		Data: map[string][]byte{
-			"values": yamlValues,
-		},
+		Data: secretSpec.Data,
 	}
-
-	return secret, nil
 }

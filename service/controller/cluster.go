@@ -158,6 +158,7 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		c := clustersecret.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+			Proxy:     config.Proxy,
 		}
 
 		clusterSecretGetter, err = clustersecret.New(c)
