@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
-	appkey "github.com/giantswarm/app/v6/pkg/key"
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -105,14 +104,12 @@ func (r Resource) cancel(ctx context.Context) error {
 // Flux managed-by label.
 func (r Resource) deleteClusterApps(ctx context.Context, apps []*v1alpha1.App) error {
 	for _, app := range apps {
-		managedBy := appkey.ManagedByLabel(*app)
-
 		// No need to delete app whose deletion has already been requested,
 		// or when managed by Flux as the app may be recreated in such case.
 		// There is one valid case when deleting Flux-managed app makes sense,
 		// namely when `prune: false` is used and app is gone in the repository,
 		// but there is no way to recognize this case here.
-		if managedBy == fluxManagedByLabel {
+		if key.IsManagedByFlux(*app) {
 			r.logger.Debugf(ctx, "skipping Flux-managed '%s/%s' app", app.Namespace, app.Name)
 			continue
 		}

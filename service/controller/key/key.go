@@ -2,6 +2,7 @@ package key
 
 import (
 	"fmt"
+	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"net"
 	"strings"
 
@@ -14,6 +15,9 @@ const (
 	// defaultDNSLastOctet is the last octect for the DNS service IP, the first
 	// 3 octets come from the cluster IP range.
 	defaultDNSLastOctet = 10
+
+	fluxLabelKustomizationName      = "kustomize.toolkit.fluxcd.io/name"
+	fluxLabelKustomizationNamespace = "kustomize.toolkit.fluxcd.io/namespace"
 )
 
 func AppOperatorAppName(getter LabelsGetter) string {
@@ -110,4 +114,20 @@ func ToCluster(v interface{}) (capi.Cluster, error) {
 	}
 
 	return *p, nil
+}
+
+// IsManagedByFlux checks if App is considered to be managed by Flux.
+// Returns true if the flux kustomization labels are set on the App.
+func IsManagedByFlux(app v1alpha1.App) bool {
+	labels := app.GetLabels()
+
+	if _, ok := labels[fluxLabelKustomizationName]; !ok {
+		return false
+	}
+
+	if _, ok := labels[fluxLabelKustomizationNamespace]; !ok {
+		return false
+	}
+
+	return true
 }

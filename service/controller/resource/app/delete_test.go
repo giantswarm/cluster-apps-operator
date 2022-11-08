@@ -360,6 +360,11 @@ func newAppCR(name, namespace, cluster, managedBy string, inCluster bool) *v1alp
 
 	if managedBy != "" {
 		app.Labels[label.ManagedBy] = managedBy
+
+		if managedBy == "flux" {
+			app.Labels["kustomize.toolkit.fluxcd.io/name"] = cluster
+			app.Labels["kustomize.toolkit.fluxcd.io/namespace"] = namespace
+		}
 	}
 
 	if inCluster {
