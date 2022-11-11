@@ -125,7 +125,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if len(blocks) > 0 {
 					clusterCIDR = blocks[0]
 				}
-			case "aws":
+			case "capa":
 				awsCluster := &unstructured.Unstructured{}
 				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -142,13 +142,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				annotationValue, annotationFound, err := unstructured.NestedString(awsCluster.Object, []string{"metadata", "annotations", "aws.giantswarm.io/vpc-mode"}...)
 				if err != nil || !annotationFound {
-					return nil, fieldNotFoundOnInfrastructureTypeError
+					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
 				}
 
 				if annotationValue == "private" {
 					privateCluster = true
 				}
-
 			case "openstack":
 			case "vsphere":
 			case "gcp":
