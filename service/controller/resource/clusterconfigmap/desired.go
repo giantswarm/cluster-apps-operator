@@ -107,6 +107,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		// gcpProject is only used on gcp.
 		gcpProject      = ""
 		gcpProjectFound bool
+		// privateCluster is used only on aws in case the cluster vpc mode is private
+		privateCluster bool
 	)
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
@@ -124,6 +126,29 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					clusterCIDR = blocks[0]
 				}
 			case "aws":
+				awsCluster := &unstructured.Unstructured{}
+				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   infrastructureRef.GroupVersionKind().Group,
+					Kind:    infrastructureRef.Kind,
+					Version: infrastructureRef.GroupVersionKind().Version,
+				})
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
+					Namespace: cr.Namespace,
+					Name:      infrastructureRef.Name,
+				}, awsCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				annotationValue, annotationFound, err := unstructured.NestedString(awsCluster.Object, []string{"metadata", "annotations", "aws.giantswarm.io/vpc-mode"}...)
+				if err != nil || !annotationFound {
+					return nil, fieldNotFoundOnInfrastructureTypeError
+				}
+
+				if annotationValue == "private" {
+					privateCluster = true
+				}
+
 			case "openstack":
 			case "vsphere":
 			case "gcp":
@@ -206,6 +231,14 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
 		Provider:     r.provider,
+	}
+
+	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters
+	// as externalDNSIP is used as test DNS and default value is public google dns, but there isn't any value that could be used in private clusters
+	// as the  cloud providers have unpredictable DNS ip depending on which subnet is the machine and pod running.
+	if privateCluster {
+		emptyValue := ""
+		clusterValues.ExternalDNSIP = &emptyValue
 	}
 
 	clusterValuesYaml, err := yaml.Marshal(clusterValues)

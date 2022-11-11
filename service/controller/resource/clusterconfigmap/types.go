@@ -25,6 +25,7 @@ type ClusterValuesConfig struct {
 	ClusterDNSIP  string              `json:"clusterDNSIP"`
 	ClusterID     string              `json:"clusterID"`
 	ClusterCIDR   string              `json:"clusterCIDR"`
+	ExternalDNSIP *string             `json:"externalDNSIP,omitempty"`
 	Provider      string              `json:"provider"`
 	GcpProject    string              `json:"gcpProject"`
 	ChartOperator ChartOperatorConfig `json:"chartOperator"`
