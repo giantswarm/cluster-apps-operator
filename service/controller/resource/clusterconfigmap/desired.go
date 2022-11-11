@@ -234,7 +234,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters
 	// as externalDNSIP is used as test DNS and default value is public google dns, but there isn't any value that could be used in private clusters
-	// as the  cloud providers have unpredictable DNS ip depending on which subnet is the machine and pod running.
+	// as the cloud providers have unpredictable DNS ip depending on which subnet is the machine and pod running.
 	if privateCluster {
 		emptyValue := ""
 		clusterValues.ExternalDNSIP = &emptyValue
