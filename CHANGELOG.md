@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.6.0] - 2022-11-15
+
 ### Added
 
 - Generating proxy-configuration for workload clusters.
@@ -23,6 +25,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change how Flux managed Apps are detected in the cluster deletion logic. Instead of looking at not enforced
   `giantswarm.io/managed-by` label set to `flux` we check for the existence of two common Flux labels:
   `kustomize.toolkit.fluxcd.io/name` and `kustomize.toolkit.fluxcd.io/namespace` regardless of values.
+
+### Added
+
+- Generating proxy-configuration for workload clusters.
+  By defining a `proxy` configuration (`noProxy`,`httpProxy` and `httpsProxy`) in `configmap/cluster-apps-operator`, these information will be propagated into the cluster specific `configmap` and `secret`.
+  The `noProxy` value will be computed on a cluster-base as some parameters (e.g. `baseDomain` or some defined `CIDRs` might differ).
+  Apps like `cert-manager` or `chart-operator` are able to use the global configuration.
 
 ## [2.4.0] - 2022-10-17
 
@@ -310,7 +319,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.6.0...HEAD
+[2.6.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.5.0...v2.6.0
 [2.5.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.4.0...v2.5.0
 [2.4.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.2.0...v2.3.0

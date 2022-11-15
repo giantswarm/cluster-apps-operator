@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"reflect"
+	"strings"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -16,6 +17,8 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
+
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
 
 	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
 
@@ -94,15 +97,30 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	if !reflect.ValueOf(r.proxy).IsZero() {
 		r.logger.Debugf(ctx, "proxy secrets for cluster '%s/%s' : %v", cr.GetNamespace(), key.ClusterID(&cr), r.proxy)
 
+		values["cluster"] = map[string]interface{}{
+			"proxy": map[string]string{
+				"noProxy": noProxy(cr, r.proxy.NoProxy),
+				"http":    r.proxy.HttpProxy,
+				"https":   r.proxy.HttpsProxy,
+			},
+		}
+
 		// template containerd proxy configuration
-		t := template.Must(template.New("containerd-proxy-template").Parse(containerdProxyTemplate))
+		t := template.Must(template.New("systemd-proxy-template").Parse(containerdProxyTemplate))
 		var tpl bytes.Buffer
 		if err := t.Execute(&tpl, r.proxy); err != nil {
 			return nil, err
 		}
 
 		containerdProxy := tpl.String()
-		secretSpecs[0].Data[containerdProxySection] = []byte(containerdProxy)
+
+		secretSpecs = append(secretSpecs, secretSpec{
+			Name:      fmt.Sprintf("%s-systemd-proxy", key.ClusterID(&cr)),
+			Namespace: cr.GetNamespace(),
+			Data: map[string][]byte{
+				containerdProxySection: []byte(containerdProxy),
+			},
+		})
 	}
 
 	yamlValues, err := yaml.Marshal(values)
@@ -135,4 +153,42 @@ func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) *corev1.Secret {
 		},
 		Data: secretSpec.Data,
 	}
+}
+
+func noProxy(cluster capi.Cluster, globalNoProxy string) string {
+
+	// generic list of noProxy
+	// will be joined with custom defined noProxy targets
+
+	var appendString []string
+	if !reflect.ValueOf(cluster.Spec.ClusterNetwork).IsZero() {
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.ServiceDomain).IsZero() {
+			appendString = append(appendString, cluster.Spec.ClusterNetwork.ServiceDomain)
+		}
+
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.Services).IsZero() && !reflect.ValueOf(cluster.Spec.ClusterNetwork.Services.CIDRBlocks).IsZero() {
+			appendString = append(appendString, strings.Join(cluster.Spec.ClusterNetwork.Services.CIDRBlocks, ","))
+		}
+
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.Pods).IsZero() && !reflect.ValueOf(cluster.Spec.ClusterNetwork.Pods.CIDRBlocks).IsZero() {
+			appendString = append(appendString, strings.Join(cluster.Spec.ClusterNetwork.Pods.CIDRBlocks, ","))
+		}
+	}
+
+	if !reflect.ValueOf(cluster.Spec.ControlPlaneEndpoint.Host).IsZero() {
+		appendString = append(appendString, cluster.Spec.ControlPlaneEndpoint.Host)
+	}
+
+	if len(globalNoProxy) > 0 {
+		appendString = append(appendString, globalNoProxy)
+	}
+
+	noProxy := strings.Join([]string{
+		strings.Join(appendString, ","),
+		"svc",
+		"127.0.0.1",
+		"localhost",
+	}, ",")
+
+	return noProxy
 }
