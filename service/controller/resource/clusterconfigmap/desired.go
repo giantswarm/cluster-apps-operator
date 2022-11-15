@@ -219,7 +219,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		},
 		ChartOperator: ChartOperatorConfig{Cni: map[string]bool{"install": true}},
 		Cluster: ClusterConfig{
-			Calico: map[string]string{"CIDR": podCIDR},
+			Private: privateCluster,
+			Calico:  map[string]string{"CIDR": podCIDR},
 			Kubernetes: KubernetesConfig{
 				API: map[string]string{"clusterIPRange": r.clusterIPRange},
 				DNS: map[string]string{"IP": clusterDNSIP},

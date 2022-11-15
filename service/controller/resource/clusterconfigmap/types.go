@@ -14,6 +14,7 @@ type KubernetesConfig struct {
 type ClusterConfig struct {
 	Calico     map[string]string `json:"calico"`
 	Kubernetes KubernetesConfig  `json:"kubernetes"`
+	Private    bool              `json:"private"`
 }
 type ClusterValuesConfig struct {
 	BaseDomain string `json:"baseDomain"`
