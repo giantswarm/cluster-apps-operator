@@ -125,6 +125,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if len(blocks) > 0 {
 					clusterCIDR = blocks[0]
 				}
+			case "aws":
 			case "capa":
 				awsCluster := &unstructured.Unstructured{}
 				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
