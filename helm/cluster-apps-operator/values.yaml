@@ -4,7 +4,7 @@ appOperator:
 
 chartOperator:
   catalog: default-test
-  version: 2.31.0-7fa68c438bb1b12e60ae4757aad2d945ce0f1f24
+  version: 2.31.0-cd071a45c77deda060e907ddfa385cbacefe3665
 
 baseDomain: ""
 
