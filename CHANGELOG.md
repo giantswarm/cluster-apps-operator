@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Generating proxy-configuration for workload clusters.
+  By defining a `proxy` configuration (`noProxy`,`httpProxy` and `httpsProxy`) in `configmap/cluster-apps-operator`, these information will be propagated into the cluster specific `configmap` and `secret`.
+  The `noProxy` value will be computed on a cluster-base as some parameters (e.g. `baseDomain` or some defined `CIDRs` might differ).
+  Apps like `cert-manager` or `chart-operator` are able to use the global configuration.
+
 ## [2.5.0] - 2022-11-10
 
 ### Changed
@@ -20,7 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.4.0] - 2022-10-17
 
 ### Changed
-
 - Enable cluster-values secret creation for CAPVCD.
 
 ## [2.3.0] - 2022-10-10

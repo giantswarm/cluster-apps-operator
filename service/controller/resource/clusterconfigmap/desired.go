@@ -3,6 +3,8 @@ package clusterconfigmap
 import (
 	"context"
 	"fmt"
+	"reflect"
+	"strings"
 
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
@@ -16,7 +18,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
+	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
+
 	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
@@ -223,6 +228,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				API: map[string]string{"clusterIPRange": r.clusterIPRange},
 				DNS: map[string]string{"IP": clusterDNSIP},
 			},
+			Proxy: proxy.Proxy{
+				HttpProxy:  r.proxy.HttpProxy,
+				HttpsProxy: r.proxy.HttpsProxy,
+				NoProxy:    noProxy(cr, r.proxy.NoProxy),
+			},
 		},
 		ClusterCA:    clusterCA,
 		ClusterDNSIP: clusterDNSIP,
@@ -264,4 +274,42 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	configMaps = append(configMaps, appValuesConfigMap, clusterValuesConfigMap)
 
 	return configMaps, nil
+}
+
+func noProxy(cluster capi.Cluster, globalNoProxy string) string {
+
+	// generic list of noProxy
+	// will be joined with custom defined noProxy targets
+
+	var appendString []string
+	if !reflect.ValueOf(cluster.Spec.ClusterNetwork).IsZero() {
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.ServiceDomain).IsZero() {
+			appendString = append(appendString, cluster.Spec.ClusterNetwork.ServiceDomain)
+		}
+
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.Services).IsZero() && !reflect.ValueOf(cluster.Spec.ClusterNetwork.Services.CIDRBlocks).IsZero() {
+			appendString = append(appendString, strings.Join(cluster.Spec.ClusterNetwork.Services.CIDRBlocks, ","))
+		}
+
+		if !reflect.ValueOf(cluster.Spec.ClusterNetwork.Pods).IsZero() && !reflect.ValueOf(cluster.Spec.ClusterNetwork.Pods.CIDRBlocks).IsZero() {
+			appendString = append(appendString, strings.Join(cluster.Spec.ClusterNetwork.Pods.CIDRBlocks, ","))
+		}
+	}
+
+	if !reflect.ValueOf(cluster.Spec.ControlPlaneEndpoint.Host).IsZero() {
+		appendString = append(appendString, cluster.Spec.ControlPlaneEndpoint.Host)
+	}
+
+	if len(globalNoProxy) > 0 {
+		appendString = append(appendString, globalNoProxy)
+	}
+
+	noProxy := strings.Join([]string{
+		strings.Join(appendString, ","),
+		"svc",
+		"127.0.0.1",
+		"localhost",
+	}, ",")
+
+	return noProxy
 }

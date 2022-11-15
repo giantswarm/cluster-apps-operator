@@ -6,6 +6,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/app"
 	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/image"
 	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/provider"
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
 	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/workload"
 )
 
@@ -16,4 +17,5 @@ type Service struct {
 	Kubernetes kubernetes.Kubernetes
 	Provider   provider.Provider
 	Workload   workload.Workload
+	Proxy      proxy.Proxy
 }
