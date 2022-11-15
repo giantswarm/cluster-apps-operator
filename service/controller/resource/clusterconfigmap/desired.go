@@ -145,7 +145,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
 				}
 
-				if annotationValue == "private" {
+				if annotationValue == annotation.AWSVPCModePrivate {
 					privateCluster = true
 				}
 			case "openstack":
