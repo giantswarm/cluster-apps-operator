@@ -1,9 +1,5 @@
 package clusterconfigmap
 
-import (
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
-)
-
 type ChartOperatorBootstrapMode struct {
 	Enabled          bool  `json:"enabled"`
 	ApiServerPodPort int32 `json:"apiServerPodPort"`
@@ -18,7 +14,6 @@ type KubernetesConfig struct {
 type ClusterConfig struct {
 	Calico     map[string]string `json:"calico"`
 	Kubernetes KubernetesConfig  `json:"kubernetes"`
-	Proxy      proxy.Proxy       `json:"proxy"`
 }
 type ClusterValuesConfig struct {
 	BaseDomain string `json:"baseDomain"`
