@@ -3,8 +3,6 @@ package clusterconfigmap
 import (
 	"context"
 	"fmt"
-	"reflect"
-	"strings"
 
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
