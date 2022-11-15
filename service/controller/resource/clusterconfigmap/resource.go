@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
@@ -27,6 +28,7 @@ type Config struct {
 	DNSIP          string
 	Provider       string
 	RegistryDomain string
+	Proxy          proxy.Proxy
 }
 
 // Resource implements the clusterConfigMap resource.
@@ -42,6 +44,7 @@ type Resource struct {
 	dnsIP          string
 	provider       string
 	registryDomain string
+	proxy          proxy.Proxy
 }
 
 // New creates a new configured config map state getter resource managing
@@ -84,6 +87,7 @@ func New(config Config) (*Resource, error) {
 		dnsIP:          config.DNSIP,
 		provider:       config.Provider,
 		registryDomain: config.RegistryDomain,
+		proxy:          config.Proxy,
 	}
 
 	return r, nil

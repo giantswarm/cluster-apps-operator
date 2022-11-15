@@ -2,3 +2,4 @@
 TODO
 /cluster-apps-operator
 !vendor/**
+.vscode/

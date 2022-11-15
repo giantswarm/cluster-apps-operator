@@ -11,6 +11,11 @@ baseDomain: ""
 provider:
   kind: ""
 
+proxy:
+  noProxy: ""
+  http: ""
+  https: ""
+
 cni:
   mask: 16
   subnet: 10.1.0.0
@@ -45,7 +50,7 @@ project:
 registry:
   domain: docker.io
   mirrors:
-  - giantswarm.azurecr.io
+    - giantswarm.azurecr.io
   pullSecret:
     dockerConfigJSON: ""
 

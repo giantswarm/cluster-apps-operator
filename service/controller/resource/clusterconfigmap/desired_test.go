@@ -58,6 +58,21 @@ func Test_ClusterValuesGCP(t *testing.T) {
 				Name:       "test-cluster",
 				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
 			},
+			ClusterNetwork: &capi.ClusterNetwork{
+				ServiceDomain: "cluster.local",
+				Services: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"192.168.10.0/24",
+						"192.168.20.0/24",
+					},
+				},
+				Pods: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"192.168.10.0/24",
+						"192.168.20.0/24",
+					},
+				},
+			},
 		},
 	}
 

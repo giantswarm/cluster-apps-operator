@@ -4,6 +4,8 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+
+	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
 )
 
 const (
@@ -16,12 +18,14 @@ const (
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
+	Proxy     proxy.Proxy
 }
 
 // Resource implements the clustersecret resource.
 type Resource struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
+	proxy     proxy.Proxy
 }
 
 // New creates a new configured secret state getter resource managing
@@ -39,6 +43,7 @@ func New(config Config) (*Resource, error) {
 	r := &Resource{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
+		proxy:     config.Proxy,
 	}
 
 	return r, nil
