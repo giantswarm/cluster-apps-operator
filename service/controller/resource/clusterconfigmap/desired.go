@@ -140,7 +140,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, microerror.Mask(err)
 				}
 
-				annotationValue, annotationFound, err := unstructured.NestedString(awsCluster.Object, []string{"metadata", "annotations", "aws.giantswarm.io/vpc-mode"}...)
+				annotationValue, annotationFound, err := unstructured.NestedString(awsCluster.Object, []string{"metadata", "annotations", annotation.AWSVPCMode}...)
 				if err != nil || !annotationFound {
 					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
 				}
