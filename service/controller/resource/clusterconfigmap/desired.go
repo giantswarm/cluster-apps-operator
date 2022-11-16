@@ -239,6 +239,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	if privateCluster {
 		emptyValue := ""
 		clusterValues.ExternalDNSIP = &emptyValue
+		clusterValues.Cluster.Private = true
 	}
 
 	clusterValuesYaml, err := yaml.Marshal(clusterValues)
