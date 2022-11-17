@@ -7,7 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [2.6.0] - 2022-11-15
+### Changed
+
+- Bumping `chart-operator` to the `v2.32.0` version.
+- `secret/cluster-values` will be now generated for `capa`.
 
 ## [2.5.0] - 2022-11-10
 
