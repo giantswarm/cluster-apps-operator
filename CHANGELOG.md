@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bumping `chart-operator` to the `v2.32.0` version.
+- Bumping `chart-operator` to the `v2.33.0` version.
 - `secret/cluster-values` will be now generated for `capa`.
+- Configure `chart-operator` to run in private cloud enviroment withou direct direct internet access.
+
 
 ## [2.5.0] - 2022-11-10
 
