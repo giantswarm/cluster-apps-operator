@@ -8,6 +8,8 @@ type AppSpec struct {
 	Catalog                string
 	ConfigMapName          string
 	ConfigMapNamespace     string
+	SecretName             string
+	SecretNamespace        string
 	InCluster              bool
 	HasClusterValuesSecret bool
 	TargetNamespace        string

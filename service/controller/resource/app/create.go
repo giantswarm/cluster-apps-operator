@@ -135,6 +135,8 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			Catalog:            r.chartOperatorCatalog,
 			ConfigMapName:      key.ClusterValuesResourceName(&cr),
 			ConfigMapNamespace: cr.GetNamespace(),
+			SecretName:         key.ClusterValuesResourceName(&cr),
+			SecretNamespace:    cr.GetNamespace(),
 			InCluster:          false,
 			TargetNamespace:    "giantswarm",
 			UseUpgradeForce:    false,
