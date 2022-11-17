@@ -10,6 +10,8 @@ type AppSpec struct {
 	ConfigMapNamespace     string
 	InCluster              bool
 	HasClusterValuesSecret bool
+	SecretName             string
+	SecretNamespace        string
 	TargetNamespace        string
 	UseUpgradeForce        bool
 	Version                string
