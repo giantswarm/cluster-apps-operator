@@ -146,9 +146,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
 				}
 
-				if annotationValue == annotation.AWSVPCModePrivate {
-					privateCluster = true
-				}
+				privateCluster = annotationValue == annotation.AWSVPCModePrivate
 			case "openstack":
 			case "vsphere":
 			case "gcp":
