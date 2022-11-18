@@ -137,6 +137,8 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			ConfigMapNamespace: cr.GetNamespace(),
 			InCluster:          false,
 			TargetNamespace:    "giantswarm",
+			SecretName:         key.ClusterValuesResourceName(&cr),
+			SecretNamespace:    cr.GetNamespace(),
 			UseUpgradeForce:    false,
 			Version:            r.chartOperatorVersion,
 		},
@@ -205,6 +207,10 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				ConfigMap: v1alpha1.AppSpecConfigConfigMap{
 					Name:      appSpec.ConfigMapName,
 					Namespace: appSpec.ConfigMapNamespace,
+				},
+				Secret: v1alpha1.AppSpecConfigSecret{
+					Name:      appSpec.SecretName,
+					Namespace: appSpec.SecretNamespace,
 				},
 			},
 			Name:       appSpec.App,
