@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `secret/cluster-values` will now be generated for all kind of providers.
+
 ## [2.7.0] - 2022-11-17
 
 ### Changed

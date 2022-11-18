@@ -192,19 +192,9 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		// clusterConfigMapResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
 		clusterConfigMapResource,
-	}
-
-	if config.Provider == "openstack" || config.Provider == "cloud-director" || config.Provider == "capa" {
-		// clusterSecretResource is executed before the app resource so the
-		// app CRs are accepted by the validation webhook.
-		resources = append(resources, clusterSecretResource)
-	}
-
-	resources = append(resources,
-		// appResource manages the per cluster app-operator instance and the
-		// workload cluster apps.
+		clusterSecretResource,
 		appResource,
-	)
+	}
 
 	{
 		c := retryresource.WrapConfig{
