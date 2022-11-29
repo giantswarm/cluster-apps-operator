@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.8.2] - 2022-11-29
+
 ### Changed
 
 - Bump app-operator to 6.4.4
@@ -335,7 +337,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.2...HEAD
+[2.8.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.1...v2.8.2
 [2.8.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.0...v2.8.1
 [2.8.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.6.0...v2.7.0
