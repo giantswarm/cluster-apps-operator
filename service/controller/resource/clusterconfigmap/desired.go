@@ -3,6 +3,7 @@ package clusterconfigmap
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
@@ -147,8 +148,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				privateCluster = annotationValue == annotation.AWSVPCModePrivate
-			case "openstack":
-			case "vsphere":
+			case "cloud-director", "openstack", "vsphere":
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
 			case "gcp":
 				gcpCluster := &unstructured.Unstructured{}
 				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
