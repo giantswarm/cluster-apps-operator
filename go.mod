@@ -101,5 +101,5 @@ replace (
 	github.com/coreos/etcd => github.com/coreos/etcd v3.3.27+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.4.0
+	golang.org/x/text => golang.org/x/text v0.5.0
 )
