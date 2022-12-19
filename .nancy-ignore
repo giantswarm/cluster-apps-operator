@@ -24,6 +24,9 @@ CVE-2022-24687 until=2022-12-31
 CVE-2022-29153 until=2022-12-31
 CVE-2020-28483 until=2022-12-31
 
+# pkg:golang/k8s.io/apiserver@v0.21.4
+sonatype-2022-6522 until=2023-02-01
+
 # pkg:golang/github.com/labstack/echo/v4@v4.5.0
 sonatype-2022-5436 until=2022-12-31
 CVE-2021-41803 until=2022-12-31
