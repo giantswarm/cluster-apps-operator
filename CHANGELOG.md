@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Enable private clusters for cloud-director, openstack and vsphere.
+- Added the use of the runtime/default seccomp profile.
 
 ## [2.8.2] - 2022-11-29
 
