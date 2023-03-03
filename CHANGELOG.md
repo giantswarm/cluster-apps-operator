@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the use of the runtime/default seccomp profile.
 - Add empty case for `capz` in the configmap special handling to stop error in the logs
 
+### Removed
+
+- Remove CloudDirector and OpenStack related settings.
+
 ## [2.8.2] - 2022-11-29
 
 ### Changed
