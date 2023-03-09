@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enable private clusters for cloud-director, openstack and vsphere.
 - Added the use of the runtime/default seccomp profile.
 - Add empty case for `capz` in the configmap special handling to stop error in the logs
+- Bump App Operator version to `v6.6.1`
 
 ## [2.8.2] - 2022-11-29
 
