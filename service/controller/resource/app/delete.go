@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/finalizerskeptcontext"
+	"github.com/giantswarm/operatorkit/v8/pkg/controller/context/finalizerskeptcontext"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	capi "sigs.k8s.io/cluster-api/api/v1alpha4"

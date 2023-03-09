@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller"
+	"github.com/giantswarm/operatorkit/v8/pkg/controller"
 	"github.com/prometheus/client_golang/prometheus"
 	k8slabels "k8s.io/apimachinery/pkg/labels"
 	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
