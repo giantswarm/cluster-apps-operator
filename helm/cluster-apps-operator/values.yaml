@@ -1,6 +1,6 @@
 appOperator:
   catalog: control-plane-catalog
-  version: 6.6.2
+  version: 6.6.4
 
 chartOperator:
   catalog: default
