@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate CAPI CRDs from `v1alpha4` to `v1beta1`.
+
 ## [2.8.5] - 2023-04-05
 
 ### Changed

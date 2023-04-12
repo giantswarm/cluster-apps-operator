@@ -12,7 +12,7 @@ import (
 	"github.com/giantswarm/operatorkit/v7/pkg/controller"
 	"github.com/prometheus/client_golang/prometheus"
 	k8slabels "k8s.io/apimachinery/pkg/labels"
-	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
@@ -62,7 +62,7 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 }
 
 func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
-	var clusterList capiv1alpha4.ClusterList
+	var clusterList capi.ClusterList
 	{
 		err := c.k8sClient.CtrlClient().List(
 			c.context,
