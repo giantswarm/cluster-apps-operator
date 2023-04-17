@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.9.0] - 2023-04-17
+
 ### Changed
 
 - Migrate CAPI CRDs from `v1alpha4` to `v1beta1`.
@@ -362,7 +364,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.5...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.9.0...HEAD
+[2.9.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.5...v2.9.0
 [2.8.5]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.4...v2.8.5
 [2.8.4]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.3...v2.8.4
 [2.8.3]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.8.2...v2.8.3
