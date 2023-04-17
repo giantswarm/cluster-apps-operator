@@ -9,7 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
-	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	applicationv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -50,7 +50,7 @@ func TestClusterCollector(t *testing.T) {
 			{
 				schemeBuilder := runtime.SchemeBuilder{
 					applicationv1alpha1.AddToScheme,
-					capiv1alpha4.AddToScheme,
+					capi.AddToScheme,
 				}
 
 				err = schemeBuilder.AddToScheme(scheme.Scheme)
@@ -223,10 +223,10 @@ func newV1alpha1App(name, namespace, cluster, managedBy string) *applicationv1al
 	return c
 }
 
-func newCAPIV1alpha4Cluster(id, namespace string) *capiv1alpha4.Cluster {
+func newCAPIV1alpha4Cluster(id, namespace string) *capi.Cluster {
 	timestamp := metav1.Now()
 
-	c := &capiv1alpha4.Cluster{
+	c := &capi.Cluster{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: "cluster.x-k8s.io/v1alpha3",
 			Kind:       "Cluster",

@@ -10,7 +10,6 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	apiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
@@ -18,7 +17,7 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 
-	capi "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
 
@@ -138,7 +137,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	return secrets, nil
 }
 
-func newSecret(cr apiv1alpha3.Cluster, secretSpec secretSpec) *corev1.Secret {
+func newSecret(cr capi.Cluster, secretSpec secretSpec) *corev1.Secret {
 	return &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      secretSpec.Name,
