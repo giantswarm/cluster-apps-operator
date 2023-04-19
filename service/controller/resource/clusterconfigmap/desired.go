@@ -127,6 +127,22 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					clusterCIDR = blocks[0]
 				}
 			case "capz":
+				var capzCluster capz.AzureCluster
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &capzCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				// TODO: We need to enable this for CAPZ clusters but we first need to understand the implication of this change to the Cilium CNI and the cluster as a whole
+				//blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
+				//if len(blocks) > 0 {
+				//	clusterCIDR = blocks[0]
+				//}
+
+				if azureCluster.Spec.NetworkSpec.apiServerLB.type == "Internal" {
+				  privateCluster = true
+				}
+
 			case "aws":
 			case "capa":
 				awsCluster := &unstructured.Unstructured{}
