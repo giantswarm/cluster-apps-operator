@@ -526,6 +526,127 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 }
 
 
+func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
+	podCidrConfig := podcidr.Config{InstallationCIDR: "10.200.0.0/24"}
+	podCidr, err := podcidr.New(podCidrConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	capzCluster := &unstructured.Unstructured{}
+	capzCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "test-cluster",
+			"namespace": "default",
+		},
+		"spec": map[string]interface{}{
+			"resourceGroup": "group1",
+			"subscriptionID": "143d9c06-6015-4a4a-a4f9-74a664207db7",
+			"networkSpec": map[string]interface{}{
+				"apiServerLB": map[string]interface{}{
+					"type": "Internal",
+				},
+			},
+		},
+	}
+	capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Kind:    "AzureCluster",
+		Version: "v1beta1",
+	})
+
+	cluster := &capi.Cluster{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "test-cluster",
+			Namespace: "default",
+			Labels: map[string]string{
+				capi.ClusterLabelName: "test-cluster",
+			},
+		},
+		Spec: capi.ClusterSpec{
+			InfrastructureRef: &corev1.ObjectReference{
+				Kind:       "AzureCluster",
+				Namespace:  "default",
+				Name:       "test-cluster",
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
+			ClusterNetwork: &capi.ClusterNetwork{
+				ServiceDomain: "cluster.local",
+				Services: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"172.31.0.0/16",
+					},
+				},
+				Pods: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"192.168.0.0/16",
+					},
+				},
+			},
+		},
+	}
+
+	var fakeClient *k8sclienttest.Clients
+	{
+		schemeBuilder := runtime.SchemeBuilder{
+			capi.AddToScheme,
+		}
+
+		err = schemeBuilder.AddToScheme(scheme.Scheme)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
+			CtrlClient: clientfake.NewClientBuilder().
+				WithRuntimeObjects(capzCluster, cluster).
+				Build(),
+		})
+	}
+
+	config := Config{
+		K8sClient:      fakeClient,
+		Logger:         microloggertest.New(),
+		PodCIDR:        podCidr,
+		BaseDomain:     "azuretest.gigantic.io",
+		ClusterIPRange: "10.200.0.0/24",
+		DNSIP:          "172.31.0.10",
+		Provider:       "capz",
+		RegistryDomain: "quay.io/giantswarm",
+	}
+	resource, err := New(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	configmaps, err := resource.GetDesiredState(context.Background(), cluster)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, configMap := range configmaps {
+		if strings.HasSuffix(configMap.Name, "-cluster-values") {
+			cmData := &ClusterValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
+			assertEquals(t, "", cmData.externalDNSIP, "Wrong externalDNSIP set in cluster-values configmap for a private cluster")
+
+			if !cmData.BootstrapMode.Enabled {
+				t.Fatal("bootstrap mode should be enabled")
+			}
+
+			if cmData.BootstrapMode.ApiServerPodPort != 6443 {
+				t.Fatal("bootstrap mode should use 6443 on CAPZ")
+			}
+		}
+	}
+}
+
+
+
 
 
 func assertEquals(t *testing.T, expected, actual, message string) {
