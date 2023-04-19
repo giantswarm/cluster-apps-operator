@@ -424,8 +424,8 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 			"resourceGroup": "group1",
 			"subscriptionID": "143d9c06-6015-4a4a-a4f9-74a664207db7",
 			"networkSpec": map[string]interface{}{
-        "apiServerLB": map[string]interface{}{
-          "type": "Public",
+				"apiServerLB": map[string]interface{}{
+					"type": "Public",
 				},
 			},
 		},
