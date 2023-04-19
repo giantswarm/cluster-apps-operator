@@ -127,8 +127,16 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					clusterCIDR = blocks[0]
 				}
 			case "capz":
-				var capzCluster capz.AzureCluster
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &capzCluster)
+				capzCluster := &unstructured.Unstructured{}
+				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   infrastructureRef.GroupVersionKind().Group,
+					Kind:    infrastructureRef.Kind,
+					Version: infrastructureRef.GroupVersionKind().Version,
+				})
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
+					Namespace: cr.Namespace,
+					Name:      infrastructureRef.Name,
+				}, capzCluster)
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
@@ -139,7 +147,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				//	clusterCIDR = blocks[0]
 				//}
 
-				privateCluster = capzCluster.Spec.NetworkSpec.APIServerLB.Type == "Internal"
+				apiServerLbType, apiServerLbFound, err := unstructured.NestedString(capzCluster.Object, []string{"spec", "networkSpec", "apiServerLB", "type"}...)
+				if err != nil || !apiServerLbFound {
+					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
+				}
+
+				privateCluster = apiServerLbType == "Internal"
 
 			case "aws":
 			case "capa":
