@@ -2,9 +2,9 @@ package clusterconfigmap
 
 import (
 	"context"
+	"strconv"
 	"strings"
 	"testing"
-	"strconv"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
 	"github.com/giantswarm/micrologger/microloggertest"
@@ -407,7 +407,6 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 	}
 }
 
-
 func Test_ClusterValuesCAPZ(t *testing.T) {
 	podCidrConfig := podcidr.Config{InstallationCIDR: "10.200.0.0/24"}
 	podCidr, err := podcidr.New(podCidrConfig)
@@ -422,7 +421,7 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 			"namespace": "default",
 		},
 		"spec": map[string]interface{}{
-			"resourceGroup": "group1",
+			"resourceGroup":  "group1",
 			"subscriptionID": "143d9c06-6015-4a4a-a4f9-74a664207db7",
 			"networkSpec": map[string]interface{}{
 				"apiServerLB": map[string]interface{}{
@@ -526,7 +525,6 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 	}
 }
 
-
 func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 	podCidrConfig := podcidr.Config{InstallationCIDR: "10.200.0.0/24"}
 	podCidr, err := podcidr.New(podCidrConfig)
@@ -541,7 +539,7 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 			"namespace": "default",
 		},
 		"spec": map[string]interface{}{
-			"resourceGroup": "group1",
+			"resourceGroup":  "group1",
 			"subscriptionID": "143d9c06-6015-4a4a-a4f9-74a664207db7",
 			"networkSpec": map[string]interface{}{
 				"apiServerLB": map[string]interface{}{
@@ -646,10 +644,6 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 		}
 	}
 }
-
-
-
-
 
 func assertEquals(t *testing.T, expected, actual, message string) {
 	if expected != actual {
