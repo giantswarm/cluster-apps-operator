@@ -17,7 +17,7 @@ type AzureClusterSpec struct {
 }
 
 type NetworkSpec struct {
-	Vnet VnetSpec `json:"vnet,omitempty"`
+	Vnet        VnetSpec         `json:"vnet,omitempty"`
 	APIServerLB LoadBalancerSpec `json:"apiServerLB,omitempty"`
 }
 
