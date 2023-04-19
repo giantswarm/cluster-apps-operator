@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Detect private `capz` cluster from `AzureCluster` spec and configure chart operator accordingly
+
 ## [2.9.0] - 2023-04-17
 
 ### Changed
