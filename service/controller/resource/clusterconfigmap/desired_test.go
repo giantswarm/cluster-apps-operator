@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"strconv"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
 	"github.com/giantswarm/micrologger/microloggertest"
@@ -632,7 +633,8 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 				t.Fatal(err)
 			}
 			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
-			assertEquals(t, "", cmData.ExternalDNSIP, "Wrong externalDNSIP set in cluster-values configmap for a private cluster")
+			assertEquals(t, "", *cmData.ExternalDNSIP, "Wrong externalDNSIP set in cluster-values configmap for a private cluster")
+			assertEquals(t, "true", strconv.FormatBool(cmData.Cluster.Private), "Wrong cluster.private set in cluster-values configmap for a private cluster")
 
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
