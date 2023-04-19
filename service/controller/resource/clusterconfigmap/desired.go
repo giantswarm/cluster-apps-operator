@@ -18,6 +18,7 @@ import (
 	"sigs.k8s.io/yaml"
 
 	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
+	capzv1beta1 "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1beta1"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
@@ -127,7 +128,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					clusterCIDR = blocks[0]
 				}
 			case "capz":
-				var capzCluster capz.AzureCluster
+				var capzCluster capzv1beta1.AzureCluster
 				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &capzCluster)
 				if err != nil {
 					return nil, microerror.Mask(err)
@@ -139,9 +140,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				//	clusterCIDR = blocks[0]
 				//}
 
-				if azureCluster.Spec.NetworkSpec.apiServerLB.type == "Internal" {
-				  privateCluster = true
-				}
+				privateCluster = capzCluster.Spec.NetworkSpec.APIServerLB.Type == "Internal"
 
 			case "aws":
 			case "capa":
