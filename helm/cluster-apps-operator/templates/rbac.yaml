@@ -38,6 +38,7 @@ rules:
       - controlplane.cluster.x-k8s.io
     resources:
       - kubeadmcontrolplanes
+      - awsmanagedcontrolplanes
     verbs:
       - get
   - apiGroups:
@@ -101,6 +102,7 @@ rules:
       - infrastructure.cluster.x-k8s.io
     resources:
       - awsclusters
+      - awsmanagedclusters
       - azureclusters
       - openstackclusters
       - gcpclusters
