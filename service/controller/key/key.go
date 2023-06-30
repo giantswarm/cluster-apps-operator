@@ -83,7 +83,10 @@ func IsBundle(appName string) bool {
 }
 
 func IsEKS(cluster capi.Cluster) bool {
-	return cluster.Spec.InfrastructureRef.Kind == "AWSManagedCluster" && cluster.Spec.ControlPlaneRef.Kind == "AWSManagedControlPlane"
+	return cluster.Spec.ControlPlaneRef != nil &&
+		cluster.Spec.ControlPlaneRef.Kind == "AWSManagedControlPlane" &&
+		cluster.Spec.InfrastructureRef != nil &&
+		cluster.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
 }
 
 func IsDeleted(getter DeletionTimestampGetter) bool {

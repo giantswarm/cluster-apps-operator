@@ -178,12 +178,6 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 				Name:       "test-cluster",
 				APIVersion: "controlplane.cluster.x-k8s.io/v1beta1",
 			},
-			InfrastructureRef: &corev1.ObjectReference{
-				Kind:       "SomeCluster",
-				Namespace:  "default",
-				Name:       "test-cluster",
-				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
-			},
 		},
 	}
 
@@ -270,12 +264,6 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 				Namespace:  "default",
 				Name:       "test-cluster",
 				APIVersion: "controlplane.cluster.x-k8s.io/v1beta1",
-			},
-			InfrastructureRef: &corev1.ObjectReference{
-				Kind:       "SomeCluster",
-				Namespace:  "default",
-				Name:       "test-cluster",
-				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
 			},
 		},
 	}
