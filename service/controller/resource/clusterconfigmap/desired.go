@@ -142,10 +142,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				// TODO: We need to enable this for CAPZ clusters but we first need to understand the implication of this change to the Cilium CNI and the cluster as a whole
-				//blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
-				//if len(blocks) > 0 {
+				// blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
+				// if len(blocks) > 0 {
 				//	clusterCIDR = blocks[0]
-				//}
+				// }
 
 				apiServerLbType, apiServerLbFound, err := unstructured.NestedString(capzCluster.Object, []string{"spec", "networkSpec", "apiServerLB", "type"}...)
 				if err != nil || !apiServerLbFound {
@@ -258,6 +258,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
 		Provider:     r.provider,
+	}
+
+	// disable boostrap mode and install CNi for EKS cluster
+	if key.IsEKS(cr) {
+		clusterValues.BootstrapMode.Enabled = false
+		clusterValues.ChartOperator.Cni["install"] = false
 	}
 
 	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters

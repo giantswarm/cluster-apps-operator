@@ -82,6 +82,10 @@ func IsBundle(appName string) bool {
 	return strings.HasSuffix(appName, "-bundle")
 }
 
+func IsEKS(cluster capi.Cluster) bool {
+	return cluster.Spec.InfrastructureRef.Kind == "AWSManagedCluster" && cluster.Spec.ControlPlaneRef.Kind == "AWSManagedControlPlane"
+}
+
 func IsDeleted(getter DeletionTimestampGetter) bool {
 	return getter.GetDeletionTimestamp() != nil
 }
