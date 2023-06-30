@@ -260,7 +260,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		Provider:     r.provider,
 	}
 
-	// disable boostrap mode and install CNi for EKS cluster
+	// disable boostrap mode and do not install CNI for EKS cluster
 	if key.IsEKS(cr) {
 		clusterValues.BootstrapMode.Enabled = false
 		clusterValues.ChartOperator.Cni["install"] = false
