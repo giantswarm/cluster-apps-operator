@@ -82,6 +82,7 @@ func IsBundle(appName string) bool {
 	return strings.HasSuffix(appName, "-bundle")
 }
 
+// IsEKS check if the cluster is EKS cluster
 func IsEKS(cluster capi.Cluster) bool {
 	return cluster.Spec.ControlPlaneRef != nil &&
 		cluster.Spec.ControlPlaneRef.Kind == "AWSManagedControlPlane" &&
