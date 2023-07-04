@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated default `securityContext` values to comply with PSS policies.
 
+### Added
+
+- Run `chart-operator` in non-bootstrap mode for EKS.
+
+
 ## [2.11.1] - 2023-06-28
 
 ### Added
