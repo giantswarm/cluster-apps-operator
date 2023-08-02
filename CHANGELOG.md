@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.13.0] - 2023-07-31
+
+### Added
+
+- Add Service Monitor.
+
 ## [2.12.0] - 2023-07-04
 
 ## [2.12.0] - 2023-07-04
@@ -395,7 +401,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.12.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.13.0...HEAD
+[2.13.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.12.0...v2.12.0
 [2.12.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.11.1...v2.12.0
 [2.11.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.11.0...v2.11.1
