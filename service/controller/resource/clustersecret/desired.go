@@ -96,11 +96,28 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	if !reflect.ValueOf(r.proxy).IsZero() {
 		r.logger.Debugf(ctx, "proxy secrets for cluster '%s/%s' : %v", cr.GetNamespace(), key.ClusterID(&cr), r.proxy)
 
+		noProxy := noProxy(cr, r.proxy.NoProxy)
+
 		values["cluster"] = map[string]interface{}{
 			"proxy": map[string]string{
-				"noProxy": noProxy(cr, r.proxy.NoProxy),
+				"noProxy": noProxy,
 				"http":    r.proxy.HttpProxy,
 				"https":   r.proxy.HttpsProxy,
+			},
+		}
+
+		values["env"] = []interface{}{
+			map[string]string{
+				"name":  "NO_PROXY",
+				"value": noProxy,
+			},
+			map[string]string{
+				"name":  "HTTP_PROXY",
+				"value": r.proxy.HttpProxy,
+			},
+			map[string]string{
+				"name":  "HTTPS_PROXY",
+				"value": r.proxy.HttpsProxy,
 			},
 		}
 
