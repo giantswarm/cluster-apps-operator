@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Inject proxy configuration also as environment variables.
+
 ## [2.13.0] - 2023-07-31
 
 ### Added
