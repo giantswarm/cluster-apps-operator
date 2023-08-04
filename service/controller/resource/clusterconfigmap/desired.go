@@ -266,6 +266,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		clusterValues.BootstrapMode.Enabled = false
 		clusterValues.ChartOperator.Cni["install"] = false
 		// disable certain apps for EKS by default
+		if clusterValues.Apps == nil {
+			clusterValues.Apps = map[string]interface{}{}
+		}
 		clusterValues.Apps["aws-pod-identity-webhook"] = map[string]string{"enabled": "false"}
 		clusterValues.Apps["etcdKubernetesResourceCountExporter"] = map[string]string{"enabled": "false"}
 	}
