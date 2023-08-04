@@ -269,8 +269,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		if clusterValues.Apps == nil {
 			clusterValues.Apps = map[string]interface{}{}
 		}
-		clusterValues.Apps["aws-pod-identity-webhook"] = map[string]string{"enabled": "false"}
-		clusterValues.Apps["etcdKubernetesResourceCountExporter"] = map[string]string{"enabled": "false"}
+		clusterValues.Apps["aws-pod-identity-webhook"] = map[string]bool{"enabled": false}
+		clusterValues.Apps["etcdKubernetesResourceCountExporter"] = map[string]bool{"enabled": false}
 	}
 
 	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters
