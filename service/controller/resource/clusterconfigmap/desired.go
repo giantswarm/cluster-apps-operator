@@ -260,10 +260,14 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		Provider:     r.provider,
 	}
 
-	// disable boostrap mode and do not install CNI for EKS cluster
+	// special values for EKS
 	if key.IsEKS(cr) {
+		// disable boostrap mode and do not install CNI for EKS cluster
 		clusterValues.BootstrapMode.Enabled = false
 		clusterValues.ChartOperator.Cni["install"] = false
+		// disable certain apps for EKS by default
+		clusterValues.Apps["aws-pod-identity-webhook"] = map[string]string{"enabled": "false"}
+		clusterValues.Apps["etcdKubernetesResourceCountExporter"] = map[string]string{"enabled": "false"}
 	}
 
 	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters

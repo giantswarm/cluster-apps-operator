@@ -17,7 +17,8 @@ type ClusterConfig struct {
 	Private    bool              `json:"private"`
 }
 type ClusterValuesConfig struct {
-	BaseDomain string `json:"baseDomain"`
+	Apps       map[string]interface{} `json:"apps"`
+	BaseDomain string                 `json:"baseDomain"`
 	// BootstrapMode allows to configure chart-operator in bootstrap mode so that it can install charts without cni or kube-proxy.
 	BootstrapMode ChartOperatorBootstrapMode `json:"bootstrapMode"`
 	Cluster       ClusterConfig              `json:"cluster"`
