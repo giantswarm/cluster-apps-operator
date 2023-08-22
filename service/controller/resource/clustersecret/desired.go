@@ -98,17 +98,18 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 		noProxy := noProxy(cr, r.proxy.NoProxy)
 
+		// The three values below are specific to cert-manager because
+		// we use upstream chart schema.
+		values["no_proxy"] = noProxy
+		values["http_proxy"] = r.proxy.HttpProxy
+		values["https_proxy"] = r.proxy.HttpsProxy
+
 		values["cluster"] = map[string]interface{}{
 			"proxy": map[string]string{
 				"noProxy": noProxy,
 				"http":    r.proxy.HttpProxy,
 				"https":   r.proxy.HttpsProxy,
 			},
-			// The three values below are specific to cert-manager
-			// because we use upstream chart schema.
-			"no_proxy":    noProxy,
-			"http_proxy":  r.proxy.HttpProxy,
-			"https_proxy": r.proxy.HttpsProxy,
 		}
 
 		values["env"] = []interface{}{
