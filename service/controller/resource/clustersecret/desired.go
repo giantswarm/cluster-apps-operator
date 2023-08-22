@@ -104,6 +104,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				"http":    r.proxy.HttpProxy,
 				"https":   r.proxy.HttpsProxy,
 			},
+			// The three values below are specific to cert-manager
+			// because we use upstream chart schema.
+			"no_proxy":    noProxy,
+			"http_proxy":  r.proxy.HttpProxy,
+			"https_proxy": r.proxy.HttpsProxy,
 		}
 
 		values["env"] = []interface{}{
