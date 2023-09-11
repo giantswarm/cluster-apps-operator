@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Inject proxy configuration also as environment variables.
+- Add proxy variables specific to cert-manager in the cluster secret.
 
 ## [2.13.0] - 2023-07-31
 
