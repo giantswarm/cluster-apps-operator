@@ -3,8 +3,8 @@ appOperator:
   version: 6.6.4
 
 chartOperator:
-  catalog: default-test
-  version: 2.35.0-c2e9f30d5f955a312bd5dd4e57ab766100f2ccaf
+  catalog: default
+  version: 2.35.1
 
 baseDomain: ""
 
