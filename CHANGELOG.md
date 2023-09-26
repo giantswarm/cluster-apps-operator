@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump `chart-operator` to version `v2.35.2`.
+
 ## [2.14.1] - 2023-09-21
 
 ### Changed
