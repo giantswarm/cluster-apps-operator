@@ -84,9 +84,9 @@ require (
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/oauth2 v0.7.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.8.0 // indirect
-	golang.org/x/term v0.8.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/term v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
@@ -111,6 +111,9 @@ replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.21
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.48.0
+
+	// CVE-2023-39325
+	golang.org/x/net => golang.org/x/net v0.17.0
 	// CVE-2022-32149
 	golang.org/x/text => golang.org/x/text v0.12.0
 )
