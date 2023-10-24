@@ -5,10 +5,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/giantswarm/k8smetadata/pkg/annotation"
-	"github.com/giantswarm/k8smetadata/pkg/label"
-	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v8/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -16,6 +12,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
+
+	"github.com/giantswarm/k8smetadata/pkg/annotation"
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v8/pkg/controller/context/resourcecanceledcontext"
 
 	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
@@ -114,8 +115,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
-			switch r.provider {
-			case "azure":
+			switch infrastructureRef.Kind {
+			case "AzureVintage":
 				var azureCluster capz.AzureCluster
 				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
 				if err != nil {
@@ -126,7 +127,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if len(blocks) > 0 {
 					clusterCIDR = blocks[0]
 				}
-			case "capz":
+			case "AzureCluster":
 				capzCluster := &unstructured.Unstructured{}
 				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -154,8 +155,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				privateCluster = apiServerLbType == "Internal"
 
-			case "aws":
-			case "capa":
+			case "AmazonCluster":
+			case "AwsCluster":
 				awsCluster := &unstructured.Unstructured{}
 				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -176,9 +177,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				privateCluster = annotationValue == annotation.AWSVPCModePrivate
-			case "cloud-director", "openstack", "vsphere":
+			case "VCDCluster", "OpenStackCluster", "VSphereCluster":
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
-			case "gcp":
+			case "GCPCluster":
 				gcpCluster := &unstructured.Unstructured{}
 				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
