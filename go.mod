@@ -109,7 +109,7 @@ replace (
 	github.com/coreos/etcd => github.com/coreos/etcd v3.3.27+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.21
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.4
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.48.0
 	// CVE-2022-32149
 	golang.org/x/text => golang.org/x/text v0.13.0
