@@ -112,5 +112,5 @@ replace (
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.21
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.48.0
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.12.0
+	golang.org/x/text => golang.org/x/text v0.13.0
 )
