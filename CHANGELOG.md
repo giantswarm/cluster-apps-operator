@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `operatorkit` release `v7.1.0`.
+
 ## [2.14.2] - 2023-09-26
 
 ### Changed
