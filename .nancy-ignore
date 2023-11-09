@@ -14,6 +14,7 @@ CVE-2021-3127 until=2024-01-31
 # pkg:golang/golang.org/x/net@v0.10.0
 CVE-2023-39325 until=2024-01-31
 
+
 # pkg:golang/github.com/urfave/negroni@v1.0.0
 sonatype-2021-1485
 
