@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add a switch for PSP CR installation.
+- Use `operatorkit` release `v7.1.0`.
 
 ## [2.14.2] - 2023-09-26
 
