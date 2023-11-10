@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.15.0] - 2023-11-10
+
 ### Changed
 
 - Add a switch for PSP CR installation.
@@ -425,7 +427,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.2...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.15.0...HEAD
+[2.15.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.2...v2.15.0
 [2.14.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.1...v2.14.2
 [2.14.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.0...v2.14.1
 [2.14.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.13.0...v2.14.0
