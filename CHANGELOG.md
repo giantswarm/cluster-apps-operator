@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.16.0] - 2023-11-14
+
 ### Changed
 
 - Update `app-operator` to version `6.8.1`.
@@ -431,7 +433,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.15.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.16.0...HEAD
+[2.16.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.15.0...v2.16.0
 [2.15.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.2...v2.15.0
 [2.14.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.1...v2.14.2
 [2.14.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.14.0...v2.14.1
