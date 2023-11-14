@@ -1,6 +1,6 @@
 appOperator:
   catalog: control-plane-test-catalog
-  version: 6.9.0-950e21257309ff302e9e0d7993f7b357020e64d2
+  version: 6.9.0-d0cc03d0d4999018f6cc10f7433d7800635c6bd1
 
 chartOperator:
   catalog: default
