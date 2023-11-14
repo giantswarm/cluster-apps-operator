@@ -86,11 +86,11 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
-	golang.org/x/net v0.15.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/oauth2 v0.12.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.12.0 // indirect
-	golang.org/x/term v0.12.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/term v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
@@ -115,7 +115,7 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.1
 	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.5
-	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.50.0
+	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.51.0
 	// CVE-2022-32149
 	golang.org/x/text => golang.org/x/text v0.14.0
 )
