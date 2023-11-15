@@ -215,6 +215,12 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			"domain": r.registryDomain,
 		},
 	}
+	// disable kubernetes client cache for EKS cluster
+	if key.IsEKS(cr) {
+		appOperatorValues["kubernetes"] = map[string]interface{}{
+			"disableClientCache": true,
+		}
+	}
 
 	appValuesYaml, err := yaml.Marshal(appOperatorValues)
 	if err != nil {

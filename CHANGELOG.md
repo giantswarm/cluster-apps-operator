@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Disable kubernetes client cache in `app-operator` for EKS clusters.
+- Update `app-operator` to version `6.10.0`.
+
 ## [2.16.0] - 2023-11-14
 
 ### Changed
