@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Introduce option to pass the installation codename which is then use to recognize when the management cluster is being handled.
 
+### Changed
+
+- Update `chart-operator` to version `3.1.0`.
+
 ## [2.17.0] - 2023-11-15
 
 ### Added
