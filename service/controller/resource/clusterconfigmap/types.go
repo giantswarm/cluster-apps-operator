@@ -7,6 +7,9 @@ type ChartOperatorBootstrapMode struct {
 type ChartOperatorConfig struct {
 	Cni map[string]bool `json:"cni"`
 }
+type ChartOperatorHelmConfig struct {
+	SplitClient bool `json:"splitClient"`
+}
 type KubernetesConfig struct {
 	API map[string]string `json:"API"`
 	DNS map[string]string `json:"DNS"`
@@ -23,11 +26,12 @@ type ClusterValuesConfig struct {
 	Cluster       ClusterConfig              `json:"cluster"`
 	ClusterCA     string                     `json:"clusterCA"`
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
-	ClusterDNSIP  string              `json:"clusterDNSIP"`
-	ClusterID     string              `json:"clusterID"`
-	ClusterCIDR   string              `json:"clusterCIDR"`
-	ExternalDNSIP *string             `json:"externalDNSIP,omitempty"`
-	Provider      string              `json:"provider"`
-	GcpProject    string              `json:"gcpProject"`
-	ChartOperator ChartOperatorConfig `json:"chartOperator"`
+	ClusterDNSIP  string                   `json:"clusterDNSIP"`
+	ClusterID     string                   `json:"clusterID"`
+	ClusterCIDR   string                   `json:"clusterCIDR"`
+	ExternalDNSIP *string                  `json:"externalDNSIP,omitempty"`
+	Helm          *ChartOperatorHelmConfig `json:"helm,omitempty"`
+	Provider      string                   `json:"provider"`
+	GcpProject    string                   `json:"gcpProject"`
+	ChartOperator ChartOperatorConfig      `json:"chartOperator"`
 }

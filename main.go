@@ -122,6 +122,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Calico.Subnet, "", "Network address for the CIDR block used by Calico.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.API.ClusterIPRange, "", "CIDR Range for Pods in cluster.")
 	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Kubernetes.ClusterDomain, "cluster.local", "Internal Kubernetes domain.")
+	daemonCommand.PersistentFlags().String(f.Service.Workload.Cluster.Owner, "", "Management cluster codename.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Proxy.NoProxy, "", "Installation specific no_proxy values.")
 	daemonCommand.PersistentFlags().String(f.Service.Proxy.HttpProxy, "", "Installation specific http_proxy value.")
