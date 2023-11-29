@@ -4,7 +4,7 @@ appOperator:
 
 chartOperator:
   catalog: default
-  version: 2.35.2
+  version: 3.1.0
 
 baseDomain: ""
 
