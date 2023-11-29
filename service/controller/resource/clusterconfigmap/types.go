@@ -8,7 +8,8 @@ type ChartOperatorConfig struct {
 	Cni map[string]bool `json:"cni"`
 }
 type ChartOperatorHelmConfig struct {
-	SplitClient bool `json:"splitClient"`
+	NamespaceWhitelist []string `json:"namespaceWhitelist"`
+	SplitClient        bool     `json:"splitClient"`
 }
 type KubernetesConfig struct {
 	API map[string]string `json:"API"`

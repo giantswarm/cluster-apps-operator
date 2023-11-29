@@ -276,6 +276,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	// the Chart Operator is due to get a special configuration to avoid privilege escalation.
 	if r.managementClusterID == key.ClusterID(&cr) {
 		clusterValues.Helm = &ChartOperatorHelmConfig{
+			NamespaceWhitelist: []string{
+				"org-giantswarm",
+			},
 			SplitClient: true,
 		}
 	}
