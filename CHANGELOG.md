@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Configure `gsoci.azurecr.io` as the default container image registry.
 - Update `chart-operator` to version `3.1.0`.
 
 ## [2.17.0] - 2023-11-15
@@ -55,8 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add Service Monitor.
-
-## [2.12.0] - 2023-07-04
 
 ## [2.12.0] - 2023-07-04
 
@@ -139,7 +138,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bumping `chart-operator` to the `v2.33.0` version.
 - `secret/cluster-values` will be now generated for `capa`.
 - Configure `chart-operator` to run in private cloud enviroment withou direct direct internet access.
-
 
 ## [2.5.0] - 2022-11-10
 
