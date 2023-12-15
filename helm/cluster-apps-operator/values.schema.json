@@ -16,6 +16,9 @@
     "baseDomain": {
       "type": "string"
     },
+    "managementClusterID": {
+      "type": "string"
+    },
     "chartOperator": {
       "type": "object",
       "properties": {

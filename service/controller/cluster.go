@@ -36,6 +36,7 @@ type ClusterConfig struct {
 	BaseDomain           string
 	ClusterIPRange       string
 	DNSIP                string
+	ManagementClusterID  string
 	Provider             string
 	RegistryDomain       string
 	Proxy                proxy.Proxy
@@ -116,11 +117,12 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 			Logger:     config.Logger,
 			PodCIDR:    config.PodCIDR,
 
-			ClusterIPRange: config.ClusterIPRange,
-			DNSIP:          config.DNSIP,
-			Provider:       config.Provider,
-			RegistryDomain: config.RegistryDomain,
-			Proxy:          config.Proxy,
+			ClusterIPRange:      config.ClusterIPRange,
+			DNSIP:               config.DNSIP,
+			ManagementClusterID: config.ManagementClusterID,
+			Provider:            config.Provider,
+			RegistryDomain:      config.RegistryDomain,
+			Proxy:               config.Proxy,
 		}
 
 		clusterConfigMapGetter, err = clusterconfigmap.New(c)

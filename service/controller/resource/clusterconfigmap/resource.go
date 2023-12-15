@@ -23,12 +23,13 @@ type Config struct {
 	Logger    micrologger.Logger
 	PodCIDR   podcidr.Interface
 
-	BaseDomain     string
-	ClusterIPRange string
-	DNSIP          string
-	Provider       string
-	RegistryDomain string
-	Proxy          proxy.Proxy
+	BaseDomain          string
+	ClusterIPRange      string
+	DNSIP               string
+	ManagementClusterID string
+	Provider            string
+	RegistryDomain      string
+	Proxy               proxy.Proxy
 }
 
 // Resource implements the clusterConfigMap resource.
@@ -41,10 +42,11 @@ type Resource struct {
 	// clusterIPRange is the CIDR for the k8s `Services`.
 	clusterIPRange string
 	// dnsIP is the 10th IP within the `clusterIPRange` CIDR, that will be used for the coredns `Service`.
-	dnsIP          string
-	provider       string
-	registryDomain string
-	proxy          proxy.Proxy
+	dnsIP               string
+	managementClusterID string
+	provider            string
+	registryDomain      string
+	proxy               proxy.Proxy
 }
 
 // New creates a new configured config map state getter resource managing
@@ -82,12 +84,13 @@ func New(config Config) (*Resource, error) {
 		logger:    config.Logger,
 		podCIDR:   config.PodCIDR,
 
-		baseDomain:     strings.TrimPrefix(config.BaseDomain, "k8s."),
-		clusterIPRange: config.ClusterIPRange,
-		dnsIP:          config.DNSIP,
-		provider:       config.Provider,
-		registryDomain: config.RegistryDomain,
-		proxy:          config.Proxy,
+		baseDomain:          strings.TrimPrefix(config.BaseDomain, "k8s."),
+		clusterIPRange:      config.ClusterIPRange,
+		dnsIP:               config.DNSIP,
+		managementClusterID: config.ManagementClusterID,
+		provider:            config.Provider,
+		registryDomain:      config.RegistryDomain,
+		proxy:               config.Proxy,
 	}
 
 	return r, nil
