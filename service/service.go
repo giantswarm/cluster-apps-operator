@@ -149,6 +149,7 @@ func New(config Config) (*Service, error) {
 			BaseDomain:           config.Viper.GetString(config.Flag.Service.Workload.Cluster.BaseDomain),
 			ClusterIPRange:       clusterIPRange,
 			DNSIP:                dnsIP,
+			ManagementClusterID:  config.Viper.GetString(config.Flag.Service.Workload.Cluster.Owner),
 			Provider:             config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Proxy: proxy.Proxy{
 				HttpProxy:  config.Viper.GetString(config.Flag.Service.Proxy.HttpProxy),

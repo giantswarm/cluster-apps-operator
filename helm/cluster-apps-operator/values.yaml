@@ -8,6 +8,8 @@ chartOperator:
 
 baseDomain: ""
 
+managementClusterID: ""
+
 provider:
   kind: ""
 

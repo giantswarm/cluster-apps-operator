@@ -272,6 +272,17 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		clusterValues.ChartOperator.Cni["install"] = false
 	}
 
+	// when the workload cluster considered is the management cluster itself,
+	// the Chart Operator is due to get a special configuration to avoid privilege escalation.
+	if r.managementClusterID == key.ClusterID(&cr) {
+		clusterValues.Helm = &ChartOperatorHelmConfig{
+			NamespaceWhitelist: []string{
+				"org-giantswarm",
+			},
+			SplitClient: true,
+		}
+	}
+
 	// if we explicitly set externalDNSIP to "" it will cause to install chart-operator in mode that is compatible with private clusters
 	// as externalDNSIP is used as test DNS and default value is public google dns, but there isn't any value that could be used in private clusters
 	// as the cloud providers have unpredictable DNS ip depending on which subnet is the machine and pod running.

@@ -11,5 +11,6 @@ type Cluster struct {
 	BaseDomain string
 	Calico     calico.Calico
 	Kubernetes kubernetes.Kubernetes
+	Owner      string
 	Proxy      proxy.Proxy
 }

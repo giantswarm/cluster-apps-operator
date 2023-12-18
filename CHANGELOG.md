@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Introduce option to pass the installation codename which is then use to recognize when the management cluster is being handled.
+
 ### Changed
 
 - Configure `gsoci.azurecr.io` as the default container image registry.

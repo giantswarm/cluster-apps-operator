@@ -44,3 +44,4 @@ data:
             api:
               clusterIPRange: '{{ .Values.kubernetes.api.clusterIPRange }}'
             domain: '{{ .Values.kubernetes.clusterDomain }}'
+          owner: '{{ .Values.managementClusterID }}'
