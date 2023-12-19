@@ -50,7 +50,7 @@ project:
   commit: "[[ .SHA ]]"
 
 registry:
-  domain: docker.io
+  domain: gsoci.azurecr.io
   mirrors:
     - giantswarm.azurecr.io
   pullSecret:
