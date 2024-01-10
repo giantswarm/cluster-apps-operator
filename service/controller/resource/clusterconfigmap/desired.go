@@ -250,7 +250,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			Enabled:          true,
 			ApiServerPodPort: 6443,
 		},
-		ChartOperator: ChartOperatorConfig{Cni: map[string]bool{"install": true}},
 		Cluster: ClusterConfig{
 			Calico: map[string]string{"CIDR": podCIDR},
 			Kubernetes: KubernetesConfig{
@@ -258,12 +257,16 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				DNS: map[string]string{"IP": clusterDNSIP},
 			},
 		},
-		ClusterCA:    clusterCA,
-		ClusterDNSIP: clusterDNSIP,
-		ClusterID:    key.ClusterID(&cr),
-		ClusterCIDR:  clusterCIDR,
-		GcpProject:   gcpProject,
-		Provider:     r.provider,
+		ClusterCA:     clusterCA,
+		ClusterDNSIP:  clusterDNSIP,
+		ClusterID:     key.ClusterID(&cr),
+		ClusterCIDR:   clusterCIDR,
+		Provider:      r.provider,
+		GcpProject:    gcpProject,
+		ChartOperator: ChartOperatorConfig{Cni: map[string]bool{"install": true}},
+		CiliumNetworkPolicy: CiliumNetworkPolicy{
+			Enabled: true,
+		},
 	}
 
 	// disable boostrap mode and do not install CNI for EKS cluster

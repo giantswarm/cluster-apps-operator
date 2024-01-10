@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Introduce option to pass the installation codename which is then use to recognize when the management cluster is being handled.
+- Enable `ciliumNetworkPolicies` in the cluster values.
 
 ### Changed
 

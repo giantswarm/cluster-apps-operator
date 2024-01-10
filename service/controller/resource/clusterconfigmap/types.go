@@ -20,6 +20,10 @@ type ClusterConfig struct {
 	Kubernetes KubernetesConfig  `json:"kubernetes"`
 	Private    bool              `json:"private"`
 }
+type CiliumNetworkPolicy struct {
+	Enabled bool `json:"enabled"`
+}
+
 type ClusterValuesConfig struct {
 	BaseDomain string `json:"baseDomain"`
 	// BootstrapMode allows to configure chart-operator in bootstrap mode so that it can install charts without cni or kube-proxy.
@@ -27,12 +31,13 @@ type ClusterValuesConfig struct {
 	Cluster       ClusterConfig              `json:"cluster"`
 	ClusterCA     string                     `json:"clusterCA"`
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
-	ClusterDNSIP  string                   `json:"clusterDNSIP"`
-	ClusterID     string                   `json:"clusterID"`
-	ClusterCIDR   string                   `json:"clusterCIDR"`
-	ExternalDNSIP *string                  `json:"externalDNSIP,omitempty"`
-	Helm          *ChartOperatorHelmConfig `json:"helm,omitempty"`
-	Provider      string                   `json:"provider"`
-	GcpProject    string                   `json:"gcpProject"`
-	ChartOperator ChartOperatorConfig      `json:"chartOperator"`
+	ClusterDNSIP        string                   `json:"clusterDNSIP"`
+	ClusterID           string                   `json:"clusterID"`
+	ClusterCIDR         string                   `json:"clusterCIDR"`
+	ExternalDNSIP       *string                  `json:"externalDNSIP,omitempty"`
+	Helm                *ChartOperatorHelmConfig `json:"helm,omitempty"`
+	Provider            string                   `json:"provider"`
+	GcpProject          string                   `json:"gcpProject"`
+	ChartOperator       ChartOperatorConfig      `json:"chartOperator"`
+	CiliumNetworkPolicy CiliumNetworkPolicy      `json:"ciliumNetworkPolicy"`
 }
