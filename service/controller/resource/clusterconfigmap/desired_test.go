@@ -102,7 +102,6 @@ func Test_ClusterValuesGCP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.0.0.0/16",
 		DNSIP:          "192.168.0.10",
-		Provider:       "gcp",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -124,6 +123,7 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			}
 			assertEquals(t, "test-cluster.fadi.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "12345", cmData.GcpProject, "Wrong gcpProject set in cluster-values configmap")
+			assertEquals(t, "gcp", cmData.Provider, "Wrong provider set in cluster-values configmap")
 
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
@@ -132,6 +132,14 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			if cmData.BootstrapMode.ApiServerPodPort != 6443 {
 				t.Fatal("bootstrap mode should use 6443 on GCP")
 			}
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "gcp", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
@@ -206,7 +214,6 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.0.0.0/16",
 		DNSIP:          "192.168.0.10",
-		Provider:       "gcp",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -228,6 +235,15 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 			}
 			assertEquals(t, "172.16.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "172.16.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "unknown", cmData.Provider, "Wrong provider set in cluster-values configmap")
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "unknown", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
@@ -293,7 +309,6 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.96.0.0/12",
 		DNSIP:          "10.96.0.10",
-		Provider:       "gcp",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -315,28 +330,45 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 			}
 			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "unknown", cmData.Provider, "Wrong provider set in cluster-values configmap")
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "unknown", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
 
 func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
-	podCidrConfig := podcidr.Config{InstallationCIDR: "10.0.0.0/16"}
+	podCidrConfig := podcidr.Config{InstallationCIDR: "10.200.0.0/24"}
 	podCidr, err := podcidr.New(podCidrConfig)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	openstackCluster := &unstructured.Unstructured{}
-	openstackCluster.Object = map[string]interface{}{
+	capzCluster := &unstructured.Unstructured{}
+	capzCluster.Object = map[string]interface{}{
 		"metadata": map[string]interface{}{
 			"name":      "test-cluster",
 			"namespace": "default",
 		},
-		"spec": map[string]interface{}{},
+		"spec": map[string]interface{}{
+			"resourceGroup":  "group1",
+			"subscriptionID": "143d9c06-6015-4a4a-a4f9-74a664207db7",
+			"networkSpec": map[string]interface{}{
+				"apiServerLB": map[string]interface{}{
+					"type": "Public",
+				},
+			},
+		},
 	}
-	openstackCluster.SetGroupVersionKind(schema.GroupVersionKind{
+	capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "infrastructure.cluster.x-k8s.io",
-		Kind:    "OpenstackCluster",
+		Kind:    "AzureCluster",
 		Version: "v1beta1",
 	})
 
@@ -344,13 +376,29 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-cluster",
 			Namespace: "default",
+			Labels: map[string]string{
+				capi.ClusterLabelName: "test-cluster",
+			},
 		},
 		Spec: capi.ClusterSpec{
 			InfrastructureRef: &corev1.ObjectReference{
-				Kind:       "OpenstackCluster",
+				Kind:       "AzureCluster",
 				Namespace:  "default",
 				Name:       "test-cluster",
 				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
+			ClusterNetwork: &capi.ClusterNetwork{
+				ServiceDomain: "cluster.local",
+				Services: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"172.31.0.0/16",
+					},
+				},
+				Pods: &capi.NetworkRanges{
+					CIDRBlocks: []string{
+						"192.168.0.0/16",
+					},
+				},
 			},
 		},
 	}
@@ -368,7 +416,7 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 
 		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
 			CtrlClient: clientfake.NewClientBuilder().
-				WithRuntimeObjects(openstackCluster, cluster).
+				WithRuntimeObjects(capzCluster, cluster).
 				Build(),
 		})
 	}
@@ -380,7 +428,6 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.96.0.0/12",
 		DNSIP:          "10.96.0.10",
-		Provider:       "vsphere",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -403,6 +450,15 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 			assertEquals(t, "", cmData.GcpProject, "GCPProject is only set when using gcp")
 			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in cluster-values configmap")
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "capz", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
@@ -492,7 +548,6 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 		BaseDomain:     "azuretest.gigantic.io",
 		ClusterIPRange: "10.200.0.0/24",
 		DNSIP:          "172.31.0.10",
-		Provider:       "capz",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -513,6 +568,7 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 				t.Fatal(err)
 			}
 			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
+			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in cluster-values configmap")
 
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
@@ -521,6 +577,14 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 			if cmData.BootstrapMode.ApiServerPodPort != 6443 {
 				t.Fatal("bootstrap mode should use 6443 on CAPZ")
 			}
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "capz", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
@@ -610,7 +674,6 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 		BaseDomain:     "azuretest.gigantic.io",
 		ClusterIPRange: "10.200.0.0/24",
 		DNSIP:          "172.31.0.10",
-		Provider:       "capz",
 		RegistryDomain: "quay.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -633,6 +696,7 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "", *cmData.ExternalDNSIP, "Wrong externalDNSIP set in cluster-values configmap for a private cluster")
 			assertEquals(t, "true", strconv.FormatBool(cmData.Cluster.Private), "Wrong cluster.private set in cluster-values configmap for a private cluster")
+			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in app-operator-values configmap")
 
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
@@ -641,6 +705,14 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 			if cmData.BootstrapMode.ApiServerPodPort != 6443 {
 				t.Fatal("bootstrap mode should use 6443 on CAPZ")
 			}
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assertEquals(t, "capz", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }

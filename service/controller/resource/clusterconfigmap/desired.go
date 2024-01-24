@@ -17,7 +17,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
 
-	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
@@ -103,6 +102,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	var (
+		provider = "unknown"
 		// clusterCIDR is only used on azure.
 		clusterCIDR = ""
 		// gcpProject is only used on gcp.
@@ -114,19 +114,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
-			switch r.provider {
-			case "azure":
-				var azureCluster capz.AzureCluster
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &azureCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
+			switch infrastructureRef.Kind {
+			case AzureClusterKind:
+				provider = AzureClusterKindProvider
 
-				blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
-				if len(blocks) > 0 {
-					clusterCIDR = blocks[0]
-				}
-			case "capz":
 				capzCluster := &unstructured.Unstructured{}
 				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -154,8 +145,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				privateCluster = apiServerLbType == "Internal"
 
-			case "aws":
-			case "capa":
+			case AWSClusterKind:
+				provider = AWSClusterKindProvider
+
 				awsCluster := &unstructured.Unstructured{}
 				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -176,9 +168,15 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				privateCluster = annotationValue == annotation.AWSVPCModePrivate
-			case "cloud-director", "openstack", "vsphere":
+			case VCDClusterKind:
+				provider = VCDClusterKindProvider
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
-			case "gcp":
+			case VSphereClusterKind:
+				provider = VSphereClusterKindProvider
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
+			case GCPClusterKind:
+				provider = GCPClusterKindProvider
+
 				gcpCluster := &unstructured.Unstructured{}
 				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
 					Group:   infrastructureRef.GroupVersionKind().Group,
@@ -198,7 +196,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 					return nil, fieldNotFoundOnInfrastructureTypeError
 				}
 			default:
-				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", r.provider)
+				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
 		}
 	}
@@ -209,7 +207,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			"workloadClusterID": key.ClusterID(&cr),
 		},
 		"provider": map[string]interface{}{
-			"kind": r.provider,
+			"kind": provider,
 		},
 		"registry": map[string]interface{}{
 			"domain": r.registryDomain,
@@ -263,7 +261,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterID:    key.ClusterID(&cr),
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
-		Provider:     r.provider,
+		Provider:     provider,
 	}
 
 	// disable boostrap mode and do not install CNI for EKS cluster
