@@ -151,6 +151,22 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	gcpCluster := &unstructured.Unstructured{}
+	gcpCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "test-cluster",
+			"namespace": "default",
+		},
+		"spec": map[string]interface{}{
+			"project": "12345",
+		},
+	}
+	gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Kind:    "GCPCluster",
+		Version: "v1beta1",
+	})
+
 	kubeadmControlPlane := &unstructured.Unstructured{}
 	kubeadmControlPlane.Object = map[string]interface{}{
 		"metadata": map[string]interface{}{
@@ -186,6 +202,12 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 				Name:       "test-cluster",
 				APIVersion: "controlplane.cluster.x-k8s.io/v1beta1",
 			},
+			InfrastructureRef: &corev1.ObjectReference{
+				Kind:       "GCPCluster",
+				Namespace:  "default",
+				Name:       "test-cluster",
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
 		},
 	}
 
@@ -202,7 +224,7 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 
 		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
 			CtrlClient: clientfake.NewClientBuilder().
-				WithRuntimeObjects(kubeadmControlPlane, cluster).
+				WithRuntimeObjects(kubeadmControlPlane, gcpCluster, cluster).
 				Build(),
 		})
 	}
@@ -235,7 +257,7 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 			}
 			assertEquals(t, "172.16.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "172.16.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
-			assertEquals(t, "unknown", cmData.Provider, "Wrong provider set in cluster-values configmap")
+			assertEquals(t, "gcp", cmData.Provider, "Wrong provider set in cluster-values configmap")
 		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
 			cmData := &AppOperatorValuesConfig{}
 			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
@@ -243,7 +265,7 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			assertEquals(t, "unknown", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
+			assertEquals(t, "gcp", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }
@@ -254,6 +276,22 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	gcpCluster := &unstructured.Unstructured{}
+	gcpCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "test-cluster",
+			"namespace": "default",
+		},
+		"spec": map[string]interface{}{
+			"project": "12345",
+		},
+	}
+	gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Kind:    "GCPCluster",
+		Version: "v1beta1",
+	})
 
 	kubeadmControlPlane := &unstructured.Unstructured{}
 	kubeadmControlPlane.Object = map[string]interface{}{
@@ -281,6 +319,12 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 				Name:       "test-cluster",
 				APIVersion: "controlplane.cluster.x-k8s.io/v1beta1",
 			},
+			InfrastructureRef: &corev1.ObjectReference{
+				Kind:       "GCPCluster",
+				Namespace:  "default",
+				Name:       "test-cluster",
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
 		},
 	}
 
@@ -297,7 +341,7 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 
 		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
 			CtrlClient: clientfake.NewClientBuilder().
-				WithRuntimeObjects(kubeadmControlPlane, cluster).
+				WithRuntimeObjects(kubeadmControlPlane, gcpCluster, cluster).
 				Build(),
 		})
 	}
@@ -330,7 +374,7 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 			}
 			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
-			assertEquals(t, "unknown", cmData.Provider, "Wrong provider set in cluster-values configmap")
+			assertEquals(t, "gcp", cmData.Provider, "Wrong provider set in cluster-values configmap")
 		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
 			cmData := &AppOperatorValuesConfig{}
 			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
@@ -338,7 +382,7 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			assertEquals(t, "unknown", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
+			assertEquals(t, "gcp", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
 		}
 	}
 }

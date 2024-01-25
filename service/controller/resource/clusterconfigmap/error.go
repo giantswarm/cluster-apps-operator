@@ -2,6 +2,15 @@ package clusterconfigmap
 
 import "github.com/giantswarm/microerror"
 
+var infrastructureRefNotFoundError = &microerror.Error{
+	Kind: "infrastructureRefNotFoundError",
+}
+
+// IsInvalidConfig asserts invalidConfigError.
+func IsInfrastructureRefNotFoundError(err error) bool {
+	return microerror.Cause(err) == infrastructureRefNotFoundError
+}
+
 var invalidConfigError = &microerror.Error{
 	Kind: "invalidConfigError",
 }

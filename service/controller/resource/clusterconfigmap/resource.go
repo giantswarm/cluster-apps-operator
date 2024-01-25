@@ -14,21 +14,6 @@ import (
 const (
 	// Name is the identifier of the resource.
 	Name = "clusterconfigmap"
-
-	AWSClusterKind         = "AWSCluster"
-	AWSClusterKindProvider = "capa"
-
-	AzureClusterKind         = "AzureCluster"
-	AzureClusterKindProvider = "capz"
-
-	VCDClusterKind         = "VCDCluster"
-	VCDClusterKindProvider = "cloud-director"
-
-	VSphereClusterKind         = "VSphereCluster"
-	VSphereClusterKindProvider = "vsphere"
-
-	GCPClusterKind         = "GCPCluster"
-	GCPClusterKindProvider = "gcp"
 )
 
 // Config represents the configuration used to create a new clusterConfigMap

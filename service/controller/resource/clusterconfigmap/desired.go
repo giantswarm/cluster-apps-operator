@@ -19,6 +19,7 @@ import (
 
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
@@ -102,7 +103,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	var (
-		provider = "unknown"
+		provider = ""
 		// clusterCIDR is only used on azure.
 		clusterCIDR = ""
 		// gcpProject is only used on gcp.
@@ -115,8 +116,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
-			case AzureClusterKind:
-				provider = AzureClusterKindProvider
+			case infra.AzureClusterKind:
+				provider = infra.AzureClusterKindProvider
 
 				capzCluster := &unstructured.Unstructured{}
 				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
@@ -145,8 +146,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				privateCluster = apiServerLbType == "Internal"
 
-			case AWSClusterKind:
-				provider = AWSClusterKindProvider
+			case infra.AWSClusterKind:
+				provider = infra.AWSClusterKindProvider
 
 				awsCluster := &unstructured.Unstructured{}
 				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
@@ -168,14 +169,14 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				}
 
 				privateCluster = annotationValue == annotation.AWSVPCModePrivate
-			case VCDClusterKind:
-				provider = VCDClusterKindProvider
+			case infra.VCDClusterKind:
+				provider = infra.VCDClusterKindProvider
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
-			case VSphereClusterKind:
-				provider = VSphereClusterKindProvider
+			case infra.VSphereClusterKind:
+				provider = infra.VSphereClusterKindProvider
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
-			case GCPClusterKind:
-				provider = GCPClusterKindProvider
+			case infra.GCPClusterKind:
+				provider = infra.GCPClusterKindProvider
 
 				gcpCluster := &unstructured.Unstructured{}
 				gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
@@ -198,6 +199,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			default:
 				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
+		} else {
+			return nil, microerror.Maskf(infrastructureRefNotFoundError, "%T.spec.infrastructureRef must not be empty", cr)
 		}
 	}
 
