@@ -146,7 +146,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				privateCluster = apiServerLbType == "Internal"
 
-			case infra.AWSClusterKind:
+			case infra.AWSClusterKind, infra.AWSManagedClusterKind:
 				provider = infra.AWSClusterKindProvider
 
 				awsCluster := &unstructured.Unstructured{}

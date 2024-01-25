@@ -4,6 +4,8 @@ const (
 	AWSClusterKind         = "AWSCluster"
 	AWSClusterKindProvider = "capa"
 
+	AWSManagedClusterKind = "AWSManagedCluster"
+
 	AzureClusterKind         = "AzureCluster"
 	AzureClusterKindProvider = "capz"
 

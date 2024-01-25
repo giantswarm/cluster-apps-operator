@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove OpenStack support.
+
 ### Changed
 
 - The provider information source of truth is changed from the configuration option to Cluster CRs.
