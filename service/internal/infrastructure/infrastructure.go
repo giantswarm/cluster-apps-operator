@@ -9,6 +9,8 @@ const (
 	AzureClusterKind         = "AzureCluster"
 	AzureClusterKindProvider = "capz"
 
+	AzureManagedClusterKind = "AzureManagedCluster"
+
 	VCDClusterKind         = "VCDCluster"
 	VCDClusterKindProvider = "cloud-director"
 
@@ -17,4 +19,6 @@ const (
 
 	GCPClusterKind         = "GCPCluster"
 	GCPClusterKindProvider = "gcp"
+
+	GCPManagedClusterKind = "GCPManagedCluster"
 )

@@ -116,7 +116,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
-			case infra.AzureClusterKind:
+			case infra.AzureClusterKind, infra.AzureManagedClusterKind:
 				provider = infra.AzureClusterKindProvider
 
 				capzCluster := &unstructured.Unstructured{}
@@ -175,7 +175,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			case infra.VSphereClusterKind:
 				provider = infra.VSphereClusterKindProvider
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
-			case infra.GCPClusterKind:
+			case infra.GCPClusterKind, infra.GCPManagedClusterKind:
 				provider = infra.GCPClusterKindProvider
 
 				gcpCluster := &unstructured.Unstructured{}
