@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - The provider information source of truth is changed from the configuration option to Cluster CRs.
 
+## [2.18.1] - 2024-01-29
+
+### Fixed
+
+- Move pss values under the global property
+
 ## [2.18.0] - 2024-01-09
 
 ### Added
@@ -456,7 +462,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.1...HEAD
+[2.18.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.16.0...v2.17.0
 [2.16.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.15.0...v2.16.0
