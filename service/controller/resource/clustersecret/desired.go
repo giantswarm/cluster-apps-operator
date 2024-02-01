@@ -20,10 +20,9 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
-
-	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
 )
 
 const (
@@ -59,18 +58,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
-			case "OpenStackCluster":
-				var infraCluster capo.OpenStackCluster
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &infraCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				values["cloudConfig"], err = r.generateOpenStackCloudConfig(ctx, infraCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-			case "VCDCluster":
+			case infra.VCDClusterKind:
 				var infraCluster capvcd.VCDCluster
 				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Namespace: infrastructureRef.Namespace, Name: infrastructureRef.Name}, &infraCluster)
 				if err != nil {

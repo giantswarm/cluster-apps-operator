@@ -27,7 +27,6 @@ type Config struct {
 	ClusterIPRange      string
 	DNSIP               string
 	ManagementClusterID string
-	Provider            string
 	RegistryDomain      string
 	Proxy               proxy.Proxy
 }
@@ -44,7 +43,6 @@ type Resource struct {
 	// dnsIP is the 10th IP within the `clusterIPRange` CIDR, that will be used for the coredns `Service`.
 	dnsIP               string
 	managementClusterID string
-	provider            string
 	registryDomain      string
 	proxy               proxy.Proxy
 }
@@ -72,9 +70,6 @@ func New(config Config) (*Resource, error) {
 	if config.DNSIP == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.DNSIP must not be empty", config)
 	}
-	if config.Provider == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
-	}
 	if config.RegistryDomain == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.RegistryDomain must not be empty", config)
 	}
@@ -88,7 +83,6 @@ func New(config Config) (*Resource, error) {
 		clusterIPRange:      config.ClusterIPRange,
 		dnsIP:               config.DNSIP,
 		managementClusterID: config.ManagementClusterID,
-		provider:            config.Provider,
 		registryDomain:      config.RegistryDomain,
 		proxy:               config.Proxy,
 	}

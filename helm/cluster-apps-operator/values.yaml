@@ -10,9 +10,6 @@ baseDomain: ""
 
 managementClusterID: ""
 
-provider:
-  kind: ""
-
 proxy:
   noProxy: ""
   http: ""
