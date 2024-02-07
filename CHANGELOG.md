@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The provider information source of truth is changed from the configuration option to Cluster CRs.
+- Update `app-operator` to version `6.10.3` (uses image registry `gsoci.azurecr.io`).
+- Update `chart-operator` to version `3.1.3` (uses image registry `gsoci.azurecr.io`).
 
 ## [2.18.1] - 2024-01-29
 
