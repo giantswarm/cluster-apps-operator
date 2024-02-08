@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `app-operator` to version `6.10.3` (uses image registry `gsoci.azurecr.io`).
+- Update `chart-operator` to version `3.1.3` (uses image registry `gsoci.azurecr.io`).
+
 ## [2.19.0] - 2024-02-07
 
 ### Removed
