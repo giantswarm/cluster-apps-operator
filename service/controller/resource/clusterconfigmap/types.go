@@ -1,5 +1,13 @@
 package clusterconfigmap
 
+type AppOperatorProvider struct {
+	Kind string `json:"kind"`
+}
+
+type AppOperatorValuesConfig struct {
+	Provider AppOperatorProvider `json:"provider"`
+}
+
 type ChartOperatorBootstrapMode struct {
 	Enabled          bool  `json:"enabled"`
 	ApiServerPodPort int32 `json:"apiServerPodPort"`

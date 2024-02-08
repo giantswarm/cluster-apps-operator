@@ -153,14 +153,6 @@
                 }
             }
         },
-        "provider": {
-            "type": "object",
-            "properties": {
-                "kind": {
-                    "type": "string"
-                }
-            }
-        },
         "proxy": {
             "type": "object",
             "properties": {
