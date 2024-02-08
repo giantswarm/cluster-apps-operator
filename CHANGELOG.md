@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `app-operator` to version `6.10.3` (uses image registry `gsoci.azurecr.io`).
+- Update `chart-operator` to version `3.1.3` (uses image registry `gsoci.azurecr.io`).
+
+## [2.19.0] - 2024-02-07
+
 ### Removed
 
 - Remove OpenStack support.
@@ -14,8 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - The provider information source of truth is changed from the configuration option to Cluster CRs.
-- Update `app-operator` to version `6.10.3` (uses image registry `gsoci.azurecr.io`).
-- Update `chart-operator` to version `3.1.3` (uses image registry `gsoci.azurecr.io`).
 
 ## [2.18.1] - 2024-01-29
 
@@ -464,7 +469,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.19.0...HEAD
+[2.19.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.1...v2.19.0
 [2.18.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.0...v2.18.1
 [2.18.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.16.0...v2.17.0
