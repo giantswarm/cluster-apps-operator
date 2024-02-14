@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.20.1] - 2024-02-14
+
 ### Fixed
 
 - Do not generate proxy env secret for non private clusters.
@@ -475,7 +477,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.20.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.20.1...HEAD
+[2.20.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.20.0...v2.20.1
 [2.20.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.19.0...v2.20.0
 [2.19.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.1...v2.19.0
 [2.18.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.18.0...v2.18.1
