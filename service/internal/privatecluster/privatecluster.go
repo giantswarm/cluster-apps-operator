@@ -14,6 +14,10 @@ import (
 	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
 )
 
+// IsPrivateCluster returns true if the cluster is a private cluster (i.e. it has no direct internet access).
+// -In CAPZ and CAPA, we respect WC attributes. A non-private WC can exist in a private MC
+// - In CAPV and CAPVCD, we respect MC attributes. If MC is private, all WCs are private.
+// - In CAPG, we don’t have private concept.
 func IsPrivateCluster(ctx context.Context, logger micrologger.Logger, ctrlclient client.Client, cr capi.Cluster) (bool, error) {
 	var privateCluster bool
 	var err error
