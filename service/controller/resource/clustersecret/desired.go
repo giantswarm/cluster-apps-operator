@@ -77,7 +77,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 
 				// CAPV all clusters are private if the MC is private.
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
+			case infra.VSphereClusterKind:
+				// CAPV all clusters are private if the MC is private.
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
 			}
+
 		}
 	}
 
