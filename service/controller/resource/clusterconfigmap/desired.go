@@ -21,6 +21,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/privatecluster"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {
@@ -109,66 +110,20 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		// gcpProject is only used on gcp.
 		gcpProject      = ""
 		gcpProjectFound bool
-		// privateCluster is used only on aws in case the cluster vpc mode is private
-		privateCluster bool
 	)
+	privateCluster, err := privatecluster.IsPrivateCluster(ctx, r.logger, r.k8sClient.CtrlClient(), cr)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
 			case infra.AzureClusterKind, infra.AzureManagedClusterKind:
 				provider = infra.AzureClusterKindProvider
-
-				capzCluster := &unstructured.Unstructured{}
-				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
-					Group:   infrastructureRef.GroupVersionKind().Group,
-					Kind:    infrastructureRef.Kind,
-					Version: infrastructureRef.GroupVersionKind().Version,
-				})
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
-					Namespace: cr.Namespace,
-					Name:      infrastructureRef.Name,
-				}, capzCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				// TODO: We need to enable this for CAPZ clusters but we first need to understand the implication of this change to the Cilium CNI and the cluster as a whole
-				// blocks := azureCluster.Spec.NetworkSpec.Vnet.CIDRBlocks
-				// if len(blocks) > 0 {
-				//	clusterCIDR = blocks[0]
-				// }
-
-				apiServerLbType, apiServerLbFound, err := unstructured.NestedString(capzCluster.Object, []string{"spec", "networkSpec", "apiServerLB", "type"}...)
-				if err != nil || !apiServerLbFound {
-					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
-				}
-
-				privateCluster = apiServerLbType == "Internal"
-
 			case infra.AWSClusterKind, infra.AWSManagedClusterKind:
 				provider = infra.AWSClusterKindProvider
-
-				awsCluster := &unstructured.Unstructured{}
-				awsCluster.SetGroupVersionKind(schema.GroupVersionKind{
-					Group:   infrastructureRef.GroupVersionKind().Group,
-					Kind:    infrastructureRef.Kind,
-					Version: infrastructureRef.GroupVersionKind().Version,
-				})
-				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
-					Namespace: cr.Namespace,
-					Name:      infrastructureRef.Name,
-				}, awsCluster)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
-
-				annotationValue, annotationFound, err := unstructured.NestedString(awsCluster.Object, []string{"metadata", "annotations", annotation.AWSVPCMode}...)
-				if err != nil || !annotationFound {
-					return nil, microerror.Mask(fieldNotFoundOnInfrastructureTypeError)
-				}
-
-				privateCluster = annotationValue == annotation.AWSVPCModePrivate
 			case infra.VCDClusterKind:
 				provider = infra.VCDClusterKindProvider
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()

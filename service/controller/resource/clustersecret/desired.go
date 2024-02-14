@@ -23,6 +23,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
 	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/privatecluster"
 )
 
 const (
@@ -53,6 +54,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	values := map[string]interface{}{}
+	privateCluster, err := privatecluster.IsPrivateCluster(ctx, r.logger, r.k8sClient.CtrlClient(), cr)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	{
 		infrastructureRef := cr.Spec.InfrastructureRef
@@ -69,6 +74,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if err != nil {
 					return nil, microerror.Mask(err)
 				}
+
+				// CAPV all clusters are private if the MC is private.
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
 			}
 		}
 	}
@@ -81,7 +89,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		},
 	}
 
-	if !reflect.ValueOf(r.proxy).IsZero() {
+	if privateCluster && !reflect.ValueOf(r.proxy).IsZero() {
 		r.logger.Debugf(ctx, "proxy secrets for cluster '%s/%s' : %v", cr.GetNamespace(), key.ClusterID(&cr), r.proxy)
 
 		noProxy := noProxy(cr, r.proxy.NoProxy)
