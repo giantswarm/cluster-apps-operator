@@ -63,6 +63,9 @@ func IsPrivateCluster(ctx context.Context, logger micrologger.Logger, ctrlclient
 			}
 
 			privateCluster = annotationValue == annotation.AWSVPCModePrivate
+		case infra.GCPClusterKind, infra.GCPManagedClusterKind:
+			// We don't support private clusters on GCP yet.
+			privateCluster = false
 		default:
 			logger.Debugf(ctx, "privatecluster.IsPrivateCluster in not implemented for infrastructure kind %q", infrastructureRef.Kind)
 		}

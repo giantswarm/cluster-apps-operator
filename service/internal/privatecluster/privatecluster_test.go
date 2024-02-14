@@ -123,6 +123,32 @@ func TestIsPrivateCluster(t *testing.T) {
 		Kind:    infra.AzureClusterKind,
 	})
 
+	gcpCluster := &unstructured.Unstructured{}
+	gcpCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "gcp-cluster",
+			"namespace": "default",
+		},
+	}
+	gcpCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Version: "v1beta1",
+		Kind:    infra.GCPClusterKind,
+	})
+
+	gcpManagedCluster := &unstructured.Unstructured{}
+	gcpManagedCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "gcp-cluster",
+			"namespace": "default",
+		},
+	}
+	gcpManagedCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Version: "v1beta1",
+		Kind:    infra.GCPManagedClusterKind,
+	})
+
 	tests := []struct {
 		name     string
 		infraRef *unstructured.Unstructured
@@ -162,6 +188,18 @@ func TestIsPrivateCluster(t *testing.T) {
 		{
 			name:     "Azure NON Private cluster",
 			infraRef: publicAzureCluster,
+			want:     false,
+			wantErr:  false,
+		},
+		{
+			name:     "GCP cluster",
+			infraRef: gcpCluster,
+			want:     false,
+			wantErr:  false,
+		},
+		{
+			name:     "GCP managed cluster",
+			infraRef: gcpManagedCluster,
 			want:     false,
 			wantErr:  false,
 		},
