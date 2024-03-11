@@ -43,4 +43,6 @@ type ClusterValuesConfig struct {
 	Provider      string                   `json:"provider"`
 	GcpProject    string                   `json:"gcpProject"`
 	ChartOperator ChartOperatorConfig      `json:"chartOperator"`
+
+	AzureSubscriptionID string `json:"subscriptionID"`
 }

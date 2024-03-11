@@ -5,10 +5,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/giantswarm/k8smetadata/pkg/annotation"
-	"github.com/giantswarm/k8smetadata/pkg/label"
-	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -16,6 +12,11 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/yaml"
+
+	"github.com/giantswarm/k8smetadata/pkg/annotation"
+	"github.com/giantswarm/k8smetadata/pkg/label"
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
@@ -110,6 +111,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		// gcpProject is only used on gcp.
 		gcpProject      = ""
 		gcpProjectFound bool
+
+		azureSubscriptionID      = ""
+		azureSubscriptionIDFound bool
 	)
 	privateCluster, err := privatecluster.IsPrivateCluster(ctx, r.logger, r.k8sClient.CtrlClient(), cr)
 	if err != nil {
@@ -120,8 +124,29 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
-			case infra.AzureClusterKind, infra.AzureManagedClusterKind:
+			case infra.AzureManagedClusterKind:
 				provider = infra.AzureClusterKindProvider
+			case infra.AzureClusterKind:
+				provider = infra.AzureClusterKindProvider
+
+				capzCluster := &unstructured.Unstructured{}
+				capzCluster.SetGroupVersionKind(schema.GroupVersionKind{
+					Group:   infrastructureRef.GroupVersionKind().Group,
+					Kind:    infrastructureRef.Kind,
+					Version: infrastructureRef.GroupVersionKind().Version,
+				})
+				err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
+					Namespace: cr.Namespace,
+					Name:      infrastructureRef.Name,
+				}, capzCluster)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				azureSubscriptionID, azureSubscriptionIDFound, err = unstructured.NestedString(capzCluster.Object, []string{"spec", "subscriptionID"}...)
+				if err != nil || !azureSubscriptionIDFound {
+					return nil, fieldNotFoundOnInfrastructureTypeError
+				}
 			case infra.AWSClusterKind, infra.AWSManagedClusterKind:
 				provider = infra.AWSClusterKindProvider
 			case infra.VCDClusterKind:
@@ -201,7 +226,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	clusterValues := ClusterValuesConfig{
-		BaseDomain: key.BaseDomain(&cr, r.baseDomain),
+		AzureSubscriptionID: azureSubscriptionID,
+		BaseDomain:          key.BaseDomain(&cr, r.baseDomain),
 		BootstrapMode: ChartOperatorBootstrapMode{
 			Enabled:          true,
 			ApiServerPodPort: 6443,

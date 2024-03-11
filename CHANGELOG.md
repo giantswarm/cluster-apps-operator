@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `subscriptionID` to cluster-values configmap for CAPZ so that apps in default-apps bundle can consume it automatically.
+
 ## [2.20.2] - 2024-03-06
 
 ### Fixed
