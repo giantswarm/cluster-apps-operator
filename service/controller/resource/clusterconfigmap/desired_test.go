@@ -6,8 +6,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
-	"github.com/giantswarm/micrologger/microloggertest"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -17,6 +15,9 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/yaml"
+
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
+	"github.com/giantswarm/micrologger/microloggertest"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
@@ -124,7 +125,7 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			assertEquals(t, "test-cluster.fadi.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "12345", cmData.GcpProject, "Wrong gcpProject set in cluster-values configmap")
 			assertEquals(t, "gcp", cmData.Provider, "Wrong provider set in cluster-values configmap")
-
+			assertEquals(t, "", cmData.AzureSubscriptionID, "AzureSubscriptionID should be empty for non-CAPZ clusters")
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
 			}
@@ -613,6 +614,7 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 			}
 			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
 			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in cluster-values configmap")
+			assertEquals(t, "143d9c06-6015-4a4a-a4f9-74a664207db7", cmData.AzureSubscriptionID, "Wrong AzureSubscriptionID set in cluster-values configmap")
 
 			if !cmData.BootstrapMode.Enabled {
 				t.Fatal("bootstrap mode should be enabled")
