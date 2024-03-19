@@ -21,6 +21,9 @@ data:
         chartOperator:
           catalog: {{ .Values.chartOperator.catalog }}
           version: {{ .Values.chartOperator.version }}
+      image:
+        registry:
+          domain: {{ .Values.registry.domain }}
       kubernetes:
         address: ''
         inCluster: true
