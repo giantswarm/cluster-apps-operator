@@ -117,3 +117,5 @@ replace (
 	// CVE-2022-32149
 	golang.org/x/text => golang.org/x/text v0.14.0
 )
+
+replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
