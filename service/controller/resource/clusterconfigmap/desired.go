@@ -246,6 +246,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		ClusterCIDR:  clusterCIDR,
 		GcpProject:   gcpProject,
 		Provider:     provider,
+		CiliumNetworkPolicy: CiliumNetworkPolicy{
+			Enabled: true,
+		},
 	}
 
 	// disable boostrap mode and do not install CNI for EKS cluster

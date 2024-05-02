@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `ciliumNetworkPolicy.enabled=true` in cluster values.
+
 ## [2.21.1] - 2024-03-19
 
 ### Fixed
