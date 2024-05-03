@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.22.0] - 2024-05-03
+
 ### Added
 
 - Add `ciliumNetworkPolicy.enabled=true` in cluster values.
@@ -499,7 +501,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.21.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.0...HEAD
+[2.22.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.21.1...v2.22.0
 [2.21.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.21.0...v2.21.1
 [2.21.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.20.2...v2.21.0
 [2.20.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.20.1...v2.20.2
