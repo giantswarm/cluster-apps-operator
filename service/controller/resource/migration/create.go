@@ -59,5 +59,5 @@ func (r Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	b := backoff.NewConstant(15*time.Second, 5*time.Second)
 	err = backoff.RetryNotify(o, b, n)
 
-	return nil
+	return err
 }
