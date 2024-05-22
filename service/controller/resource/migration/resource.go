@@ -6,6 +6,10 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
+const (
+	Name = "migration"
+)
+
 type Config struct {
 	CtrlClient client.Client
 	Logger     micrologger.Logger
@@ -31,4 +35,8 @@ func New(config Config) (*Resource, error) {
 	}
 
 	return r, nil
+}
+
+func (r *Resource) Name() string {
+	return Name
 }
