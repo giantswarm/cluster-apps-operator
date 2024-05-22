@@ -13,6 +13,9 @@ import (
 )
 
 const (
+	// appOperatorFluxBackend is the label added to Cluster CR
+	appOperatorFluxBackend = "app-operator.giantswarm.io/flux-backend"
+
 	// defaultDNSLastOctet is the last octect for the DNS service IP, the first
 	// 3 octets come from the cluster IP range.
 	defaultDNSLastOctet = 10
@@ -123,6 +126,18 @@ func ToCluster(v interface{}) (capi.Cluster, error) {
 	}
 
 	return *p, nil
+}
+
+// IsFluxBackendRequested checks if App is considered to be managed by Flux.
+// Returns true if the flux kustomization labels are set on the App.
+func IsFluxBackendRequested(cluster capi.Cluster) bool {
+	labels := cluster.GetLabels()
+
+	if _, ok := labels[appOperatorFluxBackend]; ok {
+		return true
+	}
+
+	return false
 }
 
 // IsManagedByFlux checks if App is considered to be managed by Flux.
