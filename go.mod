@@ -113,7 +113,7 @@ replace (
 	github.com/coreos/etcd => github.com/coreos/etcd v3.3.27+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.10.0
-	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.52.0
+	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.54.0
 	// CVE-2022-32149
 	golang.org/x/text => golang.org/x/text v0.15.0
 )
