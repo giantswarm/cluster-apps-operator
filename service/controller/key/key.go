@@ -53,7 +53,7 @@ func ClusterID(getter LabelsGetter) string {
 	// If the Giant Swarm cluster name is empty, attempt to retrieve it from the
 	// upstream label.
 	if clusterID == "" {
-		clusterID = getter.GetLabels()[capi.ClusterLabelName]
+		clusterID = getter.GetLabels()[capi.ClusterNameLabel]
 	}
 	return clusterID
 }
