@@ -13,9 +13,17 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/tools/clientcmd/api"
 
+	"github.com/giantswarm/app-operator/v6/integration/env"
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+)
+
+const (
+	clusterName    = "kind-kind"
+	kubeConfigName = "kube-config"
 )
 
 // TestBasic is a smoke test to check the helm chart is installed and the
@@ -36,6 +44,64 @@ func TestBasic(t *testing.T) {
 		}
 
 		config.Logger.Debugf(ctx, "waited for ready %#q deployment", project.Name())
+	}
+
+	{
+		err = config.K8s.EnsureNamespaceCreated(ctx, key.OrganizationNamespace())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+	}
+
+	// Transform kubeconfig file to restconfig and flatten.
+	var kubeConfig string
+	{
+		c := clientcmd.GetConfigFromFileOrDie(env.KubeConfigPath())
+
+		// Extract KIND kubeconfig settings. This is for local testing as
+		// api.FlattenConfig does not work with file paths in kubeconfigs.
+		clusterKubeConfig := &api.Config{
+			AuthInfos: map[string]*api.AuthInfo{
+				clusterName: c.AuthInfos[clusterName],
+			},
+			Clusters: map[string]*api.Cluster{
+				clusterName: c.Clusters[clusterName],
+			},
+			Contexts: map[string]*api.Context{
+				clusterName: c.Contexts[clusterName],
+			},
+		}
+
+		err = api.FlattenConfig(clusterKubeConfig)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		// Normally KIND assigns 127.0.0.1 as the server address. For this test
+		// that should change to the Kubernetes service.
+		clusterKubeConfig.Clusters[clusterName].Server = "https://kubernetes.default.svc.cluster.local"
+
+		bytes, err := clientcmd.Write(*c)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		// Create kubeconfig secret for the chart CR watcher in app-operator.
+		secret := &corev1.Secret{
+			Data: map[string][]byte{
+				"value": bytes,
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      fmt.Sprintf("%s-kubeconfig", key.ClusterID()),
+				Namespace: key.OrganizationNamespace(),
+			},
+		}
+		_, err = config.K8sClients.K8sClient().CoreV1().Secrets(key.OrganizationNamespace()).Create(ctx, secret, metav1.CreateOptions{})
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		kubeConfig = string(bytes)
 	}
 }
 
