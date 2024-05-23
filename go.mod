@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/giantswarm/apiextensions-application v0.6.0
-	github.com/giantswarm/app-operator/v6 v6.11.0
 	github.com/giantswarm/apptest v1.2.1
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.2.0
@@ -40,8 +39,9 @@ require (
 	github.com/getsentry/sentry-go v0.13.0 // indirect
 	github.com/giantswarm/appcatalog v1.0.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
-	github.com/giantswarm/versionbundle v1.1.0 // indirect
-	github.com/go-kit/kit v0.13.0 // indirect
+	github.com/giantswarm/versionbundle v1.0.0 // indirect
+	github.com/go-errors/errors v1.4.2 // indirect
+	github.com/go-kit/kit v0.12.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
