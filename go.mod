@@ -6,7 +6,7 @@ toolchain go1.21.6
 
 require (
 	github.com/giantswarm/apiextensions-application v0.6.0
-	github.com/giantswarm/apptest v1.2.1
+	github.com/giantswarm/apptest v1.4.0
 	github.com/giantswarm/backoff v1.0.0
 	github.com/giantswarm/exporterkit v1.1.0
 	github.com/giantswarm/k8sclient/v7 v7.2.0
