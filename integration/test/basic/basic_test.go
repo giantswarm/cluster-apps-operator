@@ -16,7 +16,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 
-	"github.com/giantswarm/app-operator/v6/integration/env"
+	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 )
