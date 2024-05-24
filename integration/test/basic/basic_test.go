@@ -12,9 +12,11 @@ import (
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
@@ -54,7 +56,6 @@ func TestBasic(t *testing.T) {
 	}
 
 	// Transform kubeconfig file to restconfig and flatten.
-	var kubeConfig string
 	{
 		c := clientcmd.GetConfigFromFileOrDie(env.KubeConfigPath())
 
@@ -101,7 +102,34 @@ func TestBasic(t *testing.T) {
 			t.Fatalf("expected nil got %#v", err)
 		}
 
-		kubeConfig = string(bytes)
+		//kubeConfig = string(bytes)
+	}
+
+	{
+		testCapiCluster := capi.Cluster{
+			TypeMeta: metav1.TypeMeta{
+				Kind:       "Cluster",
+				APIVersion: "cluster.x-k8s.io",
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Labels: map[string]string{
+					"cluster-apps-operator.giantswarm.io/watching": "",
+					"cluster.x-k8s.io/cluster-name":                "kind",
+				},
+				Name:      "kind",
+				Namespace: "org-test",
+			},
+			Spec: capi.ClusterSpec{
+				InfrastructureRef: &corev1.ObjectReference{
+					Kind: "KindCluster",
+				},
+			},
+		}
+
+		err = config.K8sClients.CtrlClient().Create(ctx, &testCapiCluster)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
 	}
 }
 
