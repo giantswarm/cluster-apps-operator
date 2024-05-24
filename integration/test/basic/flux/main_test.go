@@ -1,7 +1,7 @@
 //go:build k8srequired
 // +build k8srequired
 
-package basic
+package flux
 
 import (
 	"testing"

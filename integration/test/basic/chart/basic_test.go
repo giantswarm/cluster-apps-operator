@@ -1,7 +1,7 @@
 //go:build k8srequired
 // +build k8srequired
 
-package basic
+package chart
 
 import (
 	"context"
@@ -16,7 +16,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
-	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
@@ -40,12 +40,10 @@ func TestBasic(t *testing.T) {
 	{
 		config.Logger.Debugf(ctx, "waiting for ready %#q deployment", project.Name())
 
-		err = waitForReadyDeployment(ctx)
+		err = config.Release.WaitForReadyDeployment(ctx, key.Namespace())
 		if err != nil {
 			t.Fatalf("could not get ready %#q deployment %#v", project.Name(), err)
 		}
-
-		config.Logger.Debugf(ctx, "waited for ready %#q deployment", project.Name())
 	}
 
 	{
@@ -101,32 +99,93 @@ func TestBasic(t *testing.T) {
 		if err != nil {
 			t.Fatalf("expected nil got %#v", err)
 		}
-
-		//kubeConfig = string(bytes)
 	}
 
+	// Create Cluster CR and wait for App CRs to be created
 	{
-		testCapiCluster := capi.Cluster{
-			TypeMeta: metav1.TypeMeta{
-				Kind:       "Cluster",
-				APIVersion: "cluster.x-k8s.io",
-			},
-			ObjectMeta: metav1.ObjectMeta{
-				Labels: map[string]string{
-					"cluster-apps-operator.giantswarm.io/watching": "",
-					"cluster.x-k8s.io/cluster-name":                "kind",
-				},
-				Name:      "kind",
-				Namespace: "org-test",
-			},
-			Spec: capi.ClusterSpec{
-				InfrastructureRef: &corev1.ObjectReference{
-					Kind: "KindCluster",
-				},
-			},
+		config.Logger.Debugf(ctx, "creating %#q Cluster CR in %#q namespace", key.ClusterID(), key.OrganizationNamespace())
+
+		err = config.K8sClients.CtrlClient().Create(ctx, key.TestKindCluster(false))
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
 		}
 
-		err = config.K8sClients.CtrlClient().Create(ctx, &testCapiCluster)
+		config.Logger.Debugf(
+			ctx,
+			"waiting for %#q and %#q App CRs in %#q namespace",
+			key.KindAppOperatorName(),
+			key.KindChartOperatorName(),
+			key.OrganizationNamespace(),
+		)
+
+		err = config.Release.WaitForAppCreate(ctx, key.OrganizationNamespace(), key.KindAppOperatorName())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		err = config.Release.WaitForAppCreate(ctx, key.OrganizationNamespace(), key.KindChartOperatorName())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+	}
+
+	// Validate App Operator is configured correct, that is Flux backend is disabled
+	{
+		config.Logger.Debugf(
+			ctx,
+			"validating %#q has Flux backend disabled",
+			fmt.Sprintf("%s/%s", key.OrganizationNamespace(), key.KindAppOperatorName()),
+		)
+
+		appOpCm, err := config.K8sClients.K8sClient().CoreV1().ConfigMaps(key.OrganizationNamespace()).Get(
+			ctx,
+			key.KindAppOperatorValuesName(),
+			metav1.GetOptions{},
+		)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		type appOperatorValues struct {
+			App struct {
+				HelmControllerBackend string
+			}
+		}
+
+		var val appOperatorValues
+		err = yaml.Unmarshal([]byte(appOpCm.Data["values"]), &val)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		if val.App.HelmControllerBackend != "" {
+			t.Fatalf("expected \"\" got %#v", val.App.HelmControllerBackend)
+		}
+	}
+
+	// Delete Cluster CR and wait for App CRs to be deleted
+	{
+		config.Logger.Debugf(ctx, "deleting %#q Cluster CR in %#q namespace", key.ClusterID(), key.OrganizationNamespace())
+
+		err = config.K8sClients.CtrlClient().Delete(ctx, key.TestKindCluster(false))
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		config.Logger.Debugf(
+			ctx,
+			"waiting for %#q and %#q App CRs deletion in %#q namespace",
+			key.KindAppOperatorName(),
+			key.KindChartOperatorName(),
+			key.OrganizationNamespace(),
+		)
+
+		err = config.Release.WaitForAppDelete(ctx, key.OrganizationNamespace(), key.KindChartOperatorName())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		err = config.Release.WaitForAppDelete(ctx, key.OrganizationNamespace(), key.KindAppOperatorName())
 		if err != nil {
 			t.Fatalf("expected nil got %#v", err)
 		}
