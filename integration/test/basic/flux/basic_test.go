@@ -6,12 +6,8 @@ package flux
 import (
 	"context"
 	"fmt"
-	"log"
 	"testing"
-	"time"
 
-	"github.com/giantswarm/backoff"
-	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
@@ -190,39 +186,4 @@ func TestBasic(t *testing.T) {
 			t.Fatalf("expected nil got %#v", err)
 		}
 	}
-}
-
-func waitForReadyDeployment(ctx context.Context) error {
-	var err error
-
-	o := func() error {
-		lo := metav1.ListOptions{
-			LabelSelector: fmt.Sprintf("app=%s", project.Name()),
-		}
-		deploys, err := config.K8sClients.K8sClient().AppsV1().Deployments(key.Namespace()).List(ctx, lo)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		if len(deploys.Items) != 1 {
-			return microerror.Maskf(executionFailedError, "expected 1 deployment got %d", len(deploys.Items))
-		}
-
-		deploy := deploys.Items[0]
-		if *deploy.Spec.Replicas != deploy.Status.ReadyReplicas {
-			return microerror.Maskf(executionFailedError, "expected %d ready pods got %d", *deploy.Spec.Replicas, deploy.Status.ReadyReplicas)
-		}
-
-		return nil
-	}
-
-	n := func(err error, t time.Duration) {
-		log.Printf("waiting for ready deployment for %s: %#v", t, err)
-	}
-
-	err = backoff.RetryNotify(o, backoff.NewConstant(5*time.Minute, 15*time.Second), n)
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	return nil
 }

@@ -1,7 +1,7 @@
 //go:build k8srequired
 // +build k8srequired
 
-package chart
+package migration
 
 import (
 	"context"
@@ -10,8 +10,10 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
@@ -159,7 +161,92 @@ func TestBasic(t *testing.T) {
 		}
 	}
 
-	// Delete Cluster CR and wait for App CRs to be deleted
+	// Update Cluster CR to enable Flux backend
+	{
+		var cluster capi.Cluster
+		config.Logger.Debugf(ctx, "getting %#q Cluster CR in %#q namespace", key.ClusterID(), key.OrganizationNamespace())
+		err = config.K8sClients.CtrlClient().Get(
+			ctx,
+			types.NamespacedName{Namespace: key.OrganizationNamespace(), Name: key.ClusterID()},
+			&cluster,
+		)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		cluster.ObjectMeta.Labels["app-operator.giantswarm.io/flux-backend"] = ""
+
+		config.Logger.Debugf(ctx, "updating %#q Cluster CR in %#q namespace", key.ClusterID(), key.OrganizationNamespace())
+
+		err = config.K8sClients.CtrlClient().Update(ctx, &cluster)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+	}
+
+	// Validating App Operator App CR is there and that Chart Operator App CR is gone
+	{
+		config.Logger.Debugf(
+			ctx,
+			"validating %#q App CR in %#q namespace is still present",
+			key.KindAppOperatorName(),
+			key.OrganizationNamespace(),
+		)
+
+		err = config.Release.WaitForAppCreate(ctx, key.OrganizationNamespace(), key.KindAppOperatorName())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		config.Logger.Debugf(
+			ctx,
+			"validating %#q App CR in %#q namespace is gone",
+			key.KindChartOperatorName(),
+			key.OrganizationNamespace(),
+		)
+
+		err = config.Release.WaitForAppDelete(ctx, key.OrganizationNamespace(), key.KindChartOperatorName())
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+	}
+
+	// Validate App Operator is configured correct, that is Flux backend is disabled
+	{
+		config.Logger.Debugf(
+			ctx,
+			"validating %#q has Flux backend enabled",
+			fmt.Sprintf("%s/%s", key.OrganizationNamespace(), key.KindAppOperatorName()),
+		)
+
+		appOpCm, err := config.K8sClients.K8sClient().CoreV1().ConfigMaps(key.OrganizationNamespace()).Get(
+			ctx,
+			key.KindAppOperatorValuesName(),
+			metav1.GetOptions{},
+		)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		type appOperatorValues struct {
+			App struct {
+				HelmControllerBackend string
+			}
+		}
+
+		var val appOperatorValues
+		err = yaml.Unmarshal([]byte(appOpCm.Data["values"]), &val)
+		if err != nil {
+			t.Fatalf("expected nil got %#v", err)
+		}
+
+		if val.App.HelmControllerBackend != "true" {
+			t.Fatalf("expected \"true\" got %#v", val.App.HelmControllerBackend)
+		}
+	}
+
+	// Delete Cluster CR and wait for App CR to be deleted
 	{
 		config.Logger.Debugf(ctx, "deleting %#q Cluster CR in %#q namespace", key.ClusterID(), key.OrganizationNamespace())
 
@@ -170,16 +257,10 @@ func TestBasic(t *testing.T) {
 
 		config.Logger.Debugf(
 			ctx,
-			"waiting for %#q and %#q App CRs deletion in %#q namespace",
+			"waiting for %#q App CR deletion in %#q namespace",
 			key.KindAppOperatorName(),
-			key.KindChartOperatorName(),
 			key.OrganizationNamespace(),
 		)
-
-		err = config.Release.WaitForAppDelete(ctx, key.OrganizationNamespace(), key.KindChartOperatorName())
-		if err != nil {
-			t.Fatalf("expected nil got %#v", err)
-		}
 
 		err = config.Release.WaitForAppDelete(ctx, key.OrganizationNamespace(), key.KindAppOperatorName())
 		if err != nil {
