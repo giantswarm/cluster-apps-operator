@@ -10,9 +10,9 @@ require (
 	github.com/giantswarm/k8sclient/v7 v7.0.1
 	github.com/giantswarm/k8smetadata v0.21.0
 	github.com/giantswarm/microendpoint v1.0.0
-	github.com/giantswarm/microerror v0.4.0
-	github.com/giantswarm/microkit v1.0.0
-	github.com/giantswarm/micrologger v1.0.0
+	github.com/giantswarm/microerror v0.4.1
+	github.com/giantswarm/microkit v1.0.1
+	github.com/giantswarm/micrologger v1.1.1
 	github.com/giantswarm/operatorkit/v7 v7.1.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/spf13/viper v1.19.0
@@ -31,7 +31,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/coreos/go-semver v0.3.0 // indirect
+	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/evanphx/json-patch v4.12.0+incompatible // indirect
@@ -40,10 +40,10 @@ require (
 	github.com/getsentry/sentry-go v0.12.0 // indirect
 	github.com/giantswarm/appcatalog v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
-	github.com/giantswarm/versionbundle v1.0.0 // indirect
-	github.com/go-kit/kit v0.12.0 // indirect
+	github.com/giantswarm/versionbundle v1.1.0 // indirect
+	github.com/go-kit/kit v0.13.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
-	github.com/go-logfmt/logfmt v0.5.1 // indirect
+	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.5 // indirect
@@ -56,10 +56,10 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.4.0 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
@@ -79,7 +79,7 @@ require (
 	github.com/sourcegraph/conc v0.3.0 // indirect
 	github.com/spf13/afero v1.11.0 // indirect
 	github.com/spf13/cast v1.6.0 // indirect
-	github.com/spf13/cobra v1.4.0 // indirect
+	github.com/spf13/cobra v1.8.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
