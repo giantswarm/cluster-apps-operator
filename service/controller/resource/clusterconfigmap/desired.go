@@ -16,7 +16,7 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/annotation"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
+	"github.com/giantswarm/operatorkit/v8/pkg/controller/context/resourcecanceledcontext"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
