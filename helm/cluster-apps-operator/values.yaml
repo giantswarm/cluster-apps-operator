@@ -2,7 +2,7 @@ appOperator:
   catalog: control-plane-test-catalog
   # used by renovate
   # repo: giantswarm/app-operator
-  version: 6.11.0-0b79096fbc86680cec5d9fb9b5912b22197d6709
+  version: 6.11.0-0cb0cbfa7a70d2dcc4e372d23c8a23f05fd12bda
 
 chartOperator:
   catalog: default
