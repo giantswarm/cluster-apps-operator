@@ -142,6 +142,8 @@ func New(config Config) (*Service, error) {
 			Logger:    config.Logger,
 			PodCIDR:   pc,
 
+			ResyncPeriod: config.Viper.GetDuration(config.Flag.Service.Controller.ResyncPeriod),
+
 			AppOperatorCatalog:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Catalog),
 			AppOperatorVersion:   config.Viper.GetString(config.Flag.Service.App.AppOperator.Version),
 			ChartOperatorCatalog: config.Viper.GetString(config.Flag.Service.App.ChartOperator.Catalog),

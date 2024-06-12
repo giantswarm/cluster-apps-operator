@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
@@ -25,9 +27,10 @@ import (
 )
 
 type ClusterConfig struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
-	PodCIDR   podcidr.Interface
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	PodCIDR      podcidr.Interface
+	ResyncPeriod time.Duration
 
 	AppOperatorCatalog   string
 	AppOperatorVersion   string
@@ -67,6 +70,8 @@ func NewCluster(config ClusterConfig) (*Cluster, error) {
 				return new(capi.Cluster)
 			},
 			Resources: resources,
+
+			ResyncPeriod: config.ResyncPeriod,
 
 			// Name is used to compute finalizer names. This here results in something
 			// like operatorkit.giantswarm.io/cluster-apps-operator-cluster-controller.
