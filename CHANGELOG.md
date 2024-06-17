@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added `--service.controller.resyncperiod` daemon flag that can be controller via `.controller.resyncPeriod` Helm value.
+  Controls the duration after which a complete sync with all known runtime objects the controller watches is performed.
+  Defaults to `5m`.
+
 ## [2.22.0] - 2024-05-03
 
 ### Added

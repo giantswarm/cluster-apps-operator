@@ -24,6 +24,8 @@ data:
       image:
         registry:
           domain: {{ .Values.registry.domain }}
+      controller:
+        resyncPeriod: '{{ .Values.controller.resyncPeriod }}'
       kubernetes:
         address: ''
         inCluster: true

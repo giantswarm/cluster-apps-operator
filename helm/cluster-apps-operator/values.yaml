@@ -35,6 +35,9 @@ image:
   name: "giantswarm/cluster-apps-operator"
   tag: "[[ .Version ]]"
 
+controller:
+  resyncPeriod: "5m"
+
 kubernetes:
   api:
     clusterIPRange: 10.96.0.0/12
