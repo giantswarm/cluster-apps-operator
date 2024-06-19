@@ -114,7 +114,7 @@ replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.10.0
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.54.0
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.15.0
+	golang.org/x/text => golang.org/x/text v0.16.0
 )
 
 replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
