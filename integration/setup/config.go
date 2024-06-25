@@ -8,14 +8,18 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
+	"github.com/giantswarm/cluster-apps-operator/v2/integration/release"
 )
 
 type Config struct {
 	AppTest    apptest.Interface
+	K8s        *k8sclient.Setup
 	K8sClients k8sclient.Interface
 	Logger     micrologger.Logger
+	Release    *release.Release
 }
 
 func NewConfig() (Config, error) {
@@ -35,11 +39,27 @@ func NewConfig() (Config, error) {
 	{
 		c := k8sclient.ClientsConfig{
 			Logger: logger,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				capi.AddToScheme,
+			},
 
 			KubeConfigPath: env.KubeConfigPath(),
 		}
 
 		k8sClients, err = k8sclient.NewClients(c)
+		if err != nil {
+			return Config{}, microerror.Mask(err)
+		}
+	}
+
+	var k8sSetup *k8sclient.Setup
+	{
+		c := k8sclient.SetupConfig{
+			Clients: k8sClients,
+			Logger:  logger,
+		}
+
+		k8sSetup, err = k8sclient.NewSetup(c)
 		if err != nil {
 			return Config{}, microerror.Mask(err)
 		}
@@ -59,10 +79,25 @@ func NewConfig() (Config, error) {
 		}
 	}
 
+	var releaseMgmt *release.Release
+	{
+		c := release.Config{
+			K8sClients: k8sClients,
+			Logger:     logger,
+		}
+
+		releaseMgmt, err = release.New(c)
+		if err != nil {
+			return Config{}, microerror.Mask(err)
+		}
+	}
+
 	c := Config{
 		AppTest:    appTest,
 		K8sClients: k8sClients,
+		K8s:        k8sSetup,
 		Logger:     logger,
+		Release:    releaseMgmt,
 	}
 
 	return c, nil

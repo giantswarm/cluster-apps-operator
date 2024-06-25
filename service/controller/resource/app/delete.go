@@ -55,18 +55,22 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	desiredApps := r.desiredApps(ctx, cr)
 
-	// There are no more app CRs to manage so we can delete chart-operator.
-	err = r.waitForAppDeletion(ctx, cr, key.ChartOperatorAppName(&cr), desiredApps)
-	if IsNotDeleted(err) {
-		r.logger.Debugf(ctx, "%s not deleted yet", key.ChartOperatorAppName(&cr))
+	// There are no more app CRs to manage so we can delete chart-operator,
+	// but only in case it is deployed for clusters without Flux Backend
+	// explicitly requested.
+	if !key.IsFluxBackendRequested(cr) {
+		err = r.waitForAppDeletion(ctx, cr, key.ChartOperatorAppName(&cr), desiredApps)
+		if IsNotDeleted(err) {
+			r.logger.Debugf(ctx, "%s not deleted yet", key.ChartOperatorAppName(&cr))
 
-		finalizerskeptcontext.SetKept(ctx)
-		r.logger.Debugf(ctx, "keeping finalizers")
+			finalizerskeptcontext.SetKept(ctx)
+			r.logger.Debugf(ctx, "keeping finalizers")
 
-		r.logger.Debugf(ctx, "canceling resource")
-		return nil
-	} else if err != nil {
-		return microerror.Mask(err)
+			r.logger.Debugf(ctx, "canceling resource")
+			return nil
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 
 	// Once chart-operator is deleted we can delete app-operator and remove
