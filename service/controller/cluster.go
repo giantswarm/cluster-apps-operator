@@ -23,6 +23,7 @@ import (
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/app"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/clusterconfigmap"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/clustersecret"
+	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/migration"
 	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
 )
 
@@ -193,9 +194,23 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var migrationResource resource.Interface
+	{
+		c := migration.Config{
+			CtrlClient: config.K8sClient.CtrlClient(),
+			Logger:     config.Logger,
+		}
+
+		migrationResource, err = migration.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		// clusterConfigMapResource is executed before the app resource so the
 		// app CRs are accepted by the validation webhook.
+		migrationResource,
 		clusterConfigMapResource,
 		clusterSecretResource,
 		appResource,

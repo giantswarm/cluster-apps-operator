@@ -50,7 +50,7 @@ func Test_ClusterValuesGCP(t *testing.T) {
 			Name:      "test-cluster",
 			Namespace: "default",
 			Labels: map[string]string{
-				capi.ClusterLabelName: "test-cluster",
+				capi.ClusterNameLabel: "test-cluster",
 			},
 		},
 		Spec: capi.ClusterSpec{
@@ -422,7 +422,7 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 			Name:      "test-cluster",
 			Namespace: "default",
 			Labels: map[string]string{
-				capi.ClusterLabelName: "test-cluster",
+				capi.ClusterNameLabel: "test-cluster",
 			},
 		},
 		Spec: capi.ClusterSpec{
@@ -542,7 +542,7 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 			Name:      "test-cluster",
 			Namespace: "default",
 			Labels: map[string]string{
-				capi.ClusterLabelName: "test-cluster",
+				capi.ClusterNameLabel: "test-cluster",
 			},
 		},
 		Spec: capi.ClusterSpec{
@@ -669,7 +669,7 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 			Name:      "test-cluster",
 			Namespace: "default",
 			Labels: map[string]string{
-				capi.ClusterLabelName: "test-cluster",
+				capi.ClusterNameLabel: "test-cluster",
 			},
 		},
 		Spec: capi.ClusterSpec{

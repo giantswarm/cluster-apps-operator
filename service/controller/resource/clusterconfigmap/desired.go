@@ -203,6 +203,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		}
 	}
 
+	if key.IsFluxBackendRequested(cr) {
+		appOperatorValues["app"].(map[string]interface{})["helmControllerBackend"] = true
+	}
+
 	appValuesYaml, err := yaml.Marshal(appOperatorValues)
 	if err != nil {
 		return nil, microerror.Mask(err)
