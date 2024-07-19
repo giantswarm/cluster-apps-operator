@@ -5,6 +5,8 @@ import (
 	"net"
 	"strings"
 
+	apiCoreV1 "k8s.io/api/core/v1"
+
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
@@ -139,4 +141,30 @@ func IsManagedByFlux(app v1alpha1.App) bool {
 	}
 
 	return true
+}
+
+func IsClusterInTransition(cr capi.Cluster) bool {
+	readyConditionStatus := GetReadyConditionStatus(cr)
+
+	isProvisioned := cr.Status.Phase == "Provisioned"
+	isInfrastructureReady := cr.Status.InfrastructureReady == true
+	isControlPlaneReady := cr.Status.ControlPlaneReady == true
+
+	return !readyConditionStatus || !isProvisioned || !isInfrastructureReady || !isControlPlaneReady
+}
+
+func GetReadyConditionStatus(cr capi.Cluster) bool {
+	readyStatus := capi.Condition{
+		Type:   "Ready",
+		Status: apiCoreV1.ConditionTrue,
+	}
+
+	for _, condition := range cr.GetConditions() {
+		if condition.Type == "Ready" {
+			readyStatus = condition
+			break
+		}
+	}
+
+	return readyStatus.Status == apiCoreV1.ConditionTrue
 }
