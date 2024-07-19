@@ -147,8 +147,8 @@ func IsClusterInTransition(cr capi.Cluster) bool {
 	readyConditionStatus := GetReadyConditionStatus(cr)
 
 	isProvisioned := cr.Status.Phase == "Provisioned"
-	isInfrastructureReady := cr.Status.InfrastructureReady == true
-	isControlPlaneReady := cr.Status.ControlPlaneReady == true
+	isInfrastructureReady := cr.Status.InfrastructureReady
+	isControlPlaneReady := cr.Status.ControlPlaneReady
 
 	return !readyConditionStatus || !isProvisioned || !isInfrastructureReady || !isControlPlaneReady
 }
