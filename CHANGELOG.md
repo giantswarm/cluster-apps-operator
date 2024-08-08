@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Do not create proxy secrets for capv clusters if the proxy is not enabled in the cluster app.
+
 ## [2.23.0] - 2024-07-18
 
 ### Changed

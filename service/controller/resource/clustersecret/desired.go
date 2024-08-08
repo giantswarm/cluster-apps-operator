@@ -78,8 +78,13 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				// CAPV all clusters are private if the MC is private.
 				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
 			case infra.VSphereClusterKind:
-				// CAPV all clusters are private if the MC is private.
-				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
+				// CAPV all clusters are private if the MC is private and proxy is enabled.
+				proxyEnabled, err := vsphereProxyEnabled(ctx, r.k8sClient.CtrlClient(), cr)
+				if err != nil {
+					return nil, microerror.Mask(err)
+				}
+
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero() && proxyEnabled
 			}
 
 		}
