@@ -86,7 +86,7 @@ require (
 	golang.org/x/exp v0.0.0-20231108232855-2478ac86f678 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/oauth2 v0.18.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/term v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
@@ -114,7 +114,7 @@ replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.10.0
 	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.54.0
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.15.0
+	golang.org/x/text => golang.org/x/text v0.17.0
 )
 
 replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
