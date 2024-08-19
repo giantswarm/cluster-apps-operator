@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.23.1] - 2024-08-19
+
 ### Changed
 
 - Do not create proxy secrets for capv clusters if the proxy is not enabled in the cluster app.
@@ -519,7 +521,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.1...HEAD
+[2.23.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.0...v2.23.1
 [2.23.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.1...v2.23.0
 [2.22.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.0...v2.22.1
 [2.22.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.21.1...v2.22.0
