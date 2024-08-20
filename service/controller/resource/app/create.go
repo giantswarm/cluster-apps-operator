@@ -126,22 +126,30 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 			UseUpgradeForce:    false,
 			Version:            r.appOperatorVersion,
 		},
-		{
-			App: "chart-operator",
-			// chart-operator is deployed by the workload cluster
-			// instance.
-			AppOperatorVersion: r.appOperatorVersion,
-			AppName:            key.ChartOperatorAppName(&cr),
-			Catalog:            r.chartOperatorCatalog,
-			ConfigMapName:      key.ClusterValuesResourceName(&cr),
-			ConfigMapNamespace: cr.GetNamespace(),
-			InCluster:          false,
-			TargetNamespace:    "giantswarm",
-			SecretName:         key.ClusterValuesResourceName(&cr),
-			SecretNamespace:    cr.GetNamespace(),
-			UseUpgradeForce:    false,
-			Version:            r.chartOperatorVersion,
-		},
+	}
+
+	// Chart Operator gets created only for cluster without Flux Backend
+	// explicitly requested.
+	if !key.IsFluxBackendRequested(cr) {
+		appSpecs = append(
+			appSpecs,
+			AppSpec{
+				App: "chart-operator",
+				// chart-operator is deployed by the workload cluster
+				// instance.
+				AppOperatorVersion: r.appOperatorVersion,
+				AppName:            key.ChartOperatorAppName(&cr),
+				Catalog:            r.chartOperatorCatalog,
+				ConfigMapName:      key.ClusterValuesResourceName(&cr),
+				ConfigMapNamespace: cr.GetNamespace(),
+				InCluster:          false,
+				TargetNamespace:    "giantswarm",
+				SecretName:         key.ClusterValuesResourceName(&cr),
+				SecretNamespace:    cr.GetNamespace(),
+				UseUpgradeForce:    false,
+				Version:            r.chartOperatorVersion,
+			},
+		)
 	}
 
 	apps := []*v1alpha1.App{}
@@ -156,7 +164,7 @@ func (r *Resource) desiredApps(ctx context.Context, cr capi.Cluster) []*v1alpha1
 func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec) *v1alpha1.App {
 	var kubeConfig v1alpha1.AppSpecKubeConfig
 
-	if appSpec.InCluster || key.IsBundle(appSpec.App) {
+	if appSpec.InCluster {
 		kubeConfig = v1alpha1.AppSpecKubeConfig{
 			InCluster: true,
 		}
@@ -172,17 +180,6 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 		}
 	}
 
-	appName := appSpec.AppName
-	appNamespace := appSpec.TargetNamespace
-	// If the app is a bundle, we ensure the MC app operator deploys the apps
-	// so the cluster-operator for the wc deploys the apps to the WC.
-	appOperatorVersion := appSpec.AppOperatorVersion
-	if key.IsBundle(appSpec.App) {
-		appName = fmt.Sprintf("%s-%s", key.ClusterID(&cr), appName)
-		appOperatorVersion = uniqueOperatorVersion
-		appNamespace = cr.GetNamespace()
-	}
-
 	return &v1alpha1.App{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "App",
@@ -194,11 +191,11 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 			},
 			Labels: map[string]string{
 				label.AppKubernetesName:  appSpec.App,
-				label.AppOperatorVersion: appOperatorVersion,
+				label.AppOperatorVersion: appSpec.AppOperatorVersion,
 				label.Cluster:            key.ClusterID(&cr),
 				label.ManagedBy:          project.Name(),
 			},
-			Name:      appName,
+			Name:      appSpec.AppName,
 			Namespace: cr.GetNamespace(),
 		},
 		Spec: v1alpha1.AppSpec{
@@ -214,7 +211,7 @@ func (r *Resource) newApp(ctx context.Context, cr capi.Cluster, appSpec AppSpec)
 				},
 			},
 			Name:       appSpec.App,
-			Namespace:  appNamespace,
+			Namespace:  appSpec.TargetNamespace,
 			Version:    appSpec.Version,
 			KubeConfig: kubeConfig,
 		},

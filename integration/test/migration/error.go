@@ -1,7 +1,7 @@
 //go:build k8srequired
 // +build k8srequired
 
-package basic
+package migration
 
 import "github.com/giantswarm/microerror"
 

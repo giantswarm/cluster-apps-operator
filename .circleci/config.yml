@@ -35,9 +35,36 @@ workflows:
               only: /^v.*/
 
       - architect/integration-test:
-          name: "basic-integration-test"
+          name: "basic-integration-test-chart-operator"
           install-app-platform: true
-          test-dir: "integration/test/basic"
+          test-dir: "integration/test/basic/chart"
+          setup-script: "integration/setup/setup.sh"
+          filters:
+            # Do not trigger the job on merge to master.
+            branches:
+              ignore:
+                - master
+          requires:
+            - push-cluster-apps-operator-to-control-plane-app-catalog
+
+      - architect/integration-test:
+          name: "basic-integration-test-helm-controller"
+          install-app-platform: true
+          test-dir: "integration/test/basic/flux"
+          setup-script: "integration/setup/setup.sh"
+          filters:
+            # Do not trigger the job on merge to master.
+            branches:
+              ignore:
+                - master
+          requires:
+            - push-cluster-apps-operator-to-control-plane-app-catalog
+
+      - architect/integration-test:
+          name: "basic-integration-test-migration"
+          install-app-platform: true
+          test-dir: "integration/test/migration"
+          setup-script: "integration/setup/setup.sh"
           filters:
             # Do not trigger the job on merge to master.
             branches:
