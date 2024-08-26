@@ -59,7 +59,7 @@ func ClusterID(getter LabelsGetter) string {
 func DNSIP(clusterIPRange string) (string, error) {
 	ip, _, err := net.ParseCIDR(clusterIPRange)
 	if err != nil {
-		return "", microerror.Maskf(invalidConfigError, err.Error())
+		return "", microerror.Maskf(invalidConfigError, "%s", err.Error())
 	}
 
 	// Only IPV4 CIDRs are supported.
