@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -49,7 +50,11 @@ func (r Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	if err != nil {
 		return microerror.Mask(err)
 	} else if len(apps) > 0 {
-		r.logger.Debugf(ctx, "waiting for %d apps to be deleted for cluster '%s/%s'", len(apps), cr.GetNamespace(), key.ClusterID(&cr))
+		var appNames []string
+		for _, app := range apps {
+			appNames = append(appNames, app.Name)
+		}
+		r.logger.Debugf(ctx, "waiting for %d apps to be deleted for cluster '%s/%s': %s", len(apps), cr.GetNamespace(), key.ClusterID(&cr), strings.Join(appNames, ", "))
 		return r.cancel(ctx)
 	}
 
@@ -106,7 +111,7 @@ func (r Resource) deleteClusterApps(ctx context.Context, apps []*v1alpha1.App) e
 		// namely when `prune: false` is used and app is gone in the repository,
 		// but there is no way to recognize this case here.
 		if key.IsManagedByFlux(*app) {
-			r.logger.Debugf(ctx, "skipping Flux-managed '%s/%s' app", app.Namespace, app.Name)
+			r.logger.Debugf(ctx, "skipping Flux-managed '%s/%s' app in deletion", app.Namespace, app.Name)
 			continue
 		}
 
