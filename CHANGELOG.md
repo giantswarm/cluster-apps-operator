@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.23.2] - 2024-09-25
+
 ### Changed
 
 - Log which apps are being awaited before continuing deletion
@@ -525,7 +527,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.2...HEAD
+[2.23.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.1...v2.23.2
 [2.23.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.0...v2.23.1
 [2.23.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.1...v2.23.0
 [2.22.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.0...v2.22.1
