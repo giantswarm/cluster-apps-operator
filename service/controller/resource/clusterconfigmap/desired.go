@@ -196,6 +196,14 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			"domain": r.registryDomain,
 		},
 	}
+
+	// Set app-operator resync period to 1m when the cluster is being transitioned, otherwise, use operator default
+	if key.IsClusterInTransition(cr) {
+		appOperatorValues["operatorkit"] = map[string]interface{}{
+			"resyncPeriod": "1m",
+		}
+	}
+
 	// disable kubernetes client cache for EKS cluster
 	if key.IsEKS(cr) {
 		appOperatorValues["kubernetes"] = map[string]interface{}{
