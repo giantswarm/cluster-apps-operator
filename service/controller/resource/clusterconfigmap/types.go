@@ -31,10 +31,14 @@ type ClusterConfig struct {
 type CiliumNetworkPolicy struct {
 	Enabled bool `json:"enabled"`
 }
+type Controller struct {
+	ResyncPeriod string `json:"resyncPeriod"`
+}
 type ClusterValuesConfig struct {
 	BaseDomain string `json:"baseDomain"`
 	// BootstrapMode allows to configure chart-operator in bootstrap mode so that it can install charts without cni or kube-proxy.
 	BootstrapMode ChartOperatorBootstrapMode `json:"bootstrapMode"`
+	Controller    Controller                 `json:"controller"`
 	Cluster       ClusterConfig              `json:"cluster"`
 	ClusterCA     string                     `json:"clusterCA"`
 	// ClusterDNSIP is used by chart-operator. It uses this IP as its dnsConfig nameserver, to use it as resolver.
