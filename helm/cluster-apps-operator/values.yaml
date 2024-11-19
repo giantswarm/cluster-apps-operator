@@ -2,13 +2,13 @@ appOperator:
   catalog: control-plane-catalog
   # used by renovate
   # repo: giantswarm/app-operator
-  version: 6.11.0
+  version: 7.0.0
 
 chartOperator:
   catalog: default
   # used by renovate
   # repo: giantswarm/chart-operator
-  version: 3.3.0
+  version: 4.0.0
 
 baseDomain: ""
 
@@ -84,7 +84,3 @@ serviceMonitor:
   interval: "60s"
   # -- (duration) Prometheus scrape timeout.
   scrapeTimeout: "45s"
-
-global:
-  podSecurityStandards:
-    enforced: false
