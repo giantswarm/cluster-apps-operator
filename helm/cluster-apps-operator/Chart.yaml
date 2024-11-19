@@ -1,5 +1,5 @@
 apiVersion: "v2"
-appVersion: "2.23.3-dev"
+appVersion: "3.0.0"
 description: "Chart holding cluster-apps-operator."
 home: "https://github.com/giantswarm/cluster-apps-operator"
 icon: https://s.giantswarm.io/app-icons/giantswarm/1/dark.svg
