@@ -33,7 +33,7 @@ deployment:
 
 image:
   name: "giantswarm/cluster-apps-operator"
-  tag: "[[ .Version ]]"
+  tag: ""
 
 controller:
   resyncPeriod: "5m"
@@ -48,10 +48,6 @@ pod:
     id: 1000
   group:
     id: 1000
-
-project:
-  branch: "[[ .Branch ]]"
-  commit: "[[ .SHA ]]"
 
 registry:
   domain: gsoci.azurecr.io
@@ -70,6 +66,7 @@ podSecurityContext:
 
 # Add seccomp to container security context
 securityContext:
+  readOnlyRootFilesystem: true
   allowPrivilegeEscalation: false
   capabilities:
     drop:
