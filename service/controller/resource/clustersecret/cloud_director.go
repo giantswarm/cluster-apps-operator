@@ -6,7 +6,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
+	capvcd "github.com/giantswarm/cluster-apps-operator/v3/api/capvcd/v1beta1"
 
 	"github.com/giantswarm/microerror"
 )

@@ -15,7 +15,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
+	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
 )
 
 func TestIsPrivateCluster(t *testing.T) {

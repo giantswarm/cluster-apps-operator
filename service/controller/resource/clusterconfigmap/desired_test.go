@@ -19,7 +19,7 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
 	"github.com/giantswarm/micrologger/microloggertest"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/podcidr"
 )
 
 func Test_ClusterValuesGCP(t *testing.T) {

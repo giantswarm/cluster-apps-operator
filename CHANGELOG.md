@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.0.0] - 2024-11-19
+
 ### Removed
 
 - Removed PSP support and thus support for pre v1.25 Kubernetes clusters.
@@ -543,7 +545,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.2...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.0.0...HEAD
+[3.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.2...v3.0.0
 [2.23.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.1...v2.23.2
 [2.23.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.0...v2.23.1
 [2.23.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.22.1...v2.23.0

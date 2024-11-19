@@ -5,7 +5,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/key"
 )
 
 type Config struct {
