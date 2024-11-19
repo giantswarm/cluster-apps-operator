@@ -100,8 +100,6 @@ func getValuesProxyEnabled() string {
     global:
       release:
         version: 1.2.3
-      podSecurityStandards:
-        enforced: true
       connectivity:
         baseDomain: test.example.io
         proxy:
@@ -119,8 +117,6 @@ func getValuesProxyDisabled() string {
     global:
       release:
         version: 1.2.3
-      podSecurityStandards:
-        enforced: true
       connectivity:
         baseDomain: test.example.io
         proxy:
@@ -135,8 +131,6 @@ func getValuesProxyNotDefined() string {
     global:
       release:
         version: 1.2.3
-      podSecurityStandards:
-        enforced: true
       connectivity:
         baseDomain: test.example.io
         availabilityZoneUsageLimit: 3
@@ -149,8 +143,6 @@ func getValuesProxyEmpty() string {
     global:
       release:
         version: 1.2.3
-      podSecurityStandards:
-        enforced: true
       connectivity:
         baseDomain: test.example.io
         proxy:

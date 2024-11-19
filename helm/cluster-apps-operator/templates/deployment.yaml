@@ -44,7 +44,7 @@ spec:
         {{- end }}
       containers:
       - name: {{ include "name" . }}
-        image: "{{ .Values.registry.domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.registry.domain }}/{{ .Values.image.name }}:{{ include "image.tag" . }}"
         args:
         - daemon
         - --config.dirs=/var/run/{{ include "name" . }}/configmap/
@@ -52,6 +52,9 @@ spec:
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
+        ports:
+          - name: http
+            containerPort: 8000
         livenessProbe:
           httpGet:
             path: /healthz
