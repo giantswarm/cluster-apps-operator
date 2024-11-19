@@ -17,16 +17,16 @@ import (
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
-	capo "github.com/giantswarm/cluster-apps-operator/v2/api/capo/v1alpha4"
-	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
-	capz "github.com/giantswarm/cluster-apps-operator/v2/api/capz/v1alpha4"
-	"github.com/giantswarm/cluster-apps-operator/v2/flag"
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
-	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/collector"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
+	capo "github.com/giantswarm/cluster-apps-operator/v3/api/capo/v1alpha4"
+	capvcd "github.com/giantswarm/cluster-apps-operator/v3/api/capvcd/v1beta1"
+	capz "github.com/giantswarm/cluster-apps-operator/v3/api/capz/v1alpha4"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag/service/proxy"
+	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/collector"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/key"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/podcidr"
 )
 
 // Config represents the configuration used to create a new service.

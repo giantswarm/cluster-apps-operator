@@ -11,7 +11,7 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
+	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
 )
 
 // IsPrivateCluster returns true if the cluster is a private cluster (i.e. it has no direct internet access).

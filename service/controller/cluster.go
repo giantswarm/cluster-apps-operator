@@ -18,12 +18,12 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/proxy"
-	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/app"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/clusterconfigmap"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/resource/clustersecret"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag/service/proxy"
+	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/resource/app"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/resource/clusterconfigmap"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/resource/clustersecret"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/podcidr"
 )
 
 type ClusterConfig struct {

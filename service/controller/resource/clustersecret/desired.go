@@ -19,11 +19,11 @@ import (
 
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
-	capvcd "github.com/giantswarm/cluster-apps-operator/v2/api/capvcd/v1beta1"
-	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
-	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/privatecluster"
+	capvcd "github.com/giantswarm/cluster-apps-operator/v3/api/capvcd/v1beta1"
+	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/key"
+	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/privatecluster"
 )
 
 const (

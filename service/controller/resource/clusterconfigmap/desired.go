@@ -18,11 +18,11 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/controller/key"
-	infra "github.com/giantswarm/cluster-apps-operator/v2/service/internal/infrastructure"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/podcidr"
-	"github.com/giantswarm/cluster-apps-operator/v2/service/internal/privatecluster"
+	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/key"
+	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/podcidr"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/privatecluster"
 )
 
 func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*corev1.ConfigMap, error) {

@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/app/appoperator"
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/app/chartoperator"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag/service/app/appoperator"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag/service/app/chartoperator"
 )
 
 type App struct {

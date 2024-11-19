@@ -1,7 +1,7 @@
 package kubernetes
 
 import (
-	"github.com/giantswarm/cluster-apps-operator/v2/flag/service/workload/cluster/kubernetes/api"
+	"github.com/giantswarm/cluster-apps-operator/v3/flag/service/workload/cluster/kubernetes/api"
 )
 
 // Kubernetes is a data structure to hold guest cluster Kubernetes specific
