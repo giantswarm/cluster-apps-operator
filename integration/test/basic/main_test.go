@@ -6,7 +6,7 @@ package basic
 import (
 	"testing"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/integration/setup"
+	"github.com/giantswarm/cluster-apps-operator/v3/integration/setup"
 )
 
 var (

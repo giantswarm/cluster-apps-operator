@@ -14,10 +14,10 @@ import (
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/cluster-apps-operator/v2/integration/env"
-	"github.com/giantswarm/cluster-apps-operator/v2/integration/key"
-	"github.com/giantswarm/cluster-apps-operator/v2/integration/templates"
-	"github.com/giantswarm/cluster-apps-operator/v2/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/integration/env"
+	"github.com/giantswarm/cluster-apps-operator/v3/integration/key"
+	"github.com/giantswarm/cluster-apps-operator/v3/integration/templates"
+	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
 )
 
 func Setup(m *testing.M, config Config) {
