@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2024-11-27
+
+### Changed
+
+- Set `ExternalDNSIP` to an empty value in the cluster values configmap for all vsphere clusters.
+
 ## [3.0.0] - 2024-11-19
 
 ### Removed
@@ -545,7 +551,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.2...v3.0.0
 [2.23.2]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.1...v2.23.2
 [2.23.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v2.23.0...v2.23.1
