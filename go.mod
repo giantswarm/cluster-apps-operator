@@ -2,7 +2,7 @@ module github.com/giantswarm/cluster-apps-operator/v3
 
 go 1.22.0
 
-toolchain go1.22.10
+toolchain go1.23.5
 
 require (
 	github.com/giantswarm/apiextensions-application v0.6.2
