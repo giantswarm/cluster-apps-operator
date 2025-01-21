@@ -2,7 +2,7 @@ module github.com/giantswarm/cluster-apps-operator/v3
 
 go 1.22.0
 
-toolchain go1.22.10
+toolchain go1.23.5
 
 require (
 	github.com/giantswarm/apiextensions-application v0.6.2
@@ -13,7 +13,7 @@ require (
 	github.com/giantswarm/k8smetadata v0.25.0
 	github.com/giantswarm/microendpoint v1.1.1
 	github.com/giantswarm/microerror v0.4.1
-	github.com/giantswarm/microkit v1.0.1
+	github.com/giantswarm/microkit v1.0.2
 	github.com/giantswarm/micrologger v1.1.1
 	github.com/giantswarm/operatorkit/v7 v7.2.0
 	github.com/prometheus/client_golang v1.20.5
@@ -110,9 +110,9 @@ replace (
 	github.com/coreos/etcd => github.com/coreos/etcd v3.3.27+incompatible
 	github.com/dgrijalva/jwt-go => github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.10.0
-	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.55.0
+	github.com/valyala/fasthttp => github.com/valyala/fasthttp v1.58.0
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.15.0
+	golang.org/x/text => golang.org/x/text v0.21.0
 )
 
 replace google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
