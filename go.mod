@@ -1,6 +1,6 @@
 module github.com/giantswarm/cluster-apps-operator/v3
 
-go 1.22.0
+go 1.23.0
 
 toolchain go1.24.1
 
@@ -86,7 +86,7 @@ require (
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.24.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
 	golang.org/x/term v0.27.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
@@ -108,6 +108,6 @@ require (
 
 replace (
 	// CVE-2022-32149
-	golang.org/x/text => golang.org/x/text v0.22.0
+	golang.org/x/text => golang.org/x/text v0.23.0
 	google.golang.org/protobuf v1.32.0 => google.golang.org/protobuf v1.33.0
 )
