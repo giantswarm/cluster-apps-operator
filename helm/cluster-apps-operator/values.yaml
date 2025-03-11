@@ -2,7 +2,7 @@ appOperator:
   catalog: control-plane-catalog
   # used by renovate
   # repo: giantswarm/app-operator
-  version: 7.0.1
+  version: 7.1.1
 
 chartOperator:
   catalog: default
