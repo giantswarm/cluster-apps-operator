@@ -196,6 +196,14 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			"domain": r.registryDomain,
 		},
 	}
+
+	// Set app-operator resync period to 1m when the cluster is being transitioned, otherwise, use operator default
+	if key.IsClusterInTransition(cr) {
+		appOperatorValues["operatorkit"] = map[string]interface{}{
+			"resyncPeriod": "1m",
+		}
+	}
+
 	// disable kubernetes client cache for EKS cluster
 	if key.IsEKS(cr) {
 		appOperatorValues["kubernetes"] = map[string]interface{}{
@@ -233,6 +241,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			ApiServerPodPort: 6443,
 		},
 		ChartOperator: ChartOperatorConfig{Cni: map[string]bool{"install": true}},
+		Controller: Controller{
+			ResyncPeriod: "1m",
+		},
 		Cluster: ClusterConfig{
 			Calico: map[string]string{"CIDR": podCIDR},
 			Kubernetes: KubernetesConfig{
