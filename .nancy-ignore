@@ -1,5 +1,1 @@
-# pkg:golang/github.com/urfave/negroni@v1.0.0
-sonatype-2021-1485
-
-# pkg:golang/google.golang.org/protobuf
-CVE-2024-24786 until=2024-03-31
+CVE-2025-4673 until=2025-07-13 # golang.org/x/net@v0.39.0
