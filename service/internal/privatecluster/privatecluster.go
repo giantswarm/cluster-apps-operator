@@ -8,7 +8,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
-	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capi "sigs.k8s.io/cluster-api/api/core/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
