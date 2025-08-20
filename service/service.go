@@ -15,7 +15,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
-	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capi "sigs.k8s.io/cluster-api/api/core/v1beta1"
 
 	capo "github.com/giantswarm/cluster-apps-operator/v3/api/capo/v1alpha4"
 	capvcd "github.com/giantswarm/cluster-apps-operator/v3/api/capvcd/v1beta1"
