@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	apiCoreV1 "k8s.io/api/core/v1"
+
 	"github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -185,6 +187,176 @@ func Test_IsManagedByFlux(t *testing.T) {
 
 			if result != tc.expected {
 				t.Fatalf("Got the unexpected result for managed by Flux check for: %#v", tc.input)
+			}
+		})
+	}
+}
+
+func Test_IsClusterInTransition(t *testing.T) {
+	testCases := []struct {
+		description string
+		input       *capi.Cluster
+		expected    bool
+	}{
+		{
+			"Case 1: Immediately after the cluster resource is created",
+			&capi.Cluster{
+				Status: capi.ClusterStatus{
+					ObservedGeneration: 1,
+					Phase:              "Provisioning",
+				},
+			},
+			true,
+		},
+		{
+			"Case 2: First status fields added, control plane is initializing",
+			&capi.Cluster{
+				Status: capi.ClusterStatus{
+					ObservedGeneration: 1,
+					Phase:              "Provisioning",
+					Conditions: capi.Conditions{
+						capi.Condition{
+							Type:     "InfrastructureReady",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityInfo,
+							Reason:   "NatGatewaysCreationStarted",
+							Message:  "3 of 8 completed",
+						},
+						capi.Condition{
+							Type:     "ControlPlaneInitialized",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityInfo,
+							Reason:   "WaitingForControlPlaneProviderInitialized",
+							Message:  "Waiting for control plane provider to indicate the control plane has been initialized",
+						},
+						capi.Condition{
+							Type:     "ControlPlaneReady",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityWarning,
+							Reason:   "ScalingUp",
+							Message:  "Scaling up control plane to 3 replicas (actual 0)",
+						},
+						capi.Condition{
+							Type:     "Ready",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityWarning,
+							Reason:   "ScalingUp",
+							Message:  "Scaling up control plane to 3 replicas (actual 0)",
+						},
+					},
+				},
+			},
+			true,
+		},
+		{
+			"Case 3: Provisioned and infrastructure ready is reported, but still in progress",
+			&capi.Cluster{
+				Status: capi.ClusterStatus{
+					ObservedGeneration:  2,
+					Phase:               "Provisioned",
+					InfrastructureReady: true,
+					Conditions: capi.Conditions{
+						capi.Condition{
+							Type:   "Provisioned",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:     "ControlPlaneInitialized",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityInfo,
+							Reason:   "WaitingForControlPlaneProviderInitialized",
+							Message:  "Waiting for control plane provider to indicate the control plane has been initialized",
+						},
+						capi.Condition{
+							Type:     "Ready",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityWarning,
+							Reason:   "ScalingUp",
+							Message:  "Scaling up control plane to 3 replicas (actual 1)",
+						},
+						capi.Condition{
+							Type:     "ControlPlaneReady",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityWarning,
+							Reason:   "ScalingUp",
+							Message:  "Scaling up control plane to 3 replicas (actual 1)",
+						},
+					},
+				},
+			},
+			true,
+		},
+		{
+			"Case 4: Control plane is ready as well, but cluster is not fully ready",
+			&capi.Cluster{
+				Status: capi.ClusterStatus{
+					ObservedGeneration:  2,
+					Phase:               "Provisioned",
+					InfrastructureReady: true,
+					ControlPlaneReady:   true,
+					Conditions: capi.Conditions{
+						capi.Condition{
+							Type:   "Provisioned",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:   "ControlPlaneInitialized",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:   "ControlPlaneReady",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:     "Ready",
+							Status:   apiCoreV1.ConditionFalse,
+							Severity: capi.ConditionSeverityWarning,
+							Reason:   "...",
+							Message:  "...",
+						},
+					},
+				},
+			},
+			true,
+		},
+		{
+			"Case 5: Cluster ready condition is set to true",
+			&capi.Cluster{
+				Status: capi.ClusterStatus{
+					ObservedGeneration:  2,
+					Phase:               "Provisioned",
+					InfrastructureReady: true,
+					ControlPlaneReady:   true,
+					Conditions: capi.Conditions{
+						capi.Condition{
+							Type:   "Provisioned",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:   "ControlPlaneInitialized",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:   "ControlPlaneReady",
+							Status: apiCoreV1.ConditionTrue,
+						},
+						capi.Condition{
+							Type:   "Ready",
+							Status: apiCoreV1.ConditionTrue,
+						},
+					},
+				},
+			},
+			false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			result := IsClusterInTransition(*tc.input)
+
+			if result != tc.expected {
+				t.Fatalf("Got the unexpected result for is cluster in transition check for: %#v", tc.input)
 			}
 		})
 	}
