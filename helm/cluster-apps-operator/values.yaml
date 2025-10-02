@@ -8,7 +8,7 @@ chartOperator:
   catalog: default
   # used by renovate
   # repo: giantswarm/chart-operator
-  version: 4.1.0
+  version: 4.1.1
 
 baseDomain: ""
 
