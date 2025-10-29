@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update `app-operator` to version `v7.5.0`.
+
 ## [3.4.1] - 2025-10-02
 
 ### Changed
