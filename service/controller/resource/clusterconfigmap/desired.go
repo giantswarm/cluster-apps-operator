@@ -195,6 +195,10 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		"registry": map[string]interface{}{
 			"domain": r.registryDomain,
 		},
+		// TODO Andreas/Joe testing shorter period to see if it speeds up cluster creation
+		"operatorkit": map[string]interface{}{
+			"resyncPeriod": "1m",
+		},
 	}
 	// disable kubernetes client cache for EKS cluster
 	if key.IsEKS(cr) {
