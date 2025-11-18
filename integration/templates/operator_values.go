@@ -5,6 +5,4 @@ const ClusterAppsOperatorValues = `
  baseDomain: example.com
  provider:
    kind: aws
- registry:
-   domain: quay.io
 `
