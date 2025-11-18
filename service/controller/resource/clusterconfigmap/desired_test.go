@@ -103,7 +103,7 @@ func Test_ClusterValuesGCP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.0.0.0/16",
 		DNSIP:          "192.168.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {
@@ -237,7 +237,7 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.0.0.0/16",
 		DNSIP:          "192.168.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {
@@ -354,7 +354,7 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.96.0.0/12",
 		DNSIP:          "10.96.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {
@@ -473,7 +473,7 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 		BaseDomain:     "fadi.gigantic.io",
 		ClusterIPRange: "10.96.0.0/12",
 		DNSIP:          "10.96.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {
@@ -593,7 +593,7 @@ func Test_ClusterValuesCAPZ(t *testing.T) {
 		BaseDomain:     "azuretest.gigantic.io",
 		ClusterIPRange: "10.200.0.0/24",
 		DNSIP:          "172.31.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {
@@ -720,7 +720,7 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 		BaseDomain:     "azuretest.gigantic.io",
 		ClusterIPRange: "10.200.0.0/24",
 		DNSIP:          "172.31.0.10",
-		RegistryDomain: "quay.io/giantswarm",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
 	if err != nil {

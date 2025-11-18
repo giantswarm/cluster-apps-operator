@@ -106,7 +106,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Catalog, "", "Catalog for chart-operator app CR.")
 	daemonCommand.PersistentFlags().String(f.Service.App.ChartOperator.Version, "", "Version for chart-operator app CR.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "quay.io", "Image registry.")
+	daemonCommand.PersistentFlags().String(f.Service.Image.Registry.Domain, "gsoci.azurecr.io", "Image registry.")
 	daemonCommand.PersistentFlags().String(f.Service.Controller.ResyncPeriod, "5m", "Duration after which a complete sync with all known cluster-objects the controller watches is performed.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.Address, "http://127.0.0.1:6443", "Address used to connect to Kubernetes. When empty in-cluster config is created.")
