@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Migrate Chart.yaml annotations to new format as per https://docs.giantswarm.io/reference/platform-api/chart-metadata/
+
 ## [3.5.0] - 2025-10-30
 
 ### Changed
@@ -593,6 +597,10 @@ cluster.
 - Initial version based on app related logic extracted from cluster-operator.
 
 [Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.5.0...HEAD
+
+### Changed
+
+- Migrate Chart.yaml annotations to new format as per https://docs.giantswarm.io/reference/platform-api/chart-metadata/
 [3.5.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.3.0...v3.4.0
