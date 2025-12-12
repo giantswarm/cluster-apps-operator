@@ -1,10 +1,9 @@
-apiVersion: "v2"
-appVersion: "3.0.0"
-description: "Chart holding cluster-apps-operator."
-home: "https://github.com/giantswarm/cluster-apps-operator"
+apiVersion: v2
+appVersion: 3.0.0
+description: Chart holding cluster-apps-operator.
+home: https://github.com/giantswarm/cluster-apps-operator
 icon: https://s.giantswarm.io/app-icons/giantswarm/1/dark.svg
-name: "cluster-apps-operator"
-version: "3.5.0"
+name: cluster-apps-operator
+version: 3.5.0
 annotations:
-  application.giantswarm.io/team: "honeybadger"
-  config.giantswarm.io/version: 1.x.x
+  io.giantswarm.application.team: honeybadger
