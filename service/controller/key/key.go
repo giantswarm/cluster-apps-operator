@@ -90,6 +90,12 @@ func IsEKS(cluster capi.Cluster) bool {
 		cluster.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
 }
 
+// IsKamaji check if the control plane is backed by kamaji
+func IsKamaji(cluster capi.Cluster) bool {
+	return cluster.Spec.ControlPlaneRef != nil &&
+		cluster.Spec.ControlPlaneRef.Kind == "KamajiControlPlane"
+}
+
 func IsDeleted(getter DeletionTimestampGetter) bool {
 	return getter.GetDeletionTimestamp() != nil
 }

@@ -39,6 +39,7 @@ rules:
     resources:
       - kubeadmcontrolplanes
       - awsmanagedcontrolplanes
+      - kamajicontrolplanes
     verbs:
       - get
   - apiGroups:
