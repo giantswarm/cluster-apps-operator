@@ -31,9 +31,6 @@ type ClusterConfig struct {
 type CiliumNetworkPolicy struct {
 	Enabled bool `json:"enabled"`
 }
-type KamajiConfig struct {
-	Enabled bool `json:"enabled"`
-}
 type ClusterValuesConfig struct {
 	BaseDomain string `json:"baseDomain"`
 	// BootstrapMode allows to configure chart-operator in bootstrap mode so that it can install charts without cni or kube-proxy.
@@ -51,5 +48,4 @@ type ClusterValuesConfig struct {
 	ChartOperator       ChartOperatorConfig      `json:"chartOperator"`
 	CiliumNetworkPolicy CiliumNetworkPolicy      `json:"ciliumNetworkPolicy"`
 	AzureSubscriptionID string                   `json:"subscriptionID"`
-	Kamaji              KamajiConfig             `json:"kamaji,omitempty"`
 }

@@ -260,7 +260,6 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	// disable boostrap mode and do not install CNI for Kamaji clusters
 	if key.IsKamaji(cr) {
 		clusterValues.BootstrapMode.Enabled = false
-		clusterValues.Kamaji.Enabled = true
 	}
 
 	// when the workload cluster considered is the management cluster itself,
