@@ -257,6 +257,11 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		clusterValues.ChartOperator.Cni["install"] = false
 	}
 
+	// disable boostrap mode and do not install CNI for Kamaji clusters
+	if key.IsKamaji(cr) {
+		clusterValues.BootstrapMode.Enabled = false
+	}
+
 	// when the workload cluster considered is the management cluster itself,
 	// the Chart Operator is due to get a special configuration to avoid privilege escalation.
 	if r.managementClusterID == key.ClusterID(&cr) {

@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Migrate Chart.yaml annotations to new format as per https://docs.giantswarm.io/reference/platform-api/chart-metadata/
+- Add `kamajicontrolplanes` to rbac.
+
 ## [3.5.0] - 2025-10-30
 
 ### Changed
