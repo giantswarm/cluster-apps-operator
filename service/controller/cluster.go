@@ -3,7 +3,7 @@ package controller
 import (
 	"time"
 
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v8/pkg/k8sclient"
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -178,6 +178,9 @@ func newClusterResources(config ClusterConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient.K8sClient(),
 			Logger:    config.Logger,
 
+			AllowedLabels: []string{
+				label.AppOperatorWatching,
+			},
 			Name:        clustersecret.Name,
 			StateGetter: clusterSecretGetter,
 		}
