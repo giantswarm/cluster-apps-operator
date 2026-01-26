@@ -16,7 +16,7 @@ import (
 	clientfake "sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclienttest"
+	"github.com/giantswarm/k8sclient/v8/pkg/k8sclienttest"
 	"github.com/giantswarm/micrologger/microloggertest"
 
 	"github.com/giantswarm/cluster-apps-operator/v3/service/internal/podcidr"
