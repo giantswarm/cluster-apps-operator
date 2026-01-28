@@ -8,6 +8,8 @@ import (
 	microserver "github.com/giantswarm/microkit/server"
 	"github.com/giantswarm/micrologger"
 	"github.com/spf13/viper"
+	"sigs.k8s.io/controller-runtime/pkg/log"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/giantswarm/cluster-apps-operator/v3/flag"
 	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
@@ -38,6 +40,9 @@ func mainE(ctx context.Context) error {
 			return microerror.Mask(err)
 		}
 	}
+
+	// Set up controller-runtime logger to avoid "log.SetLogger(...) was never called" warning
+	log.SetLogger(zap.New())
 
 	// We define a server factory to create the custom server once all command
 	// line flags are parsed and all microservice configuration is storted out.
