@@ -54,4 +54,3 @@ workflows:
             - master
         requires:
         - push-cluster-apps-operator-to-control-plane-app-catalog
-
