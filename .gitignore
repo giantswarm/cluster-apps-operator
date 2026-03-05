@@ -3,3 +3,6 @@ TODO
 /cluster-apps-operator
 !vendor/**
 .vscode/
+test/crds/
+.tmp/
+.coverage/

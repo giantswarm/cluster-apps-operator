@@ -70,3 +70,21 @@ clean-generated:
 clean-tools:
 	@echo "$(GEN_COLOR)Cleaning tools$(NO_COLOR)"
 	rm -rf $(TOOLS_BIN_DIR)
+
+.PHONY: download-crds
+download-crds: generate-manifests
+	@./scripts/download-crds.sh
+
+COVERAGE_DIR := .coverage
+COVERAGE_PROFILE := $(COVERAGE_DIR)/integration.out
+COVERPKGS := ./service/...,./pkg/...
+
+.PHONY: test-integration
+test-integration: download-crds
+	go test -count=1 -v ./test/integration/...
+
+.PHONY: test-integration-coverage
+test-integration-coverage: download-crds ## Runs integration tests with coverage.
+	@mkdir -p $(COVERAGE_DIR)
+	go test -count=1 -v -coverpkg=$(COVERPKGS) -coverprofile=$(COVERAGE_PROFILE) ./test/integration/...
+	go tool cover -func=$(COVERAGE_PROFILE) | tail -1
