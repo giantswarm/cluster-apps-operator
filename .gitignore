@@ -5,3 +5,4 @@ TODO
 .vscode/
 test/crds/
 .tmp/
+.coverage/
