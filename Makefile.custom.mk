@@ -70,3 +70,11 @@ clean-generated:
 clean-tools:
 	@echo "$(GEN_COLOR)Cleaning tools$(NO_COLOR)"
 	rm -rf $(TOOLS_BIN_DIR)
+
+.PHONY: download-crds
+download-crds: generate-manifests
+	@./scripts/download-crds.sh
+
+.PHONY: test-integration
+test-integration: download-crds
+	go test -count=1 -v ./test/integration/...
