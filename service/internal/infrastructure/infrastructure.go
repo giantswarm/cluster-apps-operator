@@ -21,4 +21,7 @@ const (
 	GCPClusterKindProvider = "gcp"
 
 	GCPManagedClusterKind = "GCPManagedCluster"
+
+	ProxmoxClusterKind         = "ProxmoxCluster"
+	ProxmoxClusterKindProvider = "proxmox"
 )

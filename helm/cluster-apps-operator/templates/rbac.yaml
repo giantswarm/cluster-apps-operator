@@ -108,6 +108,7 @@ rules:
       - openstackclusters
       - gcpclusters
       - vcdclusters
+      - proxmoxclusters
     verbs:
       - "get"
   - nonResourceURLs:
