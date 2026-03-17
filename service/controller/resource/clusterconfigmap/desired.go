@@ -176,6 +176,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				if err != nil || !gcpProjectFound {
 					return nil, fieldNotFoundOnInfrastructureTypeError
 				}
+			case infra.ProxmoxClusterKind:
+				provider = infra.ProxmoxClusterKindProvider
+				privateCluster = !reflect.ValueOf(r.proxy).IsZero()
 			default:
 				r.logger.Debugf(ctx, "unable to extract infrastructure provider-specific clusterValues for cluster. Unsupported infrastructure kind %q", infrastructureRef.Kind)
 			}
