@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for `AzureASOManagedCluster` and `AzureASOManagedControlPlane` (ASO-based Azure clusters).
+
 ### Changed
 
 - Allow `app-operator` labels on Secrets.

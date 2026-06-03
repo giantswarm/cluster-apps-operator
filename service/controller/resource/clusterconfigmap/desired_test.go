@@ -763,6 +763,115 @@ func Test_ClusterValuesPrivateCAPZ(t *testing.T) {
 	}
 }
 
+func Test_ClusterValuesAzureASOManagedCluster(t *testing.T) {
+	podCidrConfig := podcidr.Config{InstallationCIDR: "10.200.0.0/24"}
+	podCidr, err := podcidr.New(podCidrConfig)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	asoCluster := &unstructured.Unstructured{}
+	asoCluster.Object = map[string]interface{}{
+		"metadata": map[string]interface{}{
+			"name":      "test-cluster",
+			"namespace": "default",
+		},
+		"spec": map[string]interface{}{
+			"resources": []interface{}{},
+		},
+	}
+	asoCluster.SetGroupVersionKind(schema.GroupVersionKind{
+		Group:   "infrastructure.cluster.x-k8s.io",
+		Kind:    "AzureASOManagedCluster",
+		Version: "v1alpha1",
+	})
+
+	cluster := &capi.Cluster{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "test-cluster",
+			Namespace: "default",
+			Labels: map[string]string{
+				capi.ClusterNameLabel: "test-cluster",
+			},
+		},
+		Spec: capi.ClusterSpec{
+			InfrastructureRef: &corev1.ObjectReference{
+				Kind:       "AzureASOManagedCluster",
+				Namespace:  "default",
+				Name:       "test-cluster",
+				APIVersion: "infrastructure.cluster.x-k8s.io/v1alpha1",
+			},
+			ClusterNetwork: &capi.ClusterNetwork{
+				ServiceDomain: "cluster.local",
+				Services: &capi.NetworkRanges{
+					CIDRBlocks: []string{"172.31.0.0/16"},
+				},
+				Pods: &capi.NetworkRanges{
+					CIDRBlocks: []string{"192.168.0.0/16"},
+				},
+			},
+		},
+	}
+
+	var fakeClient *k8sclienttest.Clients
+	{
+		schemeBuilder := runtime.SchemeBuilder{
+			capi.AddToScheme,
+		}
+
+		err = schemeBuilder.AddToScheme(scheme.Scheme)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
+			CtrlClient: clientfake.NewClientBuilder().
+				WithRuntimeObjects(asoCluster, cluster).
+				Build(),
+		})
+	}
+
+	config := Config{
+		K8sClient:      fakeClient,
+		Logger:         microloggertest.New(),
+		PodCIDR:        podCidr,
+		BaseDomain:     "azuretest.gigantic.io",
+		ClusterIPRange: "10.200.0.0/24",
+		DNSIP:          "172.31.0.10",
+		RegistryDomain: "gsoci.azurecr.io/giantswarm",
+	}
+	resource, err := New(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	configmaps, err := resource.GetDesiredState(context.Background(), cluster)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, configMap := range configmaps {
+		if strings.HasSuffix(configMap.Name, "-cluster-values") {
+			cmData := &ClusterValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertEquals(t, "test-cluster.azuretest.gigantic.io", cmData.BaseDomain, "Wrong baseDomain set in cluster-values configmap")
+			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in cluster-values configmap")
+			assertEquals(t, "", cmData.AzureSubscriptionID, "AzureSubscriptionID should be empty for ASO-managed clusters")
+			assertEquals(t, "", cmData.GcpProject, "GcpProject should be empty for ASO-managed clusters")
+		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
+			cmData := &AppOperatorValuesConfig{}
+			err := yaml.Unmarshal([]byte(configMap.Data["values"]), cmData)
+			if err != nil {
+				t.Fatal(err)
+			}
+			assertEquals(t, "capz", cmData.Provider.Kind, "Wrong provider set in app-operator-values configmap")
+		}
+	}
+}
+
 func assertEquals(t *testing.T, expected, actual, message string) {
 	if expected != actual {
 		t.Fatalf("%s, expected %q, actual %q", message, expected, actual)

@@ -11,6 +11,9 @@ const (
 
 	AzureManagedClusterKind = "AzureManagedCluster"
 
+	AzureASOManagedClusterKind      = "AzureASOManagedCluster"
+	AzureASOManagedControlPlaneKind = "AzureASOManagedControlPlane"
+
 	VCDClusterKind         = "VCDCluster"
 	VCDClusterKindProvider = "cloud-director"
 
