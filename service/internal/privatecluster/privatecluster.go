@@ -67,6 +67,9 @@ func IsPrivateCluster(ctx context.Context, logger micrologger.Logger, ctrlclient
 			}
 
 			privateCluster = annotationValue == annotation.AWSVPCModePrivate
+		case infra.AzureASOManagedClusterKind:
+			// Private cluster detection for ASO-managed clusters is not yet implemented.
+			privateCluster = false
 		case infra.GCPClusterKind, infra.GCPManagedClusterKind:
 			// We don't support private clusters on GCP yet.
 			privateCluster = false

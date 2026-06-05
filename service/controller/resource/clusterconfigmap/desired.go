@@ -124,7 +124,7 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		infrastructureRef := cr.Spec.InfrastructureRef
 		if infrastructureRef != nil {
 			switch infrastructureRef.Kind {
-			case infra.AzureManagedClusterKind:
+			case infra.AzureManagedClusterKind, infra.AzureASOManagedClusterKind:
 				provider = infra.AzureClusterKindProvider
 			case infra.AzureClusterKind:
 				provider = infra.AzureClusterKindProvider
@@ -199,8 +199,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			"domain": r.registryDomain,
 		},
 	}
-	// disable kubernetes client cache for EKS cluster
-	if key.IsEKS(cr) {
+	// disable kubernetes client cache for EKS and AKS clusters
+	if key.IsEKS(cr) || key.IsAKS(cr) {
 		appOperatorValues["kubernetes"] = map[string]interface{}{
 			"disableClientCache": true,
 		}
@@ -254,8 +254,8 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		},
 	}
 
-	// disable boostrap mode and do not install CNI for EKS cluster
-	if key.IsEKS(cr) {
+	// disable boostrap mode and do not install CNI for EKS and AKS clusters
+	if key.IsEKS(cr) || key.IsAKS(cr) {
 		clusterValues.BootstrapMode.Enabled = false
 		clusterValues.ChartOperator.Cni["install"] = false
 	}
