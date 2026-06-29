@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.1] - 2026-06-29
+
 ### Changed
 
 - Read the services CIDR for the cluster DNS IP from the `Cluster` CR (`spec.clusterNetwork.services.cidrBlocks`) instead of the deprecated `KubeadmControlPlane` networking field removed in CAPI v1beta2.
@@ -620,7 +622,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.1...HEAD
+[3.8.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.0...v3.8.1
 [3.8.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.5.0...v3.6.0
