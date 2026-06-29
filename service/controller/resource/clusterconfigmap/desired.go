@@ -70,36 +70,17 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 	}
 
 	// clusterDNSIP contains the `coredns` k8s `Service` IP.
-	// This IP needs to belong to the `Services` CIDR configured for the k8s cluster, which can be set in the
-	// "serviceSubnet" field of the KubeadmControlPlane CR. If this field is set we want to take the IP from that CIDR.
-	// If it's not, we take the IP from the CIDR passed as parameter, which will probably be the default Service CIDR.
+	// This IP needs to belong to the `Services` CIDR configured for the k8s cluster, which is set in the
+	// "spec.clusterNetwork.services.cidrBlocks" field of the Cluster CR. If this field is set we want to take
+	// the IP from that CIDR. If it's not, we take the IP from the CIDR passed as parameter, which will probably
+	// be the default Service CIDR.
 	var clusterDNSIP = r.dnsIP
 	{
-		if cr.Spec.ControlPlaneRef != nil {
-			kubeadmControlPlane := &unstructured.Unstructured{}
-			kubeadmControlPlane.SetGroupVersionKind(schema.GroupVersionKind{
-				Group:   cr.Spec.ControlPlaneRef.GroupVersionKind().Group,
-				Kind:    cr.Spec.ControlPlaneRef.Kind,
-				Version: cr.Spec.ControlPlaneRef.GroupVersionKind().Version,
-			})
-			err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{
-				Namespace: cr.Namespace,
-				Name:      cr.Spec.ControlPlaneRef.Name,
-			}, kubeadmControlPlane)
+		serviceCidr := key.ServiceCIDR(cr)
+		if serviceCidr != "" {
+			clusterDNSIP, err = key.DNSIP(serviceCidr)
 			if err != nil {
 				return nil, microerror.Mask(err)
-			}
-
-			serviceCidr, serviceCidrFound, err := unstructured.NestedString(kubeadmControlPlane.Object, []string{"spec", "kubeadmConfigSpec", "clusterConfiguration", "networking", "serviceSubnet"}...)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-
-			if serviceCidrFound {
-				clusterDNSIP, err = key.DNSIP(serviceCidr)
-				if err != nil {
-					return nil, microerror.Mask(err)
-				}
 			}
 		}
 	}

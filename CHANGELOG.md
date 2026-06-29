@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Read the services CIDR for the cluster DNS IP from the `Cluster` CR (`spec.clusterNetwork.services.cidrBlocks`) instead of the deprecated `KubeadmControlPlane` networking field removed in CAPI v1beta2.
+
 ## [3.8.0] - 2026-06-05
 
 ### Added

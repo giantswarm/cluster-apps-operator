@@ -128,6 +128,22 @@ func PodCIDR(cr capi.Cluster) string {
 	return cr.Spec.ClusterNetwork.Pods.CIDRBlocks[0]
 }
 
+// ServiceCIDR returns the services CIDR configured on the Cluster CR, or an
+// empty string if it is not set.
+func ServiceCIDR(cr capi.Cluster) string {
+	if cr.Spec.ClusterNetwork == nil {
+		return ""
+	}
+	if cr.Spec.ClusterNetwork.Services == nil {
+		return ""
+	}
+	if len(cr.Spec.ClusterNetwork.Services.CIDRBlocks) == 0 {
+		return ""
+	}
+
+	return cr.Spec.ClusterNetwork.Services.CIDRBlocks[0]
+}
+
 func ToCluster(v interface{}) (capi.Cluster, error) {
 	if v == nil {
 		return capi.Cluster{}, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &capi.Cluster{}, v)

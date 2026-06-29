@@ -174,16 +174,7 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 			"name":      "test-cluster",
 			"namespace": "default",
 		},
-		"spec": map[string]interface{}{
-			"kubeadmConfigSpec": map[string]interface{}{
-				"clusterConfiguration": map[string]interface{}{
-					"networking": map[string]interface{}{
-						// The coredns service ip must belong to this CIDR
-						"serviceSubnet": "172.16.0.0/16",
-					},
-				},
-			},
-		},
+		"spec": map[string]interface{}{},
 	}
 	kubeadmControlPlane.SetGroupVersionKind(schema.GroupVersionKind{
 		Group:   "controlplane.cluster.x-k8s.io",
@@ -208,6 +199,12 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 				Namespace:  "default",
 				Name:       "test-cluster",
 				APIVersion: "infrastructure.cluster.x-k8s.io/v1beta1",
+			},
+			ClusterNetwork: &capi.ClusterNetwork{
+				Services: &capi.NetworkRanges{
+					// The coredns service ip must belong to this CIDR
+					CIDRBlocks: []string{"172.16.0.0/16"},
+				},
 			},
 		},
 	}
@@ -493,8 +490,8 @@ func Test_ClusterValuesGCPProjectOnlyAddedOnGCP(t *testing.T) {
 				t.Fatal(err)
 			}
 			assertEquals(t, "", cmData.GcpProject, "GCPProject is only set when using gcp")
-			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
-			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "172.31.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "172.31.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "capz", cmData.Provider, "Wrong provider set in cluster-values configmap")
 		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
 			cmData := &AppOperatorValuesConfig{}
