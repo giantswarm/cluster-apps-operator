@@ -10,6 +10,8 @@ import (
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/giantswarm/microerror"
 	capi "sigs.k8s.io/cluster-api/api/core/v1beta1"
+
+	infra "github.com/giantswarm/cluster-apps-operator/v3/service/internal/infrastructure"
 )
 
 const (
@@ -94,6 +96,14 @@ func IsEKS(cluster capi.Cluster) bool {
 func IsKamaji(cluster capi.Cluster) bool {
 	return cluster.Spec.ControlPlaneRef != nil &&
 		cluster.Spec.ControlPlaneRef.Kind == "KamajiControlPlane"
+}
+
+// IsAKS checks if the cluster uses the ASO-based Azure provider
+func IsAKS(cluster capi.Cluster) bool {
+	return cluster.Spec.ControlPlaneRef != nil &&
+		cluster.Spec.ControlPlaneRef.Kind == infra.AzureASOManagedControlPlaneKind &&
+		cluster.Spec.InfrastructureRef != nil &&
+		cluster.Spec.InfrastructureRef.Kind == infra.AzureASOManagedClusterKind
 }
 
 func IsDeleted(getter DeletionTimestampGetter) bool {

@@ -105,6 +105,8 @@ rules:
       - awsclusters
       - awsmanagedclusters
       - azureclusters
+      - azureasomanagedclusters
+      - azureasomanagedcontrolplanes
       - openstackclusters
       - gcpclusters
       - vcdclusters

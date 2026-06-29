@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.0] - 2026-06-05
+
+### Added
+
+- Add support for `AzureASOManagedCluster` and `AzureASOManagedControlPlane` (ASO-based Azure clusters).
+
 ### Changed
 
 - Allow `app-operator` labels on Secrets.
@@ -610,7 +616,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.7.0...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.0...HEAD
+[3.8.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.4.1...v3.5.0
