@@ -31,9 +31,8 @@ workflows:
     - architect/sync-china-registry:
         context: architect
         name: sync-china-registry
-        image: giantswarm/envoy-gateway-crds
         requires:
-        - push-crd-image-to-registries
+        - push-to-registries
         filters:
           tags:
             only: /^v.*/
