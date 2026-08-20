@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump `golang.org/x/net` to v0.58.0 and `golang.org/x/text` to v0.41.0 to remediate CVE-2026-46600 (panic parsing an invalid SVCB/HTTPS RR, fixed in x/net v0.56.0) and CVE-2026-56852 (infinite loop in `norm.Iter` on invalid UTF-8, fixed in x/text v0.39.0). Both are reachable from the built binary — x/net via `service` -> `client-go/rest` -> `net/http2`, x/text via `viper` -> `afero` -> `text/runes` — so they are fixed rather than ignored. `go get` also pulled `golang.org/x/sync` to v0.22.0, `golang.org/x/sys` to v0.47.0 and `golang.org/x/term` to v0.45.0 as part of resolving the module graph.
+- Ignore CVE-2026-63209 (`github.com/klauspost/compress`) and ten new `github.com/nats-io/nats-server/v2` CVEs (CVE-2026-58207/58208/58209/58210/58213/58214/58250/58251/58252/58253) until 2026-09-29, matching the expiry already used by the other 40 entries so a single future pass can revisit them together. Neither package ships in the binary: `go mod why` reports `main module does not need module github.com/nats-io/nats-server/v2` (it is absent from both `go.mod` and `go.sum`, and appears only because nancy audits the full `go list -m all` module graph), and klauspost/compress is reached solely through `promhttp.test`, a dependency's test binary. This is why 17 of the pre-existing ignores are already nats-server entries.
+
 ## [3.8.1] - 2026-06-29
 
 ### Changed
