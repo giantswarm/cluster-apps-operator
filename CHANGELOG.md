@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Bump `github.com/giantswarm/appcatalog` to v1.1.0 so `basic-integration-test` can find the chart it just published. architect-orb 9.0.0 changed dev chart versions from `<version>-<full 40 char SHA>` to the gitsemver form `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>`; this repo crossed that change when it bumped the orb 6.15.0 -> 9.5.5, and appcatalog v1.0.0 resolved a chart by `strings.HasSuffix(entry.Version, CIRCLE_SHA1)`, which a 7-character abbreviated SHA can never satisfy. Every lookup failed with `notFoundError` even though the chart was published correctly. v1.1.0 adds `MatchesVersion`, which accepts both formats.
+
 ### Changed
 
 - Bump `golang.org/x/net` to v0.58.0 and `golang.org/x/text` to v0.41.0 to remediate CVE-2026-46600 (panic parsing an invalid SVCB/HTTPS RR, fixed in x/net v0.56.0) and CVE-2026-56852 (infinite loop in `norm.Iter` on invalid UTF-8, fixed in x/text v0.39.0). Both are reachable from the built binary — x/net via `service` -> `client-go/rest` -> `net/http2`, x/text via `viper` -> `afero` -> `text/runes` — so they are fixed rather than ignored. `go get` also pulled `golang.org/x/sync` to v0.22.0, `golang.org/x/sys` to v0.47.0 and `golang.org/x/term` to v0.45.0 as part of resolving the module graph.
