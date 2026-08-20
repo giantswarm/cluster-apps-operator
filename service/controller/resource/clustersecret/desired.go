@@ -117,19 +117,17 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			},
 		}
 
+		proxyEnv := func(name, value string) map[string]string {
+			return map[string]string{
+				"name":  name,
+				"value": value,
+			}
+		}
+
 		values["env"] = []interface{}{
-			map[string]string{
-				"name":  "NO_PROXY",
-				"value": noProxy,
-			},
-			map[string]string{
-				"name":  "HTTP_PROXY",
-				"value": r.proxy.HttpProxy,
-			},
-			map[string]string{
-				"name":  "HTTPS_PROXY",
-				"value": r.proxy.HttpsProxy,
-			},
+			proxyEnv("NO_PROXY", noProxy),
+			proxyEnv("HTTP_PROXY", r.proxy.HttpProxy),
+			proxyEnv("HTTPS_PROXY", r.proxy.HttpsProxy),
 		}
 
 		// template containerd proxy configuration

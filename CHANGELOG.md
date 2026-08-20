@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Make `pre-commit` ready for `golangci-lint` 2.13.1, which [giantswarm/github#5794](https://github.com/giantswarm/github/pull/5794)
+  rolls out centrally. On 2.13.1 this repository reports 76 findings where 2.9.0 reports none, and 74
+  of them are configuration rather than code:
+
+  - The existing `staticcheck` SA1019 exclusion matched `SA1019: "sigs.k8s.io/cluster-api/.*" is
+    deprecated:` -- with quotes around the package path. Staticcheck 2026.2 emits that message without
+    the quotes, so the rule silently stopped matching and 14 already-accepted deprecation warnings
+    resurfaced. The quotes are now optional.
+  - 62 `goconst` findings were all repeated fixture strings in `_test.go` files, so `goconst` is set to
+    `ignore-tests: true`.
+
+  The 2 genuine findings were three copies of `map[string]string{"name": ..., "value": ...}` in
+  `clustersecret`; those are now built by a local `proxyEnv` helper, which removes the duplication
+  rather than configuring the linter around it. No behaviour change.
+
+  Verified against both linter versions: 0 issues on 2.13.1 and still 0 on the currently pinned 2.9.0,
+  so this is safe to merge before the central bump lands.
+
 - Identify the app under test in `basic-integration-test` by its published chart version instead of by commit SHA, completing the fix started by the `appcatalog` v1.1.0 bump. That bump fixed *resolving* the chart — `appcatalog.MatchesVersion` accepts the gitsemver `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>` form — so the App CR is now created with the right version. But `apptest` v1.4.1 asserts the deployed version a second time in its own wait loop (`strings.HasSuffix(app.Status.Version, testApp.SHA)`, `apptest.go:730`), which does not go through `appcatalog` and so still could not match a 7-character abbreviated SHA against `CIRCLE_SHA1`. The app reached `deployed` and then the test spun on that assertion for 131 retries until the 22m `go test` timeout killed it. `apptest.App` is now given `Version` rather than `SHA`, which is compared for equality and is not coupled to any SHA format.
 
   The version is read from the `.build_version` file that `architect/push-to-registries` writes and persists to the workspace, and that `architect/integration-test` attaches — the same file `package-helm-with-abs` stamps the chart from, so it is equal to the published chart version by construction. `E2E_APP_VERSION` overrides it for local runs. `CIRCLE_SHA1` is no longer read, so `EnvVarCircleSHA`/`CircleSHA()` are removed along with their startup panic.
