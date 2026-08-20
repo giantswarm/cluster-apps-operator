@@ -29,8 +29,8 @@ github.com/getsentry/sentry-go v0.42.0 h1:eeFMACuZTbUQf90RE8dE4tXeSe4CZyfvR1MBL7
 github.com/getsentry/sentry-go v0.42.0/go.mod h1:eRXCoh3uvmjQLY6qu63BjUZnaBu5L5WhMV1RwYO8W5s=
 github.com/giantswarm/apiextensions-application v0.6.2 h1:XL86OrpprWl5Wp38EUvUXt3ztTo25+V63oDVlFwDpNg=
 github.com/giantswarm/apiextensions-application v0.6.2/go.mod h1:8ylqSmDSzFblCppRQTFo8v9s/F6MX6RTusVVoDDfWso=
-github.com/giantswarm/appcatalog v1.0.0 h1:h2vNqd53ciYenoB04nrit4zruG4TeWiNT28t94l0wkw=
-github.com/giantswarm/appcatalog v1.0.0/go.mod h1:KmzfEU2sLoXldJ2OaAY6Pn/78h2wmfZqMwjRYQkudSo=
+github.com/giantswarm/appcatalog v1.1.0 h1:/D2nFMXocEluPMgCcOQp/v9c40pckRx2+pbjyJnOf50=
+github.com/giantswarm/appcatalog v1.1.0/go.mod h1:IM8qGt89wynQM1nTRE8PG8n0SfZASvIlp65pN+lQJUk=
 github.com/giantswarm/apptest v1.4.1 h1:9GEVbB8Zvb/EdRXcmc2zWebs0TQ4pZrJ7W5XjnpDJS8=
 github.com/giantswarm/apptest v1.4.1/go.mod h1:JvH9J9BP/tgYot+WQIv6ATjetOt0bkjxWbDf/DnkVCg=
 github.com/giantswarm/backoff v1.0.1 h1:paqQhjUsibkf+wWFCHsk7VXAkcM1L3ssAe7V7i8twpM=

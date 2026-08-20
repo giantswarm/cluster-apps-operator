@@ -37,7 +37,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.0 // indirect
 	github.com/getsentry/sentry-go v0.42.0 // indirect
-	github.com/giantswarm/appcatalog v1.0.0 // indirect
+	github.com/giantswarm/appcatalog v1.1.0 // indirect
 	github.com/giantswarm/to v0.4.2 // indirect
 	github.com/giantswarm/versionbundle v1.1.0 // indirect
 	github.com/go-kit/kit v0.13.0 // indirect
