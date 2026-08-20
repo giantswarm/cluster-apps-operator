@@ -43,7 +43,7 @@ func installResources(ctx context.Context, config Config) error {
 				CatalogName:   key.ControlPlaneTestCatalogName(),
 				Name:          project.Name(),
 				Namespace:     key.Namespace(),
-				SHA:           env.CircleSHA(),
+				Version:       env.AppVersion(),
 				ValuesYAML:    templates.ClusterAppsOperatorValues,
 				WaitForDeploy: true,
 			},
