@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Identify the app under test in `basic-integration-test` by its published chart version instead of by commit SHA, completing the fix started by the `appcatalog` v1.1.0 bump. That bump fixed *resolving* the chart — `appcatalog.MatchesVersion` accepts the gitsemver `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>` form — so the App CR is now created with the right version. But `apptest` v1.4.1 asserts the deployed version a second time in its own wait loop (`strings.HasSuffix(app.Status.Version, testApp.SHA)`, `apptest.go:730`), which does not go through `appcatalog` and so still could not match a 7-character abbreviated SHA against `CIRCLE_SHA1`. The app reached `deployed` and then the test spun on that assertion for 131 retries until the 22m `go test` timeout killed it. `apptest.App` is now given `Version` rather than `SHA`, which is compared for equality and is not coupled to any SHA format.
+
+  The version is read from the `.build_version` file that `architect/push-to-registries` writes and persists to the workspace, and that `architect/integration-test` attaches — the same file `package-helm-with-abs` stamps the chart from, so it is equal to the published chart version by construction. `E2E_APP_VERSION` overrides it for local runs. `CIRCLE_SHA1` is no longer read, so `EnvVarCircleSHA`/`CircleSHA()` are removed along with their startup panic.
+
 - Bump `github.com/giantswarm/appcatalog` to v1.1.0 so `basic-integration-test` can find the chart it just published. architect-orb 9.0.0 changed dev chart versions from `<version>-<full 40 char SHA>` to the gitsemver form `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>`; this repo crossed that change when it bumped the orb 6.15.0 -> 9.5.5, and appcatalog v1.0.0 resolved a chart by `strings.HasSuffix(entry.Version, CIRCLE_SHA1)`, which a 7-character abbreviated SHA can never satisfy. Every lookup failed with `notFoundError` even though the chart was published correctly. v1.1.0 adds `MatchesVersion`, which accepts both formats.
 
 ### Changed
