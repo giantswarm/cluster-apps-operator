@@ -1,9 +1,16 @@
 version: '2'
 linters:
+  settings:
+    goconst:
+      # The repeated strings this would otherwise flag are all fixture values in
+      # table-driven tests, where naming them hurts readability more than it helps.
+      ignore-tests: true
   exclusions:
     rules:
       - linters:
           - staticcheck
-        text: 'SA1019: "sigs.k8s.io/cluster-api/.*" is deprecated: This package is deprecated and is going to be removed when support for v1beta1 will be dropped.'
+        # Quotes around the package path are optional: Staticcheck 2026.2 emits SA1019 without
+        # them, and this rule silently stopped matching when that changed.
+        text: 'SA1019: "?sigs.k8s.io/cluster-api/.*"? is deprecated: This package is deprecated and is going to be removed when support for v1beta1 will be dropped.'
         # Specific exclude rule for deprecated types that are still part of the codebase. These
         # should be removed as the referenced deprecated types are removed from the project.
