@@ -7,7 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Detect when the services CIDR is missing from a `Cluster` CR, instead of silently falling back. `clusterconfigmap`
+  derives `clusterDNSIP` from `spec.clusterNetwork.services.cidrBlocks[0]` and falls back to the installation-wide
+  `kubernetes.api.clusterIPRange` (chart default `10.96.0.0/12` -> `10.96.0.10`) when that field is absent. The fallback
+  is deliberate and stays, but it was completely silent -- no log line, no metric -- which is how
+  [giantswarm/giantswarm#37031](https://github.com/giantswarm/giantswarm/issues/37031) went unnoticed fleet-wide for
+  weeks: 25 clusters on one installation carried a `clusterDNSIP` that pointed at a Service IP which did not exist, and
+  it only surfaced when `chart-operator` -- which runs `hostNetwork: true` with `dnsPolicy: None` and uses this value as
+  its only resolver -- next needed to pull a chart.
+
+  - New `cluster_apps_operator_cluster_service_cidr_missing` gauge, labelled `cluster_id` and `cluster_namespace`, `1`
+    when the CR carries no services CIDR. Emitted from the existing `service/collector` for *every* cluster rather than
+    only terminating ones, so it reports current CR state on each scrape and self-heals when the field returns. It is
+    `0` on all clusters across the fleet today, so any `1` is a genuine finding.
+  - The fallback branch in `clusterconfigmap` now logs at error level. `micrologger` has no warning level and this
+    repository has no `"level", "warning"` precedent; `Debugf` is what let the original regression hide.
+
+  Note the scope of this signal: it fires when the field is *absent*. It would not have caught #37031 itself, where the
+  field was populated the whole time and the pre-fix code read `KubeadmControlPlane.spec.kubeadmConfigSpec.clusterConfiguration.networking.serviceSubnet`
+  instead. Catching that shape needs a check against an independent source of truth -- the live `coredns` Service
+  ClusterIP -- which belongs in `cluster-test-suites`, not here.
+
 ### Fixed
+
+- Stop `Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet` passing vacuously. It set the installation CIDR to the chart
+  default `10.96.0.0/12` and asserted `10.96.0.10`, so the expected value was simultaneously the fallback value and a
+  correctly derived value -- the assertion held whether the read path worked or not, and the test was green throughout
+  the #37031 outage. The installation CIDR is now `172.20.0.0/16`, distinct from every other CIDR in the file, so the
+  test actually distinguishes "fell back" from "derived". Also removed the `KubeadmControlPlane` fixture and
+  `ControlPlaneRef` it still carried, dead since the read path moved to the `Cluster` CR.
+- Add unit coverage for `key.ServiceCIDR` and `key.DNSIP`, which had none despite being the whole derivation path:
+  `ServiceCIDR`'s three indistinguishable "not set" shapes, and `DNSIP`'s rejection of non-network addresses,
+  malformed CIDRs and IPv6.
 
 - Make `pre-commit` ready for `golangci-lint` 2.13.1, which [giantswarm/github#5794](https://github.com/giantswarm/github/pull/5794)
   rolls out centrally. On 2.13.1 this repository reports 76 findings where 2.9.0 reports none, and 74

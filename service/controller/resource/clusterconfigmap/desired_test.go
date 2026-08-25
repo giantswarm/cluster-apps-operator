@@ -268,6 +268,15 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 	}
 }
 
+// Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet asserts the documented
+// fallback: with no services CIDR on the Cluster CR, clusterDNSIP is derived
+// from the installation-wide CIDR instead.
+//
+// The installation CIDR here is deliberately NOT the chart default
+// (10.96.0.0/12). With the default, the fallback value and a correctly
+// derived value are the same string, so the test passes whether the read
+// path works or not -- which is how giantswarm/giantswarm#37031 went
+// undetected. Keep these values distinct from any other CIDR in this file.
 func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 	podCidrConfig := podcidr.Config{InstallationCIDR: "10.0.0.0/16"}
 	podCidr, err := podcidr.New(podCidrConfig)
@@ -291,32 +300,12 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 		Version: "v1beta1",
 	})
 
-	kubeadmControlPlane := &unstructured.Unstructured{}
-	kubeadmControlPlane.Object = map[string]interface{}{
-		"metadata": map[string]interface{}{
-			"name":      "test-cluster",
-			"namespace": "default",
-		},
-		"spec": map[string]interface{}{},
-	}
-	kubeadmControlPlane.SetGroupVersionKind(schema.GroupVersionKind{
-		Group:   "controlplane.cluster.x-k8s.io",
-		Kind:    "KubeadmControlPlane",
-		Version: "v1beta1",
-	})
-
 	cluster := &capi.Cluster{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "test-cluster",
 			Namespace: "default",
 		},
 		Spec: capi.ClusterSpec{
-			ControlPlaneRef: &corev1.ObjectReference{
-				Kind:       "KubeadmControlPlane",
-				Namespace:  "default",
-				Name:       "test-cluster",
-				APIVersion: "controlplane.cluster.x-k8s.io/v1beta1",
-			},
 			InfrastructureRef: &corev1.ObjectReference{
 				Kind:       "GCPCluster",
 				Namespace:  "default",
@@ -339,7 +328,7 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 
 		fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
 			CtrlClient: clientfake.NewClientBuilder().
-				WithRuntimeObjects(kubeadmControlPlane, gcpCluster, cluster).
+				WithRuntimeObjects(gcpCluster, cluster).
 				Build(),
 		})
 	}
@@ -349,8 +338,8 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 		Logger:         microloggertest.New(),
 		PodCIDR:        podCidr,
 		BaseDomain:     "fadi.gigantic.io",
-		ClusterIPRange: "10.96.0.0/12",
-		DNSIP:          "10.96.0.10",
+		ClusterIPRange: "172.20.0.0/16",
+		DNSIP:          "172.20.0.10",
 		RegistryDomain: "gsoci.azurecr.io/giantswarm",
 	}
 	resource, err := New(config)
@@ -370,8 +359,8 @@ func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			assertEquals(t, "10.96.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
-			assertEquals(t, "10.96.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "172.20.0.10", cmData.ClusterDNSIP, "Wrong coredns service IP set in cluster-values configmap")
+			assertEquals(t, "172.20.0.10", cmData.Cluster.Kubernetes.DNS["IP"], "Wrong coredns service IP set in cluster-values configmap")
 			assertEquals(t, "gcp", cmData.Provider, "Wrong provider set in cluster-values configmap")
 		} else if strings.HasSuffix(configMap.Name, "-app-operator-values") {
 			cmData := &AppOperatorValuesConfig{}

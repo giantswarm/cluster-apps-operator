@@ -16,10 +16,12 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/cluster-apps-operator/v3/pkg/project"
+	"github.com/giantswarm/cluster-apps-operator/v3/service/controller/key"
 )
 
 const (
-	labelClusterID = "cluster_id"
+	labelClusterID        = "cluster_id"
+	labelClusterNamespace = "cluster_namespace"
 )
 
 var (
@@ -28,6 +30,16 @@ var (
 		"Number of apps not yet deleted for a terminating cluster.",
 		[]string{
 			labelClusterID,
+		},
+		nil,
+	)
+
+	serviceCIDRMissing *prometheus.Desc = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, subsystem, "service_cidr_missing"),
+		"1 if the Cluster CR has no spec.clusterNetwork.services.cidrBlocks, so clusterDNSIP falls back to the installation default.",
+		[]string{
+			labelClusterID,
+			labelClusterNamespace,
 		},
 		nil,
 	)
@@ -74,6 +86,23 @@ func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
 	}
 
 	for _, cl := range clusterList.Items {
+		// Emitted for every cluster, not only terminating ones. When the
+		// services CIDR is absent the clusterconfigmap resource silently falls
+		// back to the installation default clusterDNSIP, which chart-operator
+		// then uses as its only resolver. See giantswarm/giantswarm#37031.
+		serviceCIDRIsMissing := 0.0
+		if key.ServiceCIDR(cl) == "" {
+			serviceCIDRIsMissing = 1
+		}
+
+		ch <- prometheus.MustNewConstMetric(
+			serviceCIDRMissing,
+			prometheus.GaugeValue,
+			serviceCIDRIsMissing,
+			cl.GetName(),
+			cl.GetNamespace(),
+		)
+
 		if cl.DeletionTimestamp.IsZero() || !hasFinalizer(cl.GetFinalizers()) {
 			continue
 		}
@@ -97,6 +126,7 @@ func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
 
 func (c *Cluster) Describe(ch chan<- *prometheus.Desc) error {
 	ch <- danglingApps
+	ch <- serviceCIDRMissing
 
 	return nil
 }
