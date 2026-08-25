@@ -337,6 +337,13 @@ func Test_ClusterCollectorServiceCIDRMissing(t *testing.T) {
 			for range test.expected {
 				metric := <-ch
 
+				// Guard the assumption above rather than trusting it: if a
+				// future per-cluster metric is emitted here too, fail loudly
+				// instead of silently reading it and mis-attributing the value.
+				if got, want := metric.Desc().String(), serviceCIDRMissing.String(); got != want {
+					t.Fatalf("expected only %s for non-terminating clusters, got %s -- filter by descriptor if another per-cluster metric was added", want, got)
+				}
+
 				var pb dto.Metric
 				err = metric.Write(&pb)
 				if err != nil {

@@ -83,11 +83,13 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 				return nil, microerror.Mask(err)
 			}
 		} else {
-			// Falling back is intentional for Cluster CRs that legitimately
-			// carry no services CIDR, but it is indistinguishable from the CR
-			// having silently stopped exposing the field, which is invisible
-			// fleet-wide until a chart pull happens to need DNS. Log it so the
-			// fallback is never silent again.
+			// The fallback exists for compatibility, but no cluster type we
+			// template should reach it: the cluster chart requires a services
+			// CIDR and defaults it, and every provider chart -- managed control
+			// planes included -- renders its Cluster CR from that chart. So this
+			// branch means either a hand-written CR or the field having moved
+			// again, both of which need a human. Error level is deliberate; the
+			// condition is not expected to be steady-state for anything.
 			r.logger.Errorf(ctx, nil, "no services CIDR on Cluster %#q, falling back to installation default DNS IP %#q", key.ClusterID(&cr), r.dnsIP)
 		}
 	}
