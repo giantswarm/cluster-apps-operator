@@ -85,9 +85,9 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 		} else {
 			// Falling back is intentional for Cluster CRs that legitimately
 			// carry no services CIDR, but it is indistinguishable from the CR
-			// having silently stopped exposing the field -- which is how
-			// giantswarm/giantswarm#37031 stayed invisible fleet-wide. Log it
-			// so the fallback is never silent again.
+			// having silently stopped exposing the field, which is invisible
+			// fleet-wide until a chart pull happens to need DNS. Log it so the
+			// fallback is never silent again.
 			r.logger.Errorf(ctx, nil, "no services CIDR on Cluster %#q, falling back to installation default DNS IP %#q", key.ClusterID(&cr), r.dnsIP)
 		}
 	}

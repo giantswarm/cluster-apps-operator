@@ -275,8 +275,8 @@ func Test_ClusterValuesDNSIP(t *testing.T) {
 // The installation CIDR here is deliberately NOT the chart default
 // (10.96.0.0/12). With the default, the fallback value and a correctly
 // derived value are the same string, so the test passes whether the read
-// path works or not -- which is how giantswarm/giantswarm#37031 went
-// undetected. Keep these values distinct from any other CIDR in this file.
+// path works or not. Keep these values distinct from any other CIDR in this
+// file.
 func Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet(t *testing.T) {
 	podCidrConfig := podcidr.Config{InstallationCIDR: "10.0.0.0/16"}
 	podCidr, err := podcidr.New(podCidrConfig)

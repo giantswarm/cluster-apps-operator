@@ -89,7 +89,7 @@ func (c *Cluster) Collect(ch chan<- prometheus.Metric) error {
 		// Emitted for every cluster, not only terminating ones. When the
 		// services CIDR is absent the clusterconfigmap resource silently falls
 		// back to the installation default clusterDNSIP, which chart-operator
-		// then uses as its only resolver. See giantswarm/giantswarm#37031.
+		// then uses as its only resolver.
 		serviceCIDRIsMissing := 0.0
 		if key.ServiceCIDR(cl) == "" {
 			serviceCIDRIsMissing = 1

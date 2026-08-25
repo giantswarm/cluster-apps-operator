@@ -257,7 +257,7 @@ func newCAPIV1alpha4Cluster(id, namespace string) *capi.Cluster {
 // Test_ClusterCollectorServiceCIDRMissing asserts the emitted value, not just
 // the descriptor: 1 exactly when the Cluster CR carries no services CIDR, in
 // which case clusterconfigmap falls back to the installation default
-// clusterDNSIP. See giantswarm/giantswarm#37031.
+// clusterDNSIP.
 func Test_ClusterCollectorServiceCIDRMissing(t *testing.T) {
 	testcases := []struct {
 		name      string

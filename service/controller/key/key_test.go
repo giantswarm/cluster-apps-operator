@@ -193,7 +193,7 @@ func Test_IsManagedByFlux(t *testing.T) {
 // Test_ServiceCIDR pins the contract that clusterconfigmap's fallback and the
 // cluster_service_cidr_missing metric both depend on: ServiceCIDR returns the
 // empty string for every "not set" shape, and those shapes are
-// indistinguishable to callers. See giantswarm/giantswarm#37031.
+// indistinguishable to callers.
 func Test_ServiceCIDR(t *testing.T) {
 	testCases := []struct {
 		description string
