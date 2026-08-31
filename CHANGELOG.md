@@ -7,36 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `cluster_apps_operator_cluster_service_cidr_missing` metric and an error log when the services CIDR
+  cannot be read from the `Cluster` CR and `clusterDNSIP` falls back to the installation default.
+- Add unit coverage for `key.ServiceCIDR` and `key.DNSIP`.
+
 ### Fixed
 
-- Make `pre-commit` ready for `golangci-lint` 2.13.1, which [giantswarm/github#5794](https://github.com/giantswarm/github/pull/5794)
-  rolls out centrally. On 2.13.1 this repository reports 76 findings where 2.9.0 reports none, and 74
-  of them are configuration rather than code:
-
-  - The existing `staticcheck` SA1019 exclusion matched `SA1019: "sigs.k8s.io/cluster-api/.*" is
-    deprecated:` -- with quotes around the package path. Staticcheck 2026.2 emits that message without
-    the quotes, so the rule silently stopped matching and 14 already-accepted deprecation warnings
-    resurfaced. The quotes are now optional.
-  - 62 `goconst` findings were all repeated fixture strings in `_test.go` files, so `goconst` is set to
-    `ignore-tests: true`.
-
-  The 2 genuine findings were three copies of `map[string]string{"name": ..., "value": ...}` in
-  `clustersecret`; those are now built by a local `proxyEnv` helper, which removes the duplication
-  rather than configuring the linter around it. No behaviour change.
-
-  Verified against both linter versions: 0 issues on 2.13.1 and still 0 on the currently pinned 2.9.0,
-  so this is safe to merge before the central bump lands.
-
-- Identify the app under test in `basic-integration-test` by its published chart version instead of by commit SHA, completing the fix started by the `appcatalog` v1.1.0 bump. That bump fixed *resolving* the chart — `appcatalog.MatchesVersion` accepts the gitsemver `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>` form — so the App CR is now created with the right version. But `apptest` v1.4.1 asserts the deployed version a second time in its own wait loop (`strings.HasSuffix(app.Status.Version, testApp.SHA)`, `apptest.go:730`), which does not go through `appcatalog` and so still could not match a 7-character abbreviated SHA against `CIRCLE_SHA1`. The app reached `deployed` and then the test spun on that assertion for 131 retries until the 22m `go test` timeout killed it. `apptest.App` is now given `Version` rather than `SHA`, which is compared for equality and is not coupled to any SHA format.
-
-  The version is read from the `.build_version` file that `architect/push-to-registries` writes and persists to the workspace, and that `architect/integration-test` attaches — the same file `package-helm-with-abs` stamps the chart from, so it is equal to the published chart version by construction. `E2E_APP_VERSION` overrides it for local runs. `CIRCLE_SHA1` is no longer read, so `EnvVarCircleSHA`/`CircleSHA()` are removed along with their startup panic.
-
-- Bump `github.com/giantswarm/appcatalog` to v1.1.0 so `basic-integration-test` can find the chart it just published. architect-orb 9.0.0 changed dev chart versions from `<version>-<full 40 char SHA>` to the gitsemver form `X.Y.Z-dev.<branch>.<date>.<time>.h<short SHA>`; this repo crossed that change when it bumped the orb 6.15.0 -> 9.5.5, and appcatalog v1.0.0 resolved a chart by `strings.HasSuffix(entry.Version, CIRCLE_SHA1)`, which a 7-character abbreviated SHA can never satisfy. Every lookup failed with `notFoundError` even though the chart was published correctly. v1.1.0 adds `MatchesVersion`, which accepts both formats.
-
-### Changed
-
-- Bump `golang.org/x/net` to v0.58.0 and `golang.org/x/text` to v0.41.0 to remediate CVE-2026-46600 (panic parsing an invalid SVCB/HTTPS RR, fixed in x/net v0.56.0) and CVE-2026-56852 (infinite loop in `norm.Iter` on invalid UTF-8, fixed in x/text v0.39.0). Both are reachable from the built binary — x/net via `service` -> `client-go/rest` -> `net/http2`, x/text via `viper` -> `afero` -> `text/runes` — so they are fixed rather than ignored. `go get` also pulled `golang.org/x/sync` to v0.22.0, `golang.org/x/sys` to v0.47.0 and `golang.org/x/term` to v0.45.0 as part of resolving the module graph.
-- Ignore CVE-2026-63209 (`github.com/klauspost/compress`) and ten new `github.com/nats-io/nats-server/v2` CVEs (CVE-2026-58207/58208/58209/58210/58213/58214/58250/58251/58252/58253) until 2026-09-29, matching the expiry already used by the other 40 entries so a single future pass can revisit them together. Neither package ships in the binary: `go mod why` reports `main module does not need module github.com/nats-io/nats-server/v2` (it is absent from both `go.mod` and `go.sum`, and appears only because nancy audits the full `go list -m all` module graph), and klauspost/compress is reached solely through `promhttp.test`, a dependency's test binary. This is why 17 of the pre-existing ignores are already nats-server entries.
+- Use a non-default installation CIDR in `Test_ClusterValuesDNSIPWhenServiceCidrIsNotSet`, so the expected
+  value is no longer both the fallback value and a correctly derived one.
 
 ## [3.8.1] - 2026-06-29
 

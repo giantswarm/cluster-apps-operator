@@ -82,6 +82,15 @@ func (r *Resource) GetDesiredState(ctx context.Context, obj interface{}) ([]*cor
 			if err != nil {
 				return nil, microerror.Mask(err)
 			}
+		} else {
+			// The fallback exists for compatibility, but no cluster type we
+			// template should reach it: the cluster chart requires a services
+			// CIDR and defaults it, and every provider chart -- managed control
+			// planes included -- renders its Cluster CR from that chart. So this
+			// branch means either a hand-written CR or the field having moved
+			// again, both of which need a human. Error level is deliberate; the
+			// condition is not expected to be steady-state for anything.
+			r.logger.Errorf(ctx, nil, "no services CIDR on Cluster %#q, falling back to installation default DNS IP %#q", key.ClusterID(&cr), r.dnsIP)
 		}
 	}
 

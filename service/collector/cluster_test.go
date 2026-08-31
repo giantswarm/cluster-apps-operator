@@ -6,6 +6,7 @@ import (
 
 	"github.com/giantswarm/k8smetadata/pkg/label"
 	"github.com/prometheus/client_golang/prometheus"
+	dto "github.com/prometheus/client_model/go"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -31,6 +32,14 @@ func TestClusterCollector(t *testing.T) {
 				newV1alpha1App("hello-world", "org-test", "1abc2", ""),
 			},
 			expected: []string{
+				prometheus.NewDesc(
+					"cluster_apps_operator_cluster_service_cidr_missing",
+					"1 if the Cluster CR has no spec.clusterNetwork.services.cidrBlocks, so clusterDNSIP falls back to the installation default.",
+					[]string{
+						labelClusterID,
+						labelClusterNamespace,
+					},
+					nil).String(),
 				prometheus.NewDesc(
 					"cluster_apps_operator_cluster_dangling_apps",
 					"Number of apps not yet deleted for a terminating cluster.",
@@ -240,6 +249,146 @@ func newCAPIV1alpha4Cluster(id, namespace string) *capi.Cluster {
 			CreationTimestamp: timestamp,
 			DeletionTimestamp: &timestamp,
 		},
+	}
+
+	return c
+}
+
+// Test_ClusterCollectorServiceCIDRMissing asserts the emitted value, not just
+// the descriptor: 1 exactly when the Cluster CR carries no services CIDR, in
+// which case clusterconfigmap falls back to the installation default
+// clusterDNSIP.
+func Test_ClusterCollectorServiceCIDRMissing(t *testing.T) {
+	testcases := []struct {
+		name      string
+		resources []runtime.Object
+		expected  map[string]float64
+	}{
+		{
+			name: "services CIDR set",
+			resources: []runtime.Object{
+				newCAPIClusterWithServiceCIDR("1abc2", "org-test", "172.31.0.0/16"),
+			},
+			expected: map[string]float64{"1abc2": 0},
+		},
+		{
+			name: "services CIDR missing",
+			resources: []runtime.Object{
+				newCAPIClusterWithServiceCIDR("3def4", "org-test", ""),
+			},
+			expected: map[string]float64{"3def4": 1},
+		},
+		{
+			name: "reported per cluster",
+			resources: []runtime.Object{
+				newCAPIClusterWithServiceCIDR("1abc2", "org-test", "172.31.0.0/16"),
+				newCAPIClusterWithServiceCIDR("3def4", "org-test", ""),
+			},
+			expected: map[string]float64{"1abc2": 0, "3def4": 1},
+		},
+	}
+
+	for _, test := range testcases {
+		t.Run(test.name, func(t *testing.T) {
+			var err error
+
+			var fakeClient *k8sclienttest.Clients
+			{
+				schemeBuilder := runtime.SchemeBuilder{
+					applicationv1alpha1.AddToScheme,
+					capi.AddToScheme,
+				}
+
+				err = schemeBuilder.AddToScheme(scheme.Scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				fakeClient = k8sclienttest.NewClients(k8sclienttest.ClientsConfig{
+					CtrlClient: clientfake.NewClientBuilder().
+						WithScheme(scheme.Scheme).
+						WithRuntimeObjects(test.resources...).
+						Build(),
+				})
+			}
+
+			var clusterCollector *Cluster
+			{
+				clusterCollector, err = NewCluster(ClusterConfig{
+					K8sClient: fakeClient,
+					Logger:    microloggertest.New(),
+				})
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			ch := make(chan prometheus.Metric)
+			go func() {
+				err := clusterCollector.Collect(ch)
+				if err != nil {
+					panic(fmt.Sprintf("failed to collect metrics: %v", err))
+				}
+			}()
+
+			// The fixtures are not terminating, so dangling_apps is skipped and
+			// service_cidr_missing is the only metric per cluster.
+			got := map[string]float64{}
+			for range test.expected {
+				metric := <-ch
+
+				// Guard the assumption above rather than trusting it: if a
+				// future per-cluster metric is emitted here too, fail loudly
+				// instead of silently reading it and mis-attributing the value.
+				if got, want := metric.Desc().String(), serviceCIDRMissing.String(); got != want {
+					t.Fatalf("expected only %s for non-terminating clusters, got %s -- filter by descriptor if another per-cluster metric was added", want, got)
+				}
+
+				var pb dto.Metric
+				err = metric.Write(&pb)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				var clusterID string
+				for _, l := range pb.GetLabel() {
+					if l.GetName() == labelClusterID {
+						clusterID = l.GetValue()
+					}
+				}
+
+				got[clusterID] = pb.GetGauge().GetValue()
+			}
+
+			for clusterID, want := range test.expected {
+				if got[clusterID] != want {
+					t.Fatalf("cluster %#q: expected %v but got %v", clusterID, want, got[clusterID])
+				}
+			}
+		})
+	}
+}
+
+// newCAPIClusterWithServiceCIDR returns a live (non-terminating) Cluster CR. An
+// empty serviceCIDR leaves spec.clusterNetwork unset entirely.
+func newCAPIClusterWithServiceCIDR(id, namespace, serviceCIDR string) *capi.Cluster {
+	c := &capi.Cluster{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "cluster.x-k8s.io/v1beta1",
+			Kind:       "Cluster",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      id,
+			Namespace: namespace,
+		},
+	}
+
+	if serviceCIDR != "" {
+		c.Spec.ClusterNetwork = &capi.ClusterNetwork{
+			Services: &capi.NetworkRanges{
+				CIDRBlocks: []string{serviceCIDR},
+			},
+		}
 	}
 
 	return c

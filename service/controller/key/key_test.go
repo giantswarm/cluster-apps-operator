@@ -189,3 +189,134 @@ func Test_IsManagedByFlux(t *testing.T) {
 		})
 	}
 }
+
+// Test_ServiceCIDR pins the contract that clusterconfigmap's fallback and the
+// cluster_service_cidr_missing metric both depend on: ServiceCIDR returns the
+// empty string for every "not set" shape, and those shapes are
+// indistinguishable to callers.
+func Test_ServiceCIDR(t *testing.T) {
+	testCases := []struct {
+		description string
+		cluster     capi.Cluster
+		expected    string
+	}{
+		{
+			description: "case 0: services CIDR is set",
+			cluster: capi.Cluster{
+				Spec: capi.ClusterSpec{
+					ClusterNetwork: &capi.ClusterNetwork{
+						Services: &capi.NetworkRanges{
+							CIDRBlocks: []string{"172.31.0.0/16"},
+						},
+					},
+				},
+			},
+			expected: "172.31.0.0/16",
+		},
+		{
+			description: "case 1: only the first CIDR block is returned",
+			cluster: capi.Cluster{
+				Spec: capi.ClusterSpec{
+					ClusterNetwork: &capi.ClusterNetwork{
+						Services: &capi.NetworkRanges{
+							CIDRBlocks: []string{"172.31.0.0/16", "172.32.0.0/16"},
+						},
+					},
+				},
+			},
+			expected: "172.31.0.0/16",
+		},
+		{
+			description: "case 2: clusterNetwork is nil",
+			cluster:     capi.Cluster{},
+			expected:    "",
+		},
+		{
+			description: "case 3: services is nil",
+			cluster: capi.Cluster{
+				Spec: capi.ClusterSpec{
+					ClusterNetwork: &capi.ClusterNetwork{},
+				},
+			},
+			expected: "",
+		},
+		{
+			description: "case 4: cidrBlocks is empty",
+			cluster: capi.Cluster{
+				Spec: capi.ClusterSpec{
+					ClusterNetwork: &capi.ClusterNetwork{
+						Services: &capi.NetworkRanges{
+							CIDRBlocks: []string{},
+						},
+					},
+				},
+			},
+			expected: "",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			result := ServiceCIDR(tc.cluster)
+			if result != tc.expected {
+				t.Fatalf("expected %#q but got %#q", tc.expected, result)
+			}
+		})
+	}
+}
+
+// Test_DNSIP covers the ".10 of the services CIDR" convention that
+// cluster-apps-operator implements independently of the identical Helm-side
+// implementation in giantswarm/cluster.
+func Test_DNSIP(t *testing.T) {
+	testCases := []struct {
+		description    string
+		clusterIPRange string
+		expected       string
+		expectError    bool
+	}{
+		{
+			description:    "case 0: default installation CIDR",
+			clusterIPRange: "10.96.0.0/12",
+			expected:       "10.96.0.10",
+		},
+		{
+			description:    "case 1: cluster chart default",
+			clusterIPRange: "172.31.0.0/16",
+			expected:       "172.31.0.10",
+		},
+		{
+			description:    "case 2: not a network address",
+			clusterIPRange: "172.31.0.5/16",
+			expectError:    true,
+		},
+		{
+			description:    "case 3: not a CIDR",
+			clusterIPRange: "172.31.0.0",
+			expectError:    true,
+		},
+		{
+			description:    "case 4: IPv6 is unsupported",
+			clusterIPRange: "fd00::/108",
+			expectError:    true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.description, func(t *testing.T) {
+			result, err := DNSIP(tc.clusterIPRange)
+			if tc.expectError {
+				if err == nil {
+					t.Fatalf("expected an error but got %#q", result)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result != tc.expected {
+				t.Fatalf("expected %#q but got %#q", tc.expected, result)
+			}
+		})
+	}
+}
