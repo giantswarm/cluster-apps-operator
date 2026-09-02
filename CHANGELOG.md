@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-09-02
+
 ### Added
 
 - Add `cluster_apps_operator_cluster_service_cidr_missing` metric and an error log when the services CIDR
@@ -662,7 +664,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.9.0...HEAD
+[3.9.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.1...v3.9.0
 [3.8.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.0...v3.8.1
 [3.8.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.6.0...v3.7.0
