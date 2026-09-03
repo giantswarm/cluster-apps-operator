@@ -104,3 +104,5 @@ require (
 )
 
 replace github.com/rabbitmq/amqp091-go v1.2.0 => github.com/rabbitmq/amqp091-go v1.14.0
+
+replace google.golang.org/grpc v1.80.0 => google.golang.org/grpc v1.83.2
