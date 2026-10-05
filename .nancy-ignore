@@ -1,6 +1,6 @@
 CVE-2025-30204 until=2026-10-29 # github.com/golang-jwt/jwt/v4@v4.0.0
 CVE-2024-51744 until=2026-10-29 # github.com/golang-jwt/jwt/v4@v4.0.0
 CVE-2026-37236 until=2026-10-31 # github.com/grpc-ecosystem/grpc-gateway/v2@v2.28.0
-CVE-2026-81870 until=2026-10-03 # go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc@v1.43.0
+CVE-2026-81870 until=2026-11-04 # go.opentelemetry.io/otel/exporters/otlp/otlptrace@v1.43.0
 CVE-2026-56855 until=2026-10-08 # golang.org/x/crypto@v0.55.0
 CVE-2026-78662 until=2026-10-08 # golang.org/x/crypto@v0.55.0
