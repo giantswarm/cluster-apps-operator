@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 
 - Update `app-operator` to version `v7.5.4`.
+- Update `gsoci.azurecr.io/giantswarm/alpine` docker tag to `v3.24.3`.
 
 ### Fixed
 
