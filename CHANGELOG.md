@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-10-22
+
 ### Security
 
 - Update `chart-operator` to version `v4.2.2`: built with Go 1.27.3 (CVE-2026-111943) on `alpine:3.24.2`.
+
+## Changed
+
+- Update `app-operator` to version `v7.5.4`.
+- Update `gsoci.azurecr.io/giantswarm/alpine` docker tag to `v3.24.3`.
 
 ### Fixed
 
@@ -678,7 +685,8 @@ cluster.
 
 - Initial version based on app related logic extracted from cluster-operator.
 
-[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.9.1...HEAD
+[Unreleased]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.10.0...HEAD
+[3.10.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.9.1...v3.10.0
 [3.9.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.9.0...v3.9.1
 [3.9.0]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.1...v3.9.0
 [3.8.1]: https://github.com/giantswarm/cluster-apps-operator/compare/v3.8.0...v3.8.1
