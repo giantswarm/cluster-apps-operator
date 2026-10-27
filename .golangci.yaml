@@ -1,5 +1,8 @@
 version: '2'
 linters:
+  enable:
+    - gosec
+    - goconst
   settings:
     goconst:
       # The repeated strings this would otherwise flag are all fixture values in
