@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- CI: architect orb 10.16.7, which pushes the chart to the git app catalogs with the architect GitHub App instead of the `catalogbot` account (giantswarm/giantswarm#34786).
+
 ### Security
 
 - Update `chart-operator` to version `v4.2.2`: built with Go 1.27.3 (CVE-2026-111943) on `alpine:3.24.2`.
