@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update github.com/prometheus/client_golang to v1.25.0 (giantswarm/cluster-apps-operator#784)
+- Update architect to v10.16.7 (giantswarm/cluster-apps-operator#838)
 
 ## [3.10.0] - 2026-10-22
 
