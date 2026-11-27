@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 
-- Update `chart-operator` to version `v4.2.3`, which uses the elevated Helm client for an app-operator chart only when it comes from a Giant Swarm catalog. Requires app-operator `v7.7.0` or later on the management cluster first.
+- Update `chart-operator` to version `v4.2.3`, which uses the elevated Helm client for an app-operator chart only when it comes from a Giant Swarm catalog. Ships together with app-operator `v7.7.1`, which sets the catalog annotations chart-operator checks.
 
 ## [3.10.0] - 2026-10-22
 
